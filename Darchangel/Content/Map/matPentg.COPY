@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matPentg"
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.936537,G=0.991668,B=0.944441,A=0.000000)
+      ExpressionGUID=E5C1EE6E4D3578D19BEFF694334C40BB
+      MaterialExpressionGuid=389C354F4DC75B3387DA089E64A35B1A
+      Material=Material'"matPentg"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=7727A94A4018F0FC6E34F383F5BA0227
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=EB9F8C084F99391E3FD42FBBEF5A83FF
+End Object

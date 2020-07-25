@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matWallA"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.837107,G=0.963668,B=0.718802,A=0.000000)
+      ExpressionGUID=13C565DB4C7A4CBCEEBCCAAD6D071760
+      MaterialExpressionGuid=2684EBE442B0C28164A9B6A493731C0B
+      Material=Material'"matWallA"'
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=5BC741814F6D832D16384ABA7013DF4A
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=BC876474404D097BEC6D61A4EF1A18C6
+End Object

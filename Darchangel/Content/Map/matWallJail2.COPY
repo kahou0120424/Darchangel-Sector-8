@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matWallJail2"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.991852,G=0.621433,B=0.541139,A=0.000000)
+      ExpressionGUID=2AA1CA1E462270B167BEC8936BD2DE49
+      MaterialExpressionGuid=49947A164B748C08CC0D708A1C6ADCE0
+      Material=Material'"matWallJail2"'
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=10DCCF654287A88D0B1702988ABBA91A
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=DE0481474B354178452DC0B85E48A7E9
+End Object

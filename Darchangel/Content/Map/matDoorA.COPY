@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matDoorA"
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.912397,G=0.798898,B=0.684545,A=0.000000)
+      ExpressionGUID=C9B89DB74A6864FB412436BE37BCDE1B
+      MaterialExpressionGuid=002BB4DB43B751F2F27A38AE24CCB81F
+      Material=Material'"matDoorA"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=C01905A74564F82365DAD5BD14C364D8
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=E87E19014EA7ECB4208D22A4E97743E1
+End Object

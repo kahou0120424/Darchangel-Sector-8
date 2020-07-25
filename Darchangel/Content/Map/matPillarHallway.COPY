@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matPillarHallway"
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.563387,G=0.849605,B=0.598880,A=0.000000)
+      ExpressionGUID=8109C8FF4FEBCE0A011FBC8C07DC7445
+      MaterialExpressionGuid=C32CD87A4BB9CF45A75FFE8047713973
+      Material=Material'"matPillarHallway"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=3CF111D24EF9EF7F42BA72B70A91CDDC
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=B19A271F40910975B7EECD8B69DB4007
+End Object
