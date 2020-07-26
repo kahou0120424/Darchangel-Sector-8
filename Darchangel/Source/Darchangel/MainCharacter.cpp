@@ -96,7 +96,7 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::Raycast()
 {
 
-	FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, 150);
+	FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
 	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
 	bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
 	FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
@@ -120,10 +120,8 @@ void AMainCharacter::Raycast()
 	{		
 		if (OutHit.Actor->ActorHasTag("Enemy"))
 		{
-			isPull = true;
-			playerPos = this->GetActorLocation();
-			targetLocation = OutHit.Actor->GetActorLocation();
-			velocity = -GetActorForwardVector();
+			isPull = true;	
+			velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.05;
 		}
 		
 	}
@@ -162,20 +160,15 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	if (isPull == true)
 	{
-		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());		
-		timer = speed; // no acceloration		
-		percent = timer / seconds;
-		velocity += velocity * percent;
+		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());				
 		FString TheFloatStr = FString::SanitizeFloat(distance);	
 		if (distance >= 200)
 		{
-			OutHit.Actor->AddActorLocalOffset((velocity), false, 0, ETeleportType::None);
+			OutHit.Actor->AddActorLocalOffset((velocity * speed), false, 0, ETeleportType::None);
 		}
 		else
 		{
 			isPull = false;
-			percent = 0;
-			timer = 0;
 		}
 	}
 
@@ -218,23 +211,29 @@ void AMainCharacter::setup_stimulus()
 
 void AMainCharacter::MoveForward(float Axis)
 {
-	
-	const FRotator Rotation = Controller->GetControlRotation();
-	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	if (!isAttacking)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	AddMovementInput(Direction, Axis);
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction, Axis);
+	}
+	
 	
 }
 
 void AMainCharacter::MoveRight(float Axis)
 {
-	
-	const FRotator Rotation = Controller->GetControlRotation();
-	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	if (!isAttacking)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
-	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-	AddMovementInput(Direction, Axis);
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(Direction, Axis);
+
+	}
 	
 }
 
