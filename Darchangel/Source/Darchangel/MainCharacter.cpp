@@ -95,36 +95,41 @@ void AMainCharacter::BeginPlay()
 
 void AMainCharacter::Raycast()
 {
+	if (!isPulling)
+	{
+		isPulling = true;		
+		FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
+		APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
+		bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
+		FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
+		this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
+		FVector ForwardVector = this->GetActorForwardVector();
 
-	FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
-	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
-	bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
-	FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
-	this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
-	FVector ForwardVector = this->GetActorForwardVector();
+		Start = Start + ForwardVector;
+		FVector End = Start + (ForwardVector * 5000.0f);
 
-	Start = Start + ForwardVector;
-	FVector End = Start + (ForwardVector * 5000.0f);
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+		CollisionParams.AddIgnoredActor(ActorHasTag("Wall"));
 
-	FCollisionQueryParams CollisionParams;
-	CollisionParams.AddIgnoredActor(this);
-	CollisionParams.AddIgnoredActor(ActorHasTag("Wall"));
+		//Draw raycast
+		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
 
-	//Draw raycast
-	DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
+		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
+		//bool isHit = GetWorld()->LineTraceMultiByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
 
-	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
-	//bool isHit = GetWorld()->LineTraceMultiByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
-
-	if (isHit)
-	{		
-		if (OutHit.Actor->ActorHasTag("Enemy"))
+		if (isHit)
 		{
-			isPull = true;	
-			velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.05;
+			if (OutHit.Actor->ActorHasTag("Enemy"))
+			{
+				isPull = true;
+				velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;
+				playerPos = this->GetActorLocation();
+			}
+
 		}
-		
 	}
+	
 
 
 }
@@ -150,7 +155,6 @@ void AMainCharacter::AttackStart()
 		}
 
 		isAttacking = true;
-		atkCD = 0;
 	}
 }
 
@@ -161,10 +165,11 @@ void AMainCharacter::Tick(float DeltaTime)
 	if (isPull == true)
 	{
 		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());				
+		//float distance = Distance(OutHit.Actor->GetActorLocation(), playerPos);
 		FString TheFloatStr = FString::SanitizeFloat(distance);	
-		if (distance >= 200)
+		if (distance >= DistanceBetweenActors)
 		{
-			OutHit.Actor->AddActorLocalOffset((velocity * speed), false, 0, ETeleportType::None);
+			OutHit.Actor->AddActorLocalOffset((velocity * speed ), false, 0, ETeleportType::None);
 		}
 		else
 		{
@@ -178,6 +183,17 @@ void AMainCharacter::Tick(float DeltaTime)
 		if (atkCD >= AttackDelay)
 		{
 			isAttacking = false;
+			atkCD = 0;
+		}
+
+	}
+	if (isPulling == true)
+	{
+		pullCD += DeltaTime;
+		if (pullCD >= pullDelay)
+		{
+			isPulling = false;
+			pullCD = 0;
 		}
 	}
 }

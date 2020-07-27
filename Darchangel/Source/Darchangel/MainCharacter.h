@@ -30,8 +30,12 @@ public:
 		UCameraComponent* FollowCamera;
 	
 
-	UPROPERTY(EditAnywhere, Category = "Chains Of Hell", meta = (ClampMin = "0.01", ClampMax = "1.0"))
+	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		float speed;
+	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
+		float DistanceBetweenActors = 100;
+	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
+		float pullDelay = 3;
 
 	//** Attakc Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
@@ -54,6 +58,7 @@ public:
 	FHitResult OutHit2;
 	FVector velocity;
 	bool isPull;
+	bool isPulling;
 
 	float percent;
 	float seconds = 10;
@@ -91,6 +96,7 @@ protected:
 	void AttackStart();
 	bool isAttacking;
 	float atkCD;
+	float pullCD;
 	float atkCount = 0;
 
 public:	
