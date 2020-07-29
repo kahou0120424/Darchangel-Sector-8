@@ -138,6 +138,10 @@ void AMainCharacter::AttackStart()
 {
 	if (!isAttacking)
 	{
+		APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
+		bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
+		FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
+		this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
 		if (atkCount == 0)
 		{
 			PlayAnimMontage(AttackMontage, 1.f, FName("Attack_PrimaryA"));
@@ -275,6 +279,12 @@ void AMainCharacter::StopDash()
 void AMainCharacter::ResetDash()
 {
 	canDash = true;
+}
+
+void AMainCharacter::AttackMove()
+{
+	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
+	LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * 500, true, true);
 }
 
 
