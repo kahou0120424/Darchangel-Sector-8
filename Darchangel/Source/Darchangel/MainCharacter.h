@@ -37,7 +37,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		float pullDelay = 3;
 
-	//** Attakc Animation
+	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AttackMontage;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
@@ -48,6 +48,10 @@ public:
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
 		float AttackDelay;
+
+	//** Bullet
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABullet> ProjectileClass;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -63,6 +67,8 @@ public:
 	float percent;
 	float seconds = 10;
 	float timer;
+	
+	int i = 0;
 
 	// dash
 	UFUNCTION()
@@ -95,8 +101,13 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void Raycast();
-	void AttackStart();
+	void MeleeAttack();
+	void RangeAttack();
+	void RotateToMouseCurse();
+	void Fire();
+	void FinishFire();
 	bool isAttacking;
+	bool isShooting;
 	float atkCD;
 	float pullCD;
 	float atkCount = 0;

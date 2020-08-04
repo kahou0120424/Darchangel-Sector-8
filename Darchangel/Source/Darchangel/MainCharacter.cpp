@@ -18,6 +18,7 @@
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Engine.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Bullet.h"
 #include "Perception/AISense_Sight.h"
 
 ///////////////////////////////////////////////////////////////////////
@@ -93,16 +94,21 @@ void AMainCharacter::BeginPlay()
 	
 }
 
-void AMainCharacter::Raycast()
+void AMainCharacter::RotateToMouseCurse() 
+{
+	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
+	bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
+	FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
+	this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
+}
+
+void AMainCharacter::Raycast() //Chain Of Hell
 {
 	if (!isPulling)
 	{
 		isPulling = true;		
-		FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);
-		APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
-		bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
-		FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
-		this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
+		RotateToMouseCurse();
+		FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);		
 		FVector ForwardVector = this->GetActorForwardVector();
 
 		Start = Start + ForwardVector;
@@ -116,8 +122,7 @@ void AMainCharacter::Raycast()
 		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
 
 		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
-		//bool isHit = GetWorld()->LineTraceMultiByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
-
+		
 		if (isHit)
 		{
 			if (OutHit.Actor->ActorHasTag("Enemy"))
@@ -134,14 +139,10 @@ void AMainCharacter::Raycast()
 
 }
 
-void AMainCharacter::AttackStart()
+void AMainCharacter::MeleeAttack() // Melee Attack
 {
 	if (!isAttacking)
-	{
-		APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
-		bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
-		FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
-		this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
+	{	
 		if (atkCount == 0)
 		{
 			PlayAnimMontage(AttackMontage, 1.f, FName("Attack_PrimaryA"));
@@ -160,6 +161,34 @@ void AMainCharacter::AttackStart()
 
 		isAttacking = true;
 	}
+}
+
+void AMainCharacter::RangeAttack() // Range Attack
+{
+	RotateToMouseCurse();
+
+	if (i > 50)
+	{
+		if (ProjectileClass != NULL)
+		{
+			//const FRotator SpawnRotation = GetControlRotation();
+			const FRotator SpawnRotation = GetActorRotation();
+			const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+			UWorld* const World = GetWorld();
+			if (World != NULL)
+			{
+				ABullet* Bullet = World->SpawnActor<ABullet>(ProjectileClass, SpawnLocation, SpawnRotation);
+
+				FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+				Bullet->Velocity = FVector(NewVelocity);
+			}
+
+		}
+		i = 0;
+	}
+	i++;
+
 }
 
 // Called every frame
@@ -200,15 +229,17 @@ void AMainCharacter::Tick(float DeltaTime)
 			pullCD = 0;
 		}
 	}
+
+	if (isShooting)
+	{
+		RangeAttack();
+	}
 }
 
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	//PlayerInputComponent->BindAxis("Turn", this, &APawn::AddControllerYawInput);
-	//PlayerInputComponent->BindAxis("LookUp", this, &APawn::AddControllerPitchInput);
 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
@@ -219,7 +250,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
 
-	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::AttackStart);
+	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::Fire);
+	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::FinishFire);
 }
 
 void AMainCharacter::setup_stimulus()
@@ -281,10 +314,20 @@ void AMainCharacter::ResetDash()
 	canDash = true;
 }
 
-void AMainCharacter::AttackMove()
+void AMainCharacter::AttackMove() // Move forward while attacking
 {
 	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 	LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * 500, true, true);
+}
+
+void AMainCharacter::Fire()
+{
+	isShooting = true;
+}
+
+void AMainCharacter::FinishFire()
+{
+	isShooting = false;
 }
 
 
