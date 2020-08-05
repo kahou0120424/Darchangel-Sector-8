@@ -317,7 +317,7 @@ void AMainCharacter::ResetDash()
 void AMainCharacter::AttackMove() // Move forward while attacking
 {
 	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
-	LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * 500, true, true);
+	LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * attackForwardDistance, true, true);
 }
 
 void AMainCharacter::Fire()
