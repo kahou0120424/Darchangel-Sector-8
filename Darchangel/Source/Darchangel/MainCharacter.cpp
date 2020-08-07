@@ -43,7 +43,7 @@ AMainCharacter::AMainCharacter()
 	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true; // allow the charactor ratote to the direction it is moving  
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); //rotation rate
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1200.0f, 0.0f); //rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.0f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
@@ -165,10 +165,8 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 
 void AMainCharacter::RangeAttack() // Range Attack
 {
-	RotateToMouseCurse();
+	
 
-	if (i > 50)
-	{
 		if (ProjectileClass != NULL)
 		{
 			//const FRotator SpawnRotation = GetControlRotation();
@@ -185,9 +183,8 @@ void AMainCharacter::RangeAttack() // Range Attack
 			}
 
 		}
-		i = 0;
-	}
-	i++;
+		
+	
 
 }
 
@@ -232,7 +229,14 @@ void AMainCharacter::Tick(float DeltaTime)
 
 	if (isShooting)
 	{
-		RangeAttack();
+		i ++;
+		RotateToMouseCurse();
+		if (i >= bulletRate)
+		{
+			RangeAttack();
+			i = 0;
+		}
+		
 	}
 }
 
@@ -249,6 +253,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
+	//PlayerInputComponent->BindAction("Dash", IE_Released, this, &AMainCharacter::StopDash);
 
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::Fire);
@@ -295,17 +300,18 @@ void AMainCharacter::Dash()
 {
 	if (canDash)
 	{
-		GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
+		GetCharacterMovement()->BrakingFrictionFactor = -0.0f;
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * dashDistance, true, true);
 		canDash = false;
 		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, dashCooldown, false);
+
 	}
 }
 
 void AMainCharacter::StopDash()
 {
 	GetCharacterMovement()->StopMovementImmediately();
-	GetCharacterMovement()->BrakingFrictionFactor = 100000000.0f;
+	GetCharacterMovement()->BrakingFrictionFactor = 100.0f;
 	GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, dashCooldown, false);
 }
 

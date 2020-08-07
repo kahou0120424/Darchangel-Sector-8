@@ -50,7 +50,11 @@ public:
 		float AttackDelay;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
-	float attackForwardDistance;
+		float attackForwardDistance;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
+		float bulletRate;
+
 
 	//** Bullet
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
