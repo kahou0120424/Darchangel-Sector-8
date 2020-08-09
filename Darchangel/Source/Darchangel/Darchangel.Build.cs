@@ -15,7 +15,10 @@ public class Darchangel : ModuleRules
 															"HeadMountedDisplay",
 															"AIModule",
 															"NavigationSystem",
-															"GameplayTasks"
+															"GameplayTasks",
+															"UMG",
+															"Slate",
+															"SlateCore"
 															});
 	}
 }

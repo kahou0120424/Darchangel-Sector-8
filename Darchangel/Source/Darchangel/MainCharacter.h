@@ -110,6 +110,10 @@ public:
 
 	void AttackMove();
 
+	float get_health() const;
+	float get_max_health() const;
+	void set_health(float const new_health);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -133,7 +137,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	
+	class UWidgetComponent* widget_component;
+	float const max_health = 100.0f;
+	float health;
 	class UAIPerceptionStimuliSourceComponent* stimulus;
 
 	void setup_stimulus();

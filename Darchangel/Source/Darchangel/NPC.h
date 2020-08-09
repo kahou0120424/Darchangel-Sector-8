@@ -25,18 +25,18 @@ public:
 	void melee_attack();
 	UAnimMontage* get_montage() const;
 
-	/*float get_health() const;
+	float get_health() const;
 	float get_max_health() const;
-	void set_health(float const new_health);*/
+	void set_health(float const new_health);
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:	
-	/*class UWidgetComponent* widget_component;
+	class UWidgetComponent* widget_component;
 	float const max_health = 100.0f;
-	float health;*/
+	float health;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* montage;

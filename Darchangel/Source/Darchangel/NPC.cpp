@@ -10,19 +10,21 @@
 #include "Components/WidgetComponent.h"
 #include "UObject//ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
-//#include "HealthBar.h"
+#include "HealthBar.h"
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "MainCharacter.h"
 
 // Sets default values
-ANPC::ANPC()
+ANPC::ANPC() :
+	health(max_health), 
+	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue")))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-	/*if (widget_component)
+	if (widget_component)
 	{
 		widget_component->SetupAttachment(RootComponent);
 		widget_component->SetWidgetSpace(EWidgetSpace::Screen);
@@ -32,7 +34,7 @@ ANPC::ANPC()
 		{
 			widget_component->SetWidgetClass(widget_class.Class);
 		}
-	}*/
+	}
 }
 
 // Called when the game starts or when spawned
@@ -59,11 +61,11 @@ void ANPC::BeginPlay()
 void ANPC::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	/*auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
+	auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
 	if (uw)
 	{
 		uw->set_bar_value_percent(health / max_health);
-	}*/
+	}
 }
 
 // Called to bind functionality to input
@@ -86,7 +88,7 @@ UAnimMontage* ANPC::get_montage() const
 	return montage;
 }
 
-/*float ANPC::get_health() const
+float ANPC::get_health() const
 {
 	return health;
 }
@@ -100,14 +102,14 @@ void ANPC::set_health(float const new_health)
 {
 	health = new_health;
 
-	if (health <= 0)
+	/*if (health <= 0)
 	{
 		UE_LOG(LogTemp, Error, TEXT("You win!!!"));
 		GetWorld()->GetFirstLocalPlayerFromController()->ConsoleCommand("quit");
-	}
+	}*/
 }
 
-void ANPCAI::on_attack_overlap_begin(
+/*void ANPCAI::on_attack_overlap_begin(
 	UPrimitiveComponent* const overlapped_component,
 	AActor* const other_actor,
 	UPrimitiveComponent* other_component,

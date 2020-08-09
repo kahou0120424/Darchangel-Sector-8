@@ -20,6 +20,12 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Bullet.h"
 #include "Perception/AISense_Sight.h"
+#include "Components/WidgetComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "HealthBar.h"
+#include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "NPC.h"
+#include "Kismet/GameplayStatics.h"
 
 ///////////////////////////////////////////////////////////////////////
 //Distance Formula
@@ -31,7 +37,9 @@ double Distance(FVector a, FVector b)
 ///////////////////////////////////////////////////////////////////////
 
 // Sets default values
-AMainCharacter::AMainCharacter()
+AMainCharacter::AMainCharacter() :
+	health(max_health),
+	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue")))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -85,6 +93,17 @@ AMainCharacter::AMainCharacter()
 	dashStop = 0.1f;
 
 	setup_stimulus();
+	if (widget_component)
+	{
+		widget_component->SetupAttachment(RootComponent);
+		widget_component->SetWidgetSpace(EWidgetSpace::Screen);
+		widget_component->SetRelativeLocation(FVector(0.0f, 0.0f, 85.0f));
+		static ConstructorHelpers::FClassFinder<UUserWidget> widget_class(TEXT("/Game/UI/HealthBar_BP"));
+		if (widget_class.Succeeded())
+		{
+			widget_component->SetWidgetClass(widget_class.Class);
+		}
+	}
 }
 
 // Called when the game starts or when spawned
@@ -199,6 +218,12 @@ void AMainCharacter::RangeAttack() // Range Attack
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
+	if (uw)
+	{
+		uw->set_bar_value_percent(health / max_health);
+	}
+
 	if (isPull == true)
 	{
 		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());				
@@ -257,8 +282,9 @@ void AMainCharacter::Tick(float DeltaTime)
 			RangeAttack();
 			i = 0;
 		}
-		
 	}
+
+	
 }
 
 // Called to bind functionality to input
@@ -357,7 +383,24 @@ void AMainCharacter::FinishFire()
 	isShooting = false;
 }
 
+float AMainCharacter::get_health() const
+{
+	return health;
+}
 
+float AMainCharacter::get_max_health() const
+{
+	return max_health;
+}
 
-
-
+void AMainCharacter::set_health(float const new_health)
+{
+	health = new_health;
+	if (health <= 0)
+	{
+		auto const controller = UGameplayStatics::GetPlayerController(this, 0);
+		controller->SetCinematicMode(true, false, false, true, true);
+		GetMesh()->SetSimulatePhysics(true);
+		GetMovementComponent()->MovementState.bCanJump = false;
+	}
+}
