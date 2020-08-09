@@ -36,6 +36,8 @@ public:
 		float DistanceBetweenActors = 100;
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		float pullDelay = 3;
+	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
+		float gotPullSpeed = 200;
 
 	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
@@ -65,11 +67,13 @@ public:
 
 	FVector targetLocation;
 	FVector playerPos;
+	FVector wallPos;
 	FHitResult OutHit;
 	FHitResult OutHit2;
 	FVector velocity;
 	bool isPull;
 	bool isPulling;
+	bool gotPull;
 
 	float percent;
 	float seconds = 10;

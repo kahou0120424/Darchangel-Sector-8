@@ -132,6 +132,13 @@ void AMainCharacter::Raycast() //Chain Of Hell
 				playerPos = this->GetActorLocation();
 			}
 
+			else if (OutHit.Actor->ActorHasTag("JumpWall"))
+			{
+				gotPull = true;
+				velocity = FVector(this->GetActorForwardVector().X, this->GetActorForwardVector().Y, 0);
+				wallPos = OutHit.Actor->GetActorLocation();
+			}
+			
 		}
 	}
 	
@@ -195,7 +202,6 @@ void AMainCharacter::Tick(float DeltaTime)
 	if (isPull == true)
 	{
 		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());				
-		//float distance = Distance(OutHit.Actor->GetActorLocation(), playerPos);
 		FString TheFloatStr = FString::SanitizeFloat(distance);	
 		if (distance >= DistanceBetweenActors)
 		{
@@ -205,6 +211,21 @@ void AMainCharacter::Tick(float DeltaTime)
 		{
 			isPull = false;
 		}
+	}
+
+	if (gotPull == true)
+	{
+		float distance = abs(Distance(wallPos,GetActorLocation()));
+		FString TheFloatStr = FString::SanitizeFloat(distance);
+		if (distance >= DistanceBetweenActors)
+		{
+			LaunchCharacter(velocity * gotPullSpeed, true, true);
+		}
+		else
+		{
+			gotPull = false;
+		}
+		
 	}
 
 	if (isAttacking == true)
@@ -300,7 +321,7 @@ void AMainCharacter::Dash()
 {
 	if (canDash)
 	{
-		GetCharacterMovement()->BrakingFrictionFactor = -0.0f;
+			
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * dashDistance, true, true);
 		canDash = false;
 		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, dashCooldown, false);
