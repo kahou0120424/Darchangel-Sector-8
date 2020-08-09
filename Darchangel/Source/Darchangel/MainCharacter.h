@@ -12,7 +12,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/Actor.h"
+#include "Animation/AnimMontage.h"
 #include "MainCharacter.generated.h"
+
 
 UCLASS()
 class DARCHANGEL_API AMainCharacter : public ACharacter
@@ -131,7 +133,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
+	
 	class UAIPerceptionStimuliSourceComponent* stimulus;
 
 	void setup_stimulus();
+	
 };

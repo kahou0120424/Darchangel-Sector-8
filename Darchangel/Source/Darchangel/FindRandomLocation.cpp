@@ -28,7 +28,7 @@ EBTNodeResult::Type UFindRandomLocation::ExecuteTask(UBehaviorTreeComponent& own
 	UNavigationSystemV1* const nav_sys = UNavigationSystemV1::GetCurrent(GetWorld());
 	if (nav_sys->GetRandomPointInNavigableRadius(origin, search_radius, loc, nullptr))
 	{
-		cont->get_blackboard()->SetValueAsVector(bb_keys::target_location, loc.Location);
+		cont->get_blackboard()->SetValueAsVector(GetSelectedBlackboardKey(), loc.Location);
 	}
 
 	//finish with success
