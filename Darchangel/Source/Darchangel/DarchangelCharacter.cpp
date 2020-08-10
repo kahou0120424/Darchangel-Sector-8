@@ -8,6 +8,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Runtime/Engine/Classes/Components/BoxComponent.h"
 
 //////////////////////////////////////////////////////////////////////////
 // ADarchangelCharacter
@@ -45,6 +46,12 @@ ADarchangelCharacter::ADarchangelCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+
+}
+
+void ADarchangelCharacter::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 //////////////////////////////////////////////////////////////////////////

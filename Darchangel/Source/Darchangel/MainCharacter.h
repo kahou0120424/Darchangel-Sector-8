@@ -113,6 +113,8 @@ public:
 	float get_health() const;
 	float get_max_health() const;
 	void set_health(float const new_health);
+	virtual void attack_start();
+	virtual void attack_end();
 
 protected:
 	// Called when the game starts or when spawned
@@ -135,8 +137,12 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 
 private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+		class UBoxComponent* sword_collision_box;
+
 	class UWidgetComponent* widget_component;
 	float const max_health = 100.0f;
 	float health;
@@ -144,4 +150,19 @@ private:
 
 	void setup_stimulus();
 	
+	UFUNCTION()
+		void on_attack_overlap_begin(
+			UPrimitiveComponent* const overlapped_component,
+			AActor* const other_actor,
+			UPrimitiveComponent* other_component,
+			int const other_body_index,
+			bool const from_sweep,
+			FHitResult const& sweep_result);
+
+	UFUNCTION()
+		void on_attack_overlap_end(
+			UPrimitiveComponent* const overlapped_component,
+			AActor* const other_actor,
+			UPrimitiveComponent* other_component,
+			int const other_body_index);
 };

@@ -18,6 +18,7 @@
 ANPC::ANPC() :
 	health(max_health), 
 	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue")))
+	//right_fist_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("RightFistCollisionBox")))
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -50,11 +51,11 @@ void ANPC::BeginPlay()
 	}
 
 	// attach delegated to the colision box
-	/*if (right_fist_collision_box)
+	if (right_fist_collision_box)
 	{
-		right_fist_collision_box->OnComponentBeginOverlap.AddDynamic(this, &ANPCAI::on_attack_overlap_begin);
-		right_fist_collision_box->OnComponentEndOverlap.AddDynamic(this, &ANPCAI::on_attack_overlap_end);
-	}*/
+		right_fist_collision_box->OnComponentBeginOverlap.AddDynamic(this, &ANPC::on_attack_overlap_begin);
+		right_fist_collision_box->OnComponentEndOverlap.AddDynamic(this, &ANPC::on_attack_overlap_end);
+	}
 }
 
 // Called every frame
@@ -109,7 +110,7 @@ void ANPC::set_health(float const new_health)
 	}*/
 }
 
-/*void ANPCAI::on_attack_overlap_begin(
+void ANPC::on_attack_overlap_begin(
 	UPrimitiveComponent* const overlapped_component,
 	AActor* const other_actor,
 	UPrimitiveComponent* other_component,
@@ -117,19 +118,19 @@ void ANPC::set_health(float const new_health)
 	bool const from_sweep,
 	FHitResult const& sweep_result)
 {
-	if (ANPCCharacter* const player = Cast<ANPCCharacter>(other_actor))
+	if (AMainCharacter* const player = Cast<AMainCharacter>(other_actor))
 	{
 		float const new_health = player->get_health() - player->get_max_health() * 0.07;
 		player->set_health(new_health);
 	}
 }
 
-void ANPCAI::on_attack_overlap_end(
+void ANPC::on_attack_overlap_end(
 	UPrimitiveComponent* const overlapped_component,
 	AActor* const other_actor,
 	UPrimitiveComponent* other_component,
 	int const other_body_index)
 {
 
-}*/
+}
 

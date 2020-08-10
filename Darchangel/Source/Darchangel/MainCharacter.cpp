@@ -39,7 +39,8 @@ double Distance(FVector a, FVector b)
 // Sets default values
 AMainCharacter::AMainCharacter() :
 	health(max_health),
-	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue")))
+	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
+	sword_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("SwordCollisionBox")))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -104,13 +105,35 @@ AMainCharacter::AMainCharacter() :
 			widget_component->SetWidgetClass(widget_class.Class);
 		}
 	}
+
+	if (sword_collision_box)
+	{
+		FVector const extent(50.0f);
+		sword_collision_box->SetBoxExtent(extent, false);
+		sword_collision_box->SetCollisionProfileName("NoCollision");
+	}
 }
 
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (sword_collision_box)
+	{
+		FAttachmentTransformRules const rules(
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::SnapToTarget,
+			EAttachmentRule::KeepWorld,
+			false);
+		sword_collision_box->AttachToComponent(GetMesh(), rules, "FX_Sword_Top");
+		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
+	}
+
+	if (sword_collision_box)
+	{
+		sword_collision_box->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_begin);
+		sword_collision_box->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_end);
+	}
 }
 
 void AMainCharacter::RotateToMouseCurse() 
@@ -403,4 +426,40 @@ void AMainCharacter::set_health(float const new_health)
 		GetMesh()->SetSimulatePhysics(true);
 		GetMovementComponent()->MovementState.bCanJump = false;
 	}
+}
+
+void AMainCharacter::attack_start()
+{
+	sword_collision_box->SetCollisionProfileName("Sword");
+	sword_collision_box->SetNotifyRigidBodyCollision(true);
+}
+
+void AMainCharacter::attack_end()
+{
+	sword_collision_box->SetCollisionProfileName("NoCollision");
+	sword_collision_box->SetNotifyRigidBodyCollision(false);
+}
+
+void AMainCharacter::on_attack_overlap_begin(
+	UPrimitiveComponent* const overlapped_component,
+	AActor* const other_actor,
+	UPrimitiveComponent* other_component,
+	int const other_body_index,
+	bool const from_sweep,
+	FHitResult const& sweep_result)
+{
+	if (ANPC* const npc = Cast<ANPC>(other_actor))
+	{
+		float const new_health = npc->get_health() - npc->get_max_health() * 0.1f;
+		npc->set_health(new_health);
+	}
+}
+
+void AMainCharacter::on_attack_overlap_end(
+	UPrimitiveComponent* const overlapped_component,
+	AActor* const other_actor,
+	UPrimitiveComponent* other_component,
+	int const other_body_index)
+{
+
 }

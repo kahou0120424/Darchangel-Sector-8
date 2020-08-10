@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Animation/AnimMontage.h"
+#include "Darchangel_CharacterBase.h"
 #include "NPC.generated.h"
 
 UCLASS()
-class DARCHANGEL_API ANPC : public ACharacter
+class DARCHANGEL_API ANPC : public ADarchangel_CharacterBase
 {
 	GENERATED_BODY()
 
@@ -41,7 +42,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* montage;
 
-	/*UFUNCTION()
+	UFUNCTION()
 		void on_attack_overlap_begin(
 			UPrimitiveComponent* const overlapped_component,
 			AActor* const other_actor,
@@ -55,7 +56,7 @@ private:
 			UPrimitiveComponent* const overlapped_component,
 			AActor* const other_actor,
 			UPrimitiveComponent* other_component,
-			int const other_body_index);*/
+			int const other_body_index);
 	
 
 };
