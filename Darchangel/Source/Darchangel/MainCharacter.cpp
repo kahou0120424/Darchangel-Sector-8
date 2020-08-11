@@ -457,6 +457,7 @@ void AMainCharacter::on_attack_overlap_begin(
 {
 	if (ANPC* const npc = Cast<ANPC>(other_actor))
 	{
+		print("Hit");
 		float const new_health = npc->get_health() - npc->get_max_health() * 0.1f;
 		npc->set_health(new_health);
 	}

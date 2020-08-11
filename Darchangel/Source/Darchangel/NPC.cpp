@@ -14,6 +14,8 @@
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "MainCharacter.h"
 
+#define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
+
 // Sets default values
 ANPC::ANPC() :
 	health(max_health), 
@@ -67,6 +69,7 @@ void ANPC::Tick(float DeltaTime)
 	{
 		uw->set_bar_value_percent(health / max_health);
 	}
+
 }
 
 // Called to bind functionality to input

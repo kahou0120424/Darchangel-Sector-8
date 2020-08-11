@@ -19,7 +19,7 @@ void AWallJumpTriggerBox::BeginPlay()
 }
 void AWallJumpTriggerBox::OnOverlapBegin(class AActor* OverlappedActor, class AActor* OtherActor)
 {
-	if (OtherActor && OtherActor != NULL)
+	if (OtherActor->ActorHasTag("Player")&& OtherActor != NULL)
 	{
 
 		AMainCharacter* player = Cast<AMainCharacter>(OtherActor);
@@ -31,7 +31,7 @@ void AWallJumpTriggerBox::OnOverlapBegin(class AActor* OverlappedActor, class AA
 
 void AWallJumpTriggerBox::OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor)
 {
-	if (OtherActor && OtherActor != NULL)
+	if (OtherActor->ActorHasTag("Player") && OtherActor != NULL)
 	{
 		AMainCharacter* player = Cast<AMainCharacter>(OtherActor);
 		player->WallJumpEnd();
