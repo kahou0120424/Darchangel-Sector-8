@@ -102,8 +102,13 @@ public:
 	UPROPERTY()
 	FTimerHandle dashHandle;
 
+	UPROPERTY()
+	FTimerHandle wallHandle;
+
 	UFUNCTION()
 	void StopDash();
+
+
 
 	UFUNCTION()
 	void ResetDash();
@@ -113,6 +118,8 @@ public:
 	float get_health() const;
 	float get_max_health() const;
 	void set_health(float const new_health);
+	void WallJumpStart(FVector jumpLocation);
+	void WallJumpEnd();
 	virtual void attack_start();
 	virtual void attack_end();
 
@@ -125,11 +132,19 @@ protected:
 	void RotateToMouseCurse();
 	void Fire();
 	void FinishFire();
+	void Rope();
+	void JumpUp();
+
+
 	bool isAttacking;
 	bool isShooting;
+	bool canJumpWall;
+
 	float atkCD;
 	float pullCD;
 	float atkCount = 0;
+
+	FVector jumpPos;
 
 public:	
 	// Called every frame

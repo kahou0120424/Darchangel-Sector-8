@@ -27,6 +27,8 @@
 #include "NPC.h"
 #include "Kismet/GameplayStatics.h"
 
+#define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
+
 ///////////////////////////////////////////////////////////////////////
 //Distance Formula
 double Distance(FVector a, FVector b)
@@ -146,7 +148,7 @@ void AMainCharacter::RotateToMouseCurse()
 
 void AMainCharacter::Raycast() //Chain Of Hell
 {
-	if (!isPulling)
+	if (!isPulling && !canJumpWall)
 	{
 		isPulling = true;		
 		RotateToMouseCurse();
@@ -174,14 +176,19 @@ void AMainCharacter::Raycast() //Chain Of Hell
 				playerPos = this->GetActorLocation();
 			}
 
-			else if (OutHit.Actor->ActorHasTag("JumpWall"))
+			/*else if (OutHit.Actor->ActorHasTag("JumpWall"))
 			{
 				gotPull = true;
 				velocity = FVector(this->GetActorForwardVector().X, this->GetActorForwardVector().Y, 0);
 				wallPos = OutHit.Actor->GetActorLocation();
 			}
-			
+			*/
 		}
+	}
+
+	else
+	{
+		JumpUp();
 	}
 	
 
@@ -462,4 +469,34 @@ void AMainCharacter::on_attack_overlap_end(
 	int const other_body_index)
 {
 
+}
+
+void AMainCharacter::WallJumpStart(FVector jumpLocation)
+{
+	print("Overlap Begin");
+	canJumpWall = true;
+	jumpPos = jumpLocation;
+}
+
+void AMainCharacter::WallJumpEnd()
+{
+	print("Overlap End");
+	canJumpWall = false;
+}
+
+
+void AMainCharacter::JumpUp()
+{
+	if (!canJumpWall)
+		return;
+	LaunchCharacter(FVector(0, 0, 800) * 2, true, true);
+	GetWorldTimerManager().SetTimer(wallHandle, this, &AMainCharacter::Rope, 0.5, false);
+}
+
+
+void AMainCharacter::Rope()
+{
+	FVector velocity2 = jumpPos - GetActorLocation();
+	
+	LaunchCharacter(velocity2 * 7.5, true, true);
 }
