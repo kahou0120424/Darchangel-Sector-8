@@ -106,11 +106,10 @@ void ANPC::set_health(float const new_health)
 {
 	health = new_health;
 
-	/*if (health <= 0)
+	if (health <= 0)
 	{
-		UE_LOG(LogTemp, Error, TEXT("You win!!!"));
-		GetWorld()->GetFirstLocalPlayerFromController()->ConsoleCommand("quit");
-	}*/
+		GetWorld()->DestroyActor(this);
+	}
 }
 
 void ANPC::on_attack_overlap_begin(
@@ -123,7 +122,7 @@ void ANPC::on_attack_overlap_begin(
 {
 	if (AMainCharacter* const player = Cast<AMainCharacter>(other_actor))
 	{
-		float const new_health = player->get_health() - player->get_max_health() * 0.07;
+		float const new_health = player->get_health() - player->get_max_health() * 0.01;
 		player->set_health(new_health);
 	}
 }
