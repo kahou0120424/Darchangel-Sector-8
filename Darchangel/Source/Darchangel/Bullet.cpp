@@ -3,6 +3,7 @@
 
 #include "Bullet.h"
 #include "Engine.h"
+#include "NPC.h"
 
 // Sets default values
 ABullet::ABullet()
@@ -36,14 +37,18 @@ void ABullet::Tick(float DeltaTime)
 	FCollisionQueryParams CollisonParams;
 	CollisonParams.AddIgnoredActor(this);
 
+
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
 	{
-		if (hitResult.GetActor())
+		if (hitResult.GetActor()->ActorHasTag("Enemy"))
 		{
-			
-		}
+			ANPC* npc = Cast<ANPC>(hitResult.GetActor());
+			float const new_health = npc->get_health() - npc->get_max_health() * 0.5f;
+			npc->set_health(new_health);
 
+		}
 		Destroy();
+
 	}
 
 	else
