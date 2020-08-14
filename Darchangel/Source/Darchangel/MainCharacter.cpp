@@ -25,6 +25,7 @@
 #include "HealthBar.h"
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "NPC.h"
+#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -176,13 +177,13 @@ void AMainCharacter::Raycast() //Chain Of Hell
 				playerPos = this->GetActorLocation();
 			}
 
-			/*else if (OutHit.Actor->ActorHasTag("JumpWall"))
+			else if (OutHit.Actor->ActorHasTag("GraspOfDeath"))
 			{
 				gotPull = true;
 				velocity = FVector(this->GetActorForwardVector().X, this->GetActorForwardVector().Y, 0);
 				wallPos = OutHit.Actor->GetActorLocation();
 			}
-			*/
+			
 		}
 	}
 
@@ -477,6 +478,8 @@ void AMainCharacter::WallJumpStart(FVector jumpLocation)
 	print("Overlap Begin");
 	canJumpWall = true;
 	jumpPos = jumpLocation;
+
+	
 }
 
 void AMainCharacter::WallJumpEnd()
@@ -490,14 +493,8 @@ void AMainCharacter::JumpUp()
 {
 	if (!canJumpWall)
 		return;
-	LaunchCharacter(FVector(0, 0, 800) * 2, true, true);
-	GetWorldTimerManager().SetTimer(wallHandle, this, &AMainCharacter::Rope, 0.5, false);
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, jumpPos, FRotator(0.0f, 0.0f, 0.0f), false, false, 1.0f, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
 
-
-void AMainCharacter::Rope()
-{
-	FVector velocity2 = jumpPos - GetActorLocation();
-	
-	LaunchCharacter(velocity2 * 7.5, true, true);
-}
