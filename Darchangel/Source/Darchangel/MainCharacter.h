@@ -132,7 +132,6 @@ protected:
 	void RotateToMouseCurse();
 	void Fire();
 	void FinishFire();
-	void Rope();
 	void JumpUp();
 
 
