@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matPillarJail"
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.866756,G=0.584689,B=0.960860,A=0.000000)
+      ExpressionGUID=92C69FE74B8C5DC471BDB69D44E1DB5F
+      MaterialExpressionGuid=D6FAA6D64B73AA7A5584D2920E9B8AE7
+      Material=Material'"matPillarJail"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=1D4F511643C271D4AE83F78EE082FAFA
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=B3CA3331496BE7D7064F329DD59E5BE6
+End Object

@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matPillarC"
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.609058,G=0.809076,B=0.753533,A=0.000000)
+      ExpressionGUID=C07D67BB4906B56D1B32758AD9CD07CA
+      MaterialExpressionGuid=DB1E0BA341C01DACE312F0B5670971CC
+      Material=Material'"matPillarC"'
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=6D211F044309DD71BE86F1A793490FB5
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=02EE04804EC01B638BA0539B6D8D82C2
+End Object

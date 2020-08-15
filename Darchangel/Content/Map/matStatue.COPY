@@ -1,0 +1,20 @@
+Begin Object Class=/Script/Engine.Material Name="matStatue"
+   Begin Object Class=/Script/UnrealEd.SceneThumbnailInfoWithPrimitive Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Class=/Script/Engine.MaterialExpressionVectorParameter Name="MaterialExpressionVectorParameter_0"
+   End Object
+   Begin Object Name="SceneThumbnailInfoWithPrimitive_0"
+   End Object
+   Begin Object Name="MaterialExpressionVectorParameter_0"
+      DefaultValue=(R=0.679876,G=0.544343,B=0.928220,A=0.000000)
+      ExpressionGUID=B4CACA4141C32B19E6365386553D2E89
+      MaterialExpressionGuid=4253454142284BFF521F26950268A262
+      Material=Material'"matStatue"'
+   End Object
+   BaseColor=(Expression=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"',Mask=1,MaskR=1,MaskG=1,MaskB=1)
+   Expressions(0)=MaterialExpressionVectorParameter'"MaterialExpressionVectorParameter_0"'
+   bCanMaskedBeAssumedOpaque=True
+   StateId=DF92A0FC4F5431843AFE438D343C1DD7
+   ThumbnailInfo=SceneThumbnailInfoWithPrimitive'"SceneThumbnailInfoWithPrimitive_0"'
+   LightingGuid=D920992343F1FC4D1DB6C792D2440FE7
+End Object
