@@ -24,6 +24,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "HealthBar.h"
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "NPC.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -490,8 +491,10 @@ void AMainCharacter::JumpUp()
 {
 	if (!canJumpWall)
 		return;
-	LaunchCharacter(FVector(0, 0, 800) * 2, true, true);
-	GetWorldTimerManager().SetTimer(wallHandle, this, &AMainCharacter::Rope, 0.5, false);
+
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, jumpPos, FRotator(0.0f, 0.0f, 0.0f), false, false, 0.5f, false, EMoveComponentAction::Type::Move, LatentInfo);
 }
 
 
