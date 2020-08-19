@@ -3,15 +3,19 @@
 
 #include "TempBlueprintFunctionLibrary.h"
 
-void UTempBlueprintFunctionLibrary::pulse_damage(ANPC* temp[])
+/*
+void UTempBlueprintFunctionLibrary::pulse_damage(TArray<AActor*> Actors)
 {
-	for (int i = 0; i < sizeof(temp); i++)
+	ANPC* temp; 
+
+	for (int i = 0; i < sizeof(Actors); i++)
 	{
+		temp = static_cast<ANPC*>(Actors);
 		temp[i]->set_health(temp[i]->get_health() - 20.0f);
 	}	
 }
 
-/*
+
 void UTempBlueprintFunctionLibrary::set_NPC_health()
 {
 	ANPC temp;

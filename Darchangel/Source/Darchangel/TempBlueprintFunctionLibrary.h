@@ -16,8 +16,8 @@ class DARCHANGEL_API UTempBlueprintFunctionLibrary : public UBlueprintFunctionLi
 {
 	GENERATED_BODY()
 
-		UFUNCTION(BlueprintCallable, Category = "Health")
-		static void pulse_damage(ANPC* temp[]);
+		//UFUNCTION(BlueprintCallable, Category = "Health")
+		//static void pulse_damage(TArray<AActor*> Actors);
 
 		//UFUNCTION(BlueprintCallable, Category = "Health")
 		//static void set_NPC_health();

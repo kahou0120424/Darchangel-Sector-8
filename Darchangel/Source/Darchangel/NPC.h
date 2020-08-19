@@ -26,8 +26,11 @@ public:
 	void melee_attack();
 	UAnimMontage* get_montage() const;
 		
+	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	float get_health() const;
 	float get_max_health() const;
+
+	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
 protected:
