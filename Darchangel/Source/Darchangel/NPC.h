@@ -25,7 +25,7 @@ public:
 
 	void melee_attack();
 	UAnimMontage* get_montage() const;
-
+		
 	float get_health() const;
 	float get_max_health() const;
 	void set_health(float const new_health);
