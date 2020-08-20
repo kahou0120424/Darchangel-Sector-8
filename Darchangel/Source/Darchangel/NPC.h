@@ -33,6 +33,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
+	void stun(FVector location);
+
+	UPROPERTY()
+		FTimerHandle Handle;
+
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -41,6 +47,10 @@ private:
 	class UWidgetComponent* widget_component;
 	float const max_health = 100.0f;
 	float health;
+	bool isStun;
+	FVector pullLocation;
+
+	void endStun();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* montage;

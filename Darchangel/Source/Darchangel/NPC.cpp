@@ -12,6 +12,8 @@
 #include "Blueprint/UserWidget.h"
 #include "HealthBar.h"
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
+#include "GameFramework/Actor.h"
 #include "MainCharacter.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -70,6 +72,10 @@ void ANPC::Tick(float DeltaTime)
 		uw->set_bar_value_percent(health / max_health);
 	}
 
+	if (isStun)
+	{
+		GetCharacterMovement()->StopMovementImmediately();
+	}
 }
 
 // Called to bind functionality to input
@@ -134,5 +140,21 @@ void ANPC::on_attack_overlap_end(
 	int const other_body_index)
 {
 
+}
+
+void ANPC::stun(FVector location)
+{
+	print("stun");
+	isStun = true;
+	//this->SetActorLocation(location);
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, location, FRotator(0.0f, 0.0f, 0.0f), false, false, 0.5f, false, EMoveComponentAction::Type::Move, LatentInfo);
+	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, 0.5f, false);
+}
+
+void ANPC::endStun()
+{
+	isStun = false;
 }
 

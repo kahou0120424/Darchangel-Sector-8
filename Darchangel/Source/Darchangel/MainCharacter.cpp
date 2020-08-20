@@ -174,9 +174,13 @@ void AMainCharacter::Raycast() //Chain Of Hell
 		{
 			if (OutHit.GetActor() && OutHit.Actor->ActorHasTag("Enemy"))
 			{
-				isPull = true;
-				velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;
 				playerPos = this->GetActorLocation();
+				ANPC* npc = Cast<ANPC>(OutHit.GetActor());
+				npc->stun(playerPos + (ForwardVector));
+				//isPull = true;
+				velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;
+				
+				
 			}
 
 			/*else if (OutHit.Actor->ActorHasTag("JumpWall"))
@@ -389,7 +393,6 @@ void AMainCharacter::Dash()
 
 void AMainCharacter::StopDash()
 {
-	print("It works");
 	GetCharacterMovement()->StopMovementImmediately();
 	GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, 0.5f, false);
 }
