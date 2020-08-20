@@ -167,10 +167,11 @@ void AMainCharacter::Raycast() //Chain Of Hell
 		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
 
 		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
+
 		
 		if (isHit)
 		{
-			if (OutHit.Actor->ActorHasTag("Enemy"))
+			if (OutHit.GetActor() && OutHit.Actor->ActorHasTag("Enemy"))
 			{
 				isPull = true;
 				velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;

@@ -39,24 +39,24 @@ void ABullet::Tick(float DeltaTime)
 
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
 	{
-		if (hitResult.GetActor()->ActorHasTag("Enemy"))
+		if (hitResult.GetActor() && hitResult.GetActor()->ActorHasTag("Enemy"))
 		{
 			ANPC* npc = Cast<ANPC>(hitResult.GetActor());
 			float const new_health = npc->get_health() - npc->get_max_health() * 0.5f;
-			npc->set_health(new_health);
+			npc->set_health(new_health);	
 
 		}
-
+		
 		Destroy();
 	}
-
+	
 	else
 	{
 		BulletExpiry += DeltaTime;
 
 		SetActorLocation(EndTrace);
 
-		Velocity += FVector(0.f, 0.f, -200.0f) * DeltaTime;
+		//Velocity += FVector(0.f, 0.f, -200.0f) * DeltaTime;
 	}
 
 	if (BulletExpiry > 3)
