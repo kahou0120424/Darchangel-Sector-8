@@ -58,6 +58,7 @@ AMainCharacter::AMainCharacter() :
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1200.0f, 0.0f); //rotation rate
 	GetCharacterMovement()->JumpZVelocity = 600.0f;
 	GetCharacterMovement()->AirControl = 0.2f;
+	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom")); // name of the component
 	CameraBoom->SetupAttachment(RootComponent); // child of the RootComponent
@@ -376,22 +377,21 @@ void AMainCharacter::MoveRight(float Axis)
 
 
 void AMainCharacter::Dash()
-{
+{	
 	if (canDash)
 	{
-			
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * dashDistance, true, true);
+		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::StopDash, 0.1f, false);		
 		canDash = false;
-		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, dashCooldown, false);
-
 	}
+	
 }
 
 void AMainCharacter::StopDash()
 {
+	print("It works");
 	GetCharacterMovement()->StopMovementImmediately();
-	GetCharacterMovement()->BrakingFrictionFactor = 100.0f;
-	GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, dashCooldown, false);
+	GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, 0.5f, false);
 }
 
 void AMainCharacter::ResetDash()
