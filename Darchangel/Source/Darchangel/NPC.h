@@ -33,7 +33,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
-	void stun(FVector location);
+	void stun(FVector location, float duration);
 
 	UPROPERTY()
 		FTimerHandle Handle;

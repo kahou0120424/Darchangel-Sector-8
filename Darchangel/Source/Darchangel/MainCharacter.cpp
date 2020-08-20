@@ -176,9 +176,9 @@ void AMainCharacter::Raycast() //Chain Of Hell
 			{
 				playerPos = this->GetActorLocation();
 				ANPC* npc = Cast<ANPC>(OutHit.GetActor());
-				npc->stun(playerPos + (ForwardVector));
+				npc->stun(playerPos + (ForwardVector), duration);
 				//isPull = true;
-				velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;
+				//velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;
 				
 				
 			}
@@ -261,7 +261,7 @@ void AMainCharacter::Tick(float DeltaTime)
 		uw->set_bar_value_percent(health / max_health);
 	}
 
-	if (isPull == true)
+	/*if (isPull == true)
 	{
 		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());				
 		FString TheFloatStr = FString::SanitizeFloat(distance);	
@@ -273,9 +273,9 @@ void AMainCharacter::Tick(float DeltaTime)
 		{
 			isPull = false;
 		}
-	}
+	}*/
 
-	if (gotPull == true)
+	/*if (gotPull == true)
 	{
 		float distance = abs(Distance(wallPos,GetActorLocation()));
 		FString TheFloatStr = FString::SanitizeFloat(distance);
@@ -288,7 +288,7 @@ void AMainCharacter::Tick(float DeltaTime)
 			gotPull = false;
 		}
 		
-	}
+	}*/
 
 	if (isAttacking == true)
 	{

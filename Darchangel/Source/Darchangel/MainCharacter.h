@@ -33,13 +33,10 @@ public:
 	
 
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
-		float speed;
-	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
-		float DistanceBetweenActors = 100;
-	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		float pullDelay = 3;
+
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
-		float gotPullSpeed = 200;
+		float duration = 0.2f;
 
 	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
