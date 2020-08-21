@@ -104,6 +104,9 @@ public:
 	UPROPERTY()
 	FTimerHandle wallHandle;
 
+	UPROPERTY()
+		FTimerHandle chainHandle;
+
 	UFUNCTION()
 	void StopDash();
 
@@ -133,11 +136,13 @@ protected:
 	void FinishFire();
 	void Rope();
 	void JumpUp();
+	void HideCable();
 
 
 	bool isAttacking;
 	bool isShooting;
 	bool canJumpWall;
+	bool stopMoving;
 
 	float atkCD;
 	float pullCD;
@@ -154,6 +159,7 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = cable, meta = (AllowPrivateAccess = "true"))
 		class UCableComponent* Cable;
+
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
@@ -182,5 +188,5 @@ private:
 			UPrimitiveComponent* other_component,
 			int const other_body_index);
 
-	
+
 };

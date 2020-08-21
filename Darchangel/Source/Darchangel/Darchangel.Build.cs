@@ -22,6 +22,6 @@ public class Darchangel : ModuleRules
 															"SlateCore"															
 															});
 
-
+		PrivateDependencyModuleNames.AddRange(new string[] { "CableComponent" });
 	}
 }

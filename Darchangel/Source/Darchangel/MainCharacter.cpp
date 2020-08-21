@@ -17,6 +17,7 @@
 #include "Runtime/Engine/Classes/GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Public/TimerManager.h"
 #include "Engine.h"
+#include "CableComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Bullet.h"
 #include "Perception/AISense_Sight.h"
@@ -27,7 +28,6 @@
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "NPC.h"
 #include "Chain.h"
-#include "CableComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -119,21 +119,32 @@ AMainCharacter::AMainCharacter() :
 		sword_collision_box->SetBoxExtent(extent, false);
 		sword_collision_box->SetCollisionProfileName("NoCollision");
 	}
+
+	Cable = CreateDefaultSubobject<UCableComponent>(TEXT("Cable"));
+	Cable->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	
 }
 
 // Called when the game starts or when spawned
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	FAttachmentTransformRules const rules(
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::SnapToTarget,
+		EAttachmentRule::KeepWorld,
+		false);
 	if (sword_collision_box)
 	{
-		FAttachmentTransformRules const rules(
-			EAttachmentRule::SnapToTarget,
-			EAttachmentRule::SnapToTarget,
-			EAttachmentRule::KeepWorld,
-			false);
+		
 		sword_collision_box->AttachToComponent(GetMesh(), rules, "FX_Sword_Top");
 		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
+		
+	}
+
+	if (Cable)
+	{
+		Cable->AttachToComponent(GetMesh(), rules, "index_01_l");
 	}
 
 	if (sword_collision_box)
@@ -155,55 +166,21 @@ void AMainCharacter::Raycast() //Chain Of Hell
 {
 	if (!isPulling && !canJumpWall)
 	{
-		/*isPulling = true;		
+	
 		RotateToMouseCurse();
-		FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);		
-		FVector ForwardVector = this->GetActorForwardVector();
-
-		Start = Start + ForwardVector;
-		FVector End = Start + (ForwardVector * 5000.0f);
-
-		FCollisionQueryParams CollisionParams;
-		CollisionParams.AddIgnoredActor(this);
-		CollisionParams.AddIgnoredActor(ActorHasTag("Wall"));
-
-		//Draw raycast
-		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
-
-		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
-
 		
-		if (isHit)
-		{
-			if (OutHit.GetActor() && OutHit.Actor->ActorHasTag("Enemy"))
-			{
-				playerPos = this->GetActorLocation();
-				ANPC* npc = Cast<ANPC>(OutHit.GetActor());
-				npc->stun(playerPos + (ForwardVector), duration);
-				//isPull = true;
-				//velocity = (this->GetActorLocation() - OutHit.Actor->GetActorLocation()) * 0.005;
-				
-				
-			}
-
-			/*else if (OutHit.Actor->ActorHasTag("JumpWall"))
-			{
-				gotPull = true;
-				velocity = FVector(this->GetActorForwardVector().X, this->GetActorForwardVector().Y, 0);
-				wallPos = OutHit.Actor->GetActorLocation();
-			}
-			
-		}*/
-		RotateToMouseCurse();
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
-			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);
-			
-			//Cable->AttachToComponent, FAttachmentTransformRules::KeepWorldTransform);
+			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);	
+			Cable->SetAttachEndTo(chain, "Sphere");
+			Cable->SetVisibility(true);
+			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
+			isPulling = true;
+			//stopMoving = true;
 		}
 	}
 
@@ -246,7 +223,6 @@ void AMainCharacter::RangeAttack() // Range Attack
 
 		if (ProjectileClass != NULL)
 		{
-			//const FRotator SpawnRotation = GetControlRotation();
 			const FRotator SpawnRotation = GetActorRotation();
 			const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
 
@@ -274,35 +250,6 @@ void AMainCharacter::Tick(float DeltaTime)
 	{
 		uw->set_bar_value_percent(health / max_health);
 	}
-
-	/*if (isPull == true)
-	{
-		float distance = Distance(playerPos, OutHit.Actor->GetActorLocation());				
-		FString TheFloatStr = FString::SanitizeFloat(distance);	
-		if (distance >= DistanceBetweenActors)
-		{
-			OutHit.Actor->AddActorLocalOffset((velocity * speed ), false, 0, ETeleportType::None);
-		}
-		else
-		{
-			isPull = false;
-		}
-	}*/
-
-	/*if (gotPull == true)
-	{
-		float distance = abs(Distance(wallPos,GetActorLocation()));
-		FString TheFloatStr = FString::SanitizeFloat(distance);
-		if (distance >= DistanceBetweenActors)
-		{
-			LaunchCharacter(velocity * gotPullSpeed, true, true);
-		}
-		else
-		{
-			gotPull = false;
-		}
-		
-	}*/
 
 	if (isAttacking == true)
 	{
@@ -335,6 +282,11 @@ void AMainCharacter::Tick(float DeltaTime)
 		}
 	}
 
+	if (stopMoving)
+	{
+		GetCharacterMovement()->StopMovementImmediately();
+	}
+
 	
 }
 
@@ -351,7 +303,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
-	//PlayerInputComponent->BindAction("Dash", IE_Released, this, &AMainCharacter::StopDash);
 
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::Fire);
@@ -367,7 +318,7 @@ void AMainCharacter::setup_stimulus()
 
 void AMainCharacter::MoveForward(float Axis)
 {
-	if (!isAttacking)
+	if (!isAttacking )
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -521,4 +472,10 @@ void AMainCharacter::Rope()
 	FVector velocity2 = jumpPos - GetActorLocation();
 	
 	LaunchCharacter(velocity2 * 7.5, true, true);
+}
+
+void AMainCharacter::HideCable()
+{
+	Cable->SetVisibility(false);
+	stopMoving = false;
 }
