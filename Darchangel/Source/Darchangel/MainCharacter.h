@@ -60,6 +60,8 @@ public:
 	//** Bullet
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ABullet> ProjectileClass;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AChain> CahinProjectileClass;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -150,6 +152,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = cable, meta = (AllowPrivateAccess = "true"))
+		class UCableComponent* Cable;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
@@ -177,4 +181,6 @@ private:
 			AActor* const other_actor,
 			UPrimitiveComponent* other_component,
 			int const other_body_index);
+
+	
 };

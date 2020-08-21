@@ -8,17 +8,20 @@ public class Darchangel : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] {"Core",
+		PublicDependencyModuleNames.AddRange(new string[] {"Core",														
 															"CoreUObject",
 															"Engine",
 															"InputCore",
+															"CableComponent",
 															"HeadMountedDisplay",
 															"AIModule",
 															"NavigationSystem",
 															"GameplayTasks",
 															"UMG",
 															"Slate",
-															"SlateCore"
+															"SlateCore"															
 															});
+
+
 	}
 }

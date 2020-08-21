@@ -142,14 +142,14 @@ void ANPC::on_attack_overlap_end(
 
 }
 
-void ANPC::stun(FVector location, float duration)
+void ANPC::stun()
 {
 	print("stun");
 	isStun = true;
 	//this->SetActorLocation(location);
-	FLatentActionInfo LatentInfo;
-	LatentInfo.CallbackTarget = this;
-	UKismetSystemLibrary::MoveComponentTo(RootComponent, location, this->GetActorRotation(), false, false, duration, false, EMoveComponentAction::Type::Move, LatentInfo);
+	//FLatentActionInfo LatentInfo;
+	//LatentInfo.CallbackTarget = this;
+	//UKismetSystemLibrary::MoveComponentTo(RootComponent, location, this->GetActorRotation(), false, false, duration, false, EMoveComponentAction::Type::Move, LatentInfo);
 	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, 0.5f, false);
 }
 

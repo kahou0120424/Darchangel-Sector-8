@@ -32,4 +32,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		FVector JumpLocation;
 
+	
+
 };

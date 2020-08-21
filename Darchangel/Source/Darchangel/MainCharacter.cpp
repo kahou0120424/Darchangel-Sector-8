@@ -26,6 +26,8 @@
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "NPC.h"
+#include "Chain.h"
+#include "CableComponent.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -70,6 +72,7 @@ AMainCharacter::AMainCharacter() :
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // attact the camera on the end of the boom, let the boom adjust the mass controller rotation of the camera
 	FollowCamera->bUsePawnControlRotation = false; // Camera did not rotate relative to the r
+
 
 	// Attack Animation
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,7 +155,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 {
 	if (!isPulling && !canJumpWall)
 	{
-		isPulling = true;		
+		/*isPulling = true;		
 		RotateToMouseCurse();
 		FVector Start = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z);		
 		FVector ForwardVector = this->GetActorForwardVector();
@@ -189,7 +192,18 @@ void AMainCharacter::Raycast() //Chain Of Hell
 				velocity = FVector(this->GetActorForwardVector().X, this->GetActorForwardVector().Y, 0);
 				wallPos = OutHit.Actor->GetActorLocation();
 			}
-			*/
+			
+		}*/
+		RotateToMouseCurse();
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);
+			
+			//Cable->AttachToComponent, FAttachmentTransformRules::KeepWorldTransform);
 		}
 	}
 
