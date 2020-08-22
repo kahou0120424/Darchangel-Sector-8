@@ -21,6 +21,10 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Bullet.h"
 #include "Perception/AISense_Sight.h"
+#include "Perception/AISense_Hearing.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Runtime/Engine/Classes/Engine/Engine.h"
+#include "ai_tags.h"
 #include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "HealthBar.h"
@@ -305,8 +309,10 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
 
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
+	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::Fire);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::FinishFire);
+
 }
 
 void AMainCharacter::setup_stimulus()
@@ -314,6 +320,16 @@ void AMainCharacter::setup_stimulus()
 	stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("stimulus"));
 	stimulus->RegisterForSense(TSubclassOf < UAISense_Sight>());
 	stimulus->RegisterWithPerceptionSystem();
+}
+
+void AMainCharacter::on_distract()
+{
+	if (distraction_sound)
+	{
+		FVector const loc = GetActorLocation();
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), distraction_sound, loc);
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), loc, 1.0f, this, 0.0f, tags::noise_tag);
+	}
 }
 
 void AMainCharacter::MoveForward(float Axis)

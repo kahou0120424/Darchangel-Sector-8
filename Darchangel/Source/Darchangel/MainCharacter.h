@@ -13,6 +13,7 @@
 #include "Blueprint/UserWidget.h"
 #include "GameFramework/Actor.h"
 #include "Animation/AnimMontage.h"
+#include "Sound/SoundBase.h"
 #include "MainCharacter.generated.h"
 
 
@@ -165,12 +166,16 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
 		class UBoxComponent* sword_collision_box;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound", meta = (AllowPrivateAccess = "true"))
+		USoundBase* distraction_sound;
+
 	class UWidgetComponent* widget_component;
 	float const max_health = 100.0f;
 	float health;
 	class UAIPerceptionStimuliSourceComponent* stimulus;
 
 	void setup_stimulus();
+	void on_distract();
 	
 	UFUNCTION()
 		void on_attack_overlap_begin(

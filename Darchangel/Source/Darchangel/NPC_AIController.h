@@ -31,9 +31,14 @@ private:
 
 	class UAISenseConfig_Sight* sight_config;
 
-	UFUNCTION()
+	class UAISenseConfig_Hearing* hearing_config;
+
+	//UFUNCTION()
 		//void on_updated(TArray<AActor*> const& updated_actors);
-		void on_target_detected(AActor* actor, FAIStimulus const stimulus);
+		//void on_target_detected(AActor* actor, FAIStimulus const stimulus);
+
+	UFUNCTION()
+	void on_updated(TArray<AActor*> const& updated_actors);
 
 	void setup_perception_system();
 };
