@@ -172,6 +172,7 @@ private:
 	class UWidgetComponent* widget_component;
 	float const max_health = 100.0f;
 	float health;
+
 	class UAIPerceptionStimuliSourceComponent* stimulus;
 
 	void setup_stimulus();
