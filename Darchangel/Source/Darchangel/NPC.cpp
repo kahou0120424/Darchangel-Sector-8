@@ -128,7 +128,7 @@ void ANPC::on_attack_overlap_begin(
 {
 	if (AMainCharacter* const player = Cast<AMainCharacter>(other_actor))
 	{
-		float const new_health = player->get_health() - player->get_max_health() * 0.01;
+		float const new_health = player->get_health() - player->get_max_health() * 0.05;
 		player->set_health(new_health);
 	}
 }
@@ -144,7 +144,7 @@ void ANPC::on_attack_overlap_end(
 
 void ANPC::stun()
 {
-	print("stun");
+	//print("stun");
 	isStun = true;
 	//this->SetActorLocation(location);
 	//FLatentActionInfo LatentInfo;

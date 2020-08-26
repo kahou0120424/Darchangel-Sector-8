@@ -62,7 +62,7 @@ AMainCharacter::AMainCharacter() :
 
 	GetCharacterMovement()->bOrientRotationToMovement = true; // allow the charactor ratote to the direction it is moving  
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1200.0f, 0.0f); //rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.0f;
+	//GetCharacterMovement()->JumpZVelocity = 300.0f;
 	GetCharacterMovement()->AirControl = 0.2f;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 
@@ -299,8 +299,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
+	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
@@ -443,8 +443,8 @@ void AMainCharacter::on_attack_overlap_begin(
 {
 	if (ANPC* const npc = Cast<ANPC>(other_actor))
 	{
-		print("Hit");
-		float const new_health = npc->get_health() - npc->get_max_health() * 0.5f;
+		//print("Hit");
+		float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
 		npc->set_health(new_health);
 	}
 }
@@ -460,14 +460,14 @@ void AMainCharacter::on_attack_overlap_end(
 
 void AMainCharacter::WallJumpStart(FVector jumpLocation)
 {
-	print("Overlap Begin");
+	//print("Overlap Begin");
 	canJumpWall = true;
 	jumpPos = jumpLocation;
 }
 
 void AMainCharacter::WallJumpEnd()
 {
-	print("Overlap End");
+	//print("Overlap End");
 	canJumpWall = false;
 }
 
