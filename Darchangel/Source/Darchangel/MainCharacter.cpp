@@ -49,7 +49,8 @@ double Distance(FVector a, FVector b)
 AMainCharacter::AMainCharacter() :
 	health(max_health),
 	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
-	sword_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("SwordCollisionBox")))
+	sword_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("SwordCollisionBox"))),
+	Cable(CreateDefaultSubobject<UCableComponent>(TEXT("Cable")))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -124,8 +125,8 @@ AMainCharacter::AMainCharacter() :
 		sword_collision_box->SetCollisionProfileName("NoCollision");
 	}
 
-	Cable = CreateDefaultSubobject<UCableComponent>(TEXT("Cable"));
-	Cable->AttachToComponent(this->GetRootComponent(), FAttachmentTransformRules::KeepWorldTransform);
+	
+	
 	
 }
 

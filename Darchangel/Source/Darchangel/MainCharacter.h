@@ -158,8 +158,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = cable, meta = (AllowPrivateAccess = "true"))
-		class UCableComponent* Cable;
+	
 
 
 private:
@@ -168,6 +167,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 		USoundBase* distraction_sound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = cable, meta = (AllowPrivateAccess = "true"))
+		class UCableComponent* Cable;
 
 	class UWidgetComponent* widget_component;
 	float const max_health = 100.0f;
