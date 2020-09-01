@@ -88,18 +88,24 @@ AMainCharacter::AMainCharacter() :
 	}
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject2(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryB_Montage.Attack_PrimaryB_Montage'"));
-	if (AttackMontageObject.Succeeded())
+	if (AttackMontageObject2.Succeeded())
 	{
 		AttackMontage2 = AttackMontageObject2.Object;
 	}
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject3(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryC_Montage.Attack_PrimaryC_Montage'"));
-	if (AttackMontageObject.Succeeded())
+	if (AttackMontageObject3.Succeeded())
 	{
 		AttackMontage3 = AttackMontageObject3.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject4(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/HeavyAttack_Primary_Montage.HeavyAttack_Primary_Montage'"));
+	if (AttackMontageObject4.Succeeded())
+	{
+		AttackMontage4 = AttackMontageObject4.Object;
+	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	canDash = true;
 	dashDistance = 6000.0f;
 	dashCooldown = 1.0f;
@@ -125,9 +131,9 @@ AMainCharacter::AMainCharacter() :
 		sword_collision_box->SetCollisionProfileName("NoCollision");
 	}
 
-	
-	
-	
+
+
+
 }
 
 // Called when the game starts or when spawned
@@ -141,10 +147,10 @@ void AMainCharacter::BeginPlay()
 		false);
 	if (sword_collision_box)
 	{
-		
+
 		sword_collision_box->AttachToComponent(GetMesh(), rules, "FX_Sword_Top");
 		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
-		
+
 	}
 
 	if (Cable)
@@ -159,7 +165,7 @@ void AMainCharacter::BeginPlay()
 	}
 }
 
-void AMainCharacter::RotateToMouseCurse() 
+void AMainCharacter::RotateToMouseCurse()
 {
 	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
 	bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
@@ -171,16 +177,16 @@ void AMainCharacter::Raycast() //Chain Of Hell
 {
 	if (!isPulling && !canJumpWall)
 	{
-	
-		RotateToMouseCurse();
-		
+
+		//RotateToMouseCurse();
+
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
-			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);	
+			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);
 			Cable->SetAttachEndTo(chain, "Sphere");
 			Cable->SetVisibility(true);
 			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
@@ -193,7 +199,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 	{
 		JumpUp();
 	}
-	
+
 
 
 }
@@ -201,7 +207,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 void AMainCharacter::MeleeAttack() // Melee Attack
 {
 	if (!isAttacking)
-	{	
+	{
 		if (atkCount == 0)
 		{
 			PlayAnimMontage(AttackMontage, 1.f, FName("Attack_PrimaryA"));
@@ -219,14 +225,43 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		}
 
 		isAttacking = true;
+		isMeleeHold = true;
 	}
+}void AMainCharacter::StrongAttack() // Melee Attack
+{
+	if (meleeHoldTimer >= meleeHoldTime)
+	{
+		PlayAnimMontage(AttackMontage4, 1.f, FName("HeavyAttack_Primary"));
+	}
+	isMeleeHold = false;
 }
 
 void AMainCharacter::RangeAttack() // Range Attack
 {
-	
 
-		if (ProjectileClass != NULL)
+	if (BulletProjectileClass != NULL)
+	{
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABullet* Bullet = World->SpawnActor<ABullet>(BulletProjectileClass, SpawnLocation, SpawnRotation);
+
+			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+			Bullet->Velocity = FVector(NewVelocity);
+		}
+
+	}
+	isRangeHold = true;
+
+}
+void AMainCharacter::StrongRangeAttack() // Range Attack
+{
+	if (rangeHoldTimer > rangeHoldTime)
+	{
+		if (StrongBulletProjectileClass != NULL)
 		{
 			const FRotator SpawnRotation = GetActorRotation();
 			const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
@@ -234,15 +269,16 @@ void AMainCharacter::RangeAttack() // Range Attack
 			UWorld* const World = GetWorld();
 			if (World != NULL)
 			{
-				ABullet* Bullet = World->SpawnActor<ABullet>(ProjectileClass, SpawnLocation, SpawnRotation);
+				ABullet* Bullet = World->SpawnActor<ABullet>(StrongBulletProjectileClass, SpawnLocation, SpawnRotation);
 
 				FVector NewVelocity = GetActorForwardVector() * 2000.0f;
 				Bullet->Velocity = FVector(NewVelocity);
 			}
 
 		}
-		
-	
+	}
+	isRangeHold = false;
+
 
 }
 
@@ -250,6 +286,7 @@ void AMainCharacter::RangeAttack() // Range Attack
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
 	if (uw)
 	{
@@ -266,6 +303,10 @@ void AMainCharacter::Tick(float DeltaTime)
 		}
 
 	}
+	else
+	{
+		RotateToMouseCurse();
+	}
 	if (isPulling == true)
 	{
 		pullCD += DeltaTime;
@@ -278,8 +319,8 @@ void AMainCharacter::Tick(float DeltaTime)
 
 	if (isShooting)
 	{
-		i ++;
-		RotateToMouseCurse();
+		i++;
+		//RotateToMouseCurse();
 		if (i >= bulletRate)
 		{
 			RangeAttack();
@@ -292,7 +333,25 @@ void AMainCharacter::Tick(float DeltaTime)
 		GetCharacterMovement()->StopMovementImmediately();
 	}
 
-	
+	if (isMeleeHold)
+	{
+		meleeHoldTimer += DeltaTime;
+	}
+	else
+	{
+		meleeHoldTimer = 0;
+	}
+
+	if (isRangeHold)
+	{
+		rangeHoldTimer += DeltaTime;
+	}
+	else
+	{
+		rangeHoldTimer = 0;
+	}
+
+
 }
 
 // Called to bind functionality to input
@@ -310,9 +369,10 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
 
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
+	PlayerInputComponent->BindAction("Normal Attack", IE_Released, this, &AMainCharacter::StrongAttack);
 	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
-	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::Fire);
-	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::FinishFire);
+	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
+	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
 
 }
 
@@ -335,7 +395,7 @@ void AMainCharacter::on_distract()
 
 void AMainCharacter::MoveForward(float Axis)
 {
-	if (!isAttacking )
+	if (!isAttacking)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -343,8 +403,8 @@ void AMainCharacter::MoveForward(float Axis)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, Axis);
 	}
-	
-	
+
+
 }
 
 void AMainCharacter::MoveRight(float Axis)
@@ -358,19 +418,19 @@ void AMainCharacter::MoveRight(float Axis)
 		AddMovementInput(Direction, Axis);
 
 	}
-	
+
 }
 
 
 void AMainCharacter::Dash()
-{	
+{
 	if (canDash)
 	{
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * dashDistance, true, true);
-		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::StopDash, 0.1f, false);		
+		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::StopDash, 0.1f, false);
 		canDash = false;
 	}
-	
+
 }
 
 void AMainCharacter::StopDash()
@@ -487,7 +547,7 @@ void AMainCharacter::JumpUp()
 void AMainCharacter::Rope()
 {
 	FVector velocity2 = jumpPos - GetActorLocation();
-	
+
 	LaunchCharacter(velocity2 * 7.5, true, true);
 }
 

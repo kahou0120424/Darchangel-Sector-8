@@ -31,13 +31,18 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera)
 		UCameraComponent* FollowCamera;
-	
+
 
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		float pullDelay = 3;
 
 	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
 		float duration = 0.2f;
+
+	UPROPERTY(EditAnywhere, Category = "Attack|Melee")
+		float meleeHoldTime;
+	UPROPERTY(EditAnywhere, Category = "Attack|Range")
+		float rangeHoldTime;
 
 	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
@@ -46,6 +51,8 @@ public:
 		class UAnimMontage* AttackMontage2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AttackMontage3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AttackMontage4;
 
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
@@ -60,7 +67,9 @@ public:
 
 	//** Bullet
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class ABullet> ProjectileClass;
+		TSubclassOf<class ABullet> BulletProjectileClass;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABullet> StrongBulletProjectileClass;
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AChain> CahinProjectileClass;
 
@@ -80,41 +89,41 @@ public:
 	float percent;
 	float seconds = 10;
 	float timer;
-	
+
 	int i = 0;
 
 	// dash
 	UFUNCTION()
-	void Dash();
+		void Dash();
 
 	UPROPERTY(EditAnywhere)
-	float dashDistance;
+		float dashDistance;
 
 	UPROPERTY(EditAnywhere)
-	float dashCooldown;
+		float dashCooldown;
 
 	UPROPERTY()
-	bool canDash;
+		bool canDash;
 
 	UPROPERTY(EditAnywhere)
-	float dashStop;
+		float dashStop;
 
 	UPROPERTY()
-	FTimerHandle dashHandle;
+		FTimerHandle dashHandle;
 
 	UPROPERTY()
-	FTimerHandle wallHandle;
+		FTimerHandle wallHandle;
 
 	UPROPERTY()
 		FTimerHandle chainHandle;
 
 	UFUNCTION()
-	void StopDash();
+		void StopDash();
 
 
 
 	UFUNCTION()
-	void ResetDash();
+		void ResetDash();
 
 	void AttackMove();
 
@@ -131,7 +140,9 @@ protected:
 	virtual void BeginPlay() override;
 	void Raycast();
 	void MeleeAttack();
+	void StrongAttack();
 	void RangeAttack();
+	void StrongRangeAttack();
 	void RotateToMouseCurse();
 	void Fire();
 	void FinishFire();
@@ -144,21 +155,25 @@ protected:
 	bool isShooting;
 	bool canJumpWall;
 	bool stopMoving;
+	bool isMeleeHold;
+	bool isRangeHold;
 
 	float atkCD;
 	float pullCD;
 	float atkCount = 0;
+	float meleeHoldTimer;
+	float rangeHoldTimer;
 
 	FVector jumpPos;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	
+
+
 
 
 private:
@@ -179,7 +194,7 @@ private:
 
 	void setup_stimulus();
 	void on_distract();
-	
+
 	UFUNCTION()
 		void on_attack_overlap_begin(
 			UPrimitiveComponent* const overlapped_component,

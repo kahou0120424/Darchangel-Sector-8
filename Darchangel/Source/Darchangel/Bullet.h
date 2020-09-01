@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere)
 		FVector Velocity = FVector(100.0f);
 
+	UPROPERTY(EditAnywhere)
+		float percentageDamage ;
+
 	float BulletExpiry = 0;
 
 };
