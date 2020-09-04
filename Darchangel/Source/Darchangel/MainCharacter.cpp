@@ -424,10 +424,16 @@ void AMainCharacter::MoveRight(float Axis)
 
 void AMainCharacter::Dash()
 {
-	if (canDash)
+	/*if (canDash)
 	{
 		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * dashDistance, true, true);
 		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::StopDash, 0.1f, false);
+		canDash = false;
+	}*/
+	if (canDash)
+	{
+		isAttacking = true;
+		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, 1.0f, false);
 		canDash = false;
 	}
 
@@ -441,6 +447,7 @@ void AMainCharacter::StopDash()
 
 void AMainCharacter::ResetDash()
 {
+	isAttacking = false;
 	canDash = true;
 }
 
