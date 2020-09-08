@@ -106,10 +106,6 @@ AMainCharacter::AMainCharacter() :
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	canDash = true;
-	dashDistance = 6000.0f;
-	dashCooldown = 1.0f;
-	dashStop = 0.1f;
 
 	setup_stimulus();
 	if (widget_component)
@@ -359,14 +355,10 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
-
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
-	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AMainCharacter::Dash);
 
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
 	PlayerInputComponent->BindAction("Normal Attack", IE_Released, this, &AMainCharacter::StrongAttack);
@@ -395,7 +387,7 @@ void AMainCharacter::on_distract()
 
 void AMainCharacter::MoveForward(float Axis)
 {
-	if (!isAttacking)
+	if (!isAttacking )
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -422,34 +414,7 @@ void AMainCharacter::MoveRight(float Axis)
 }
 
 
-void AMainCharacter::Dash()
-{
-	/*if (canDash)
-	{
-		LaunchCharacter(FVector(GetActorForwardVector().X, GetActorForwardVector().Y, 0).GetSafeNormal() * dashDistance, true, true);
-		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::StopDash, 0.1f, false);
-		canDash = false;
-	}*/
-	if (canDash)
-	{
-		isAttacking = true;
-		GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, 1.0f, false);
-		canDash = false;
-	}
 
-}
-
-void AMainCharacter::StopDash()
-{
-	GetCharacterMovement()->StopMovementImmediately();
-	GetWorldTimerManager().SetTimer(dashHandle, this, &AMainCharacter::ResetDash, 0.5f, false);
-}
-
-void AMainCharacter::ResetDash()
-{
-	isAttacking = false;
-	canDash = true;
-}
 
 void AMainCharacter::AttackMove() // Move forward while attacking
 {

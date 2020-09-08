@@ -92,24 +92,7 @@ public:
 
 	int i = 0;
 
-	// dash
-	UFUNCTION()
-		void Dash();
 
-	UPROPERTY(EditAnywhere)
-		float dashDistance;
-
-	UPROPERTY(EditAnywhere)
-		float dashCooldown;
-
-	UPROPERTY()
-		bool canDash;
-
-	UPROPERTY(EditAnywhere)
-		float dashStop;
-
-	UPROPERTY()
-		FTimerHandle dashHandle;
 
 	UPROPERTY()
 		FTimerHandle wallHandle;
@@ -117,13 +100,8 @@ public:
 	UPROPERTY()
 		FTimerHandle chainHandle;
 
-	UFUNCTION()
-		void StopDash();
 
-
-
-	UFUNCTION()
-		void ResetDash();
+		
 
 	void AttackMove();
 
@@ -149,6 +127,7 @@ protected:
 	void Rope();
 	void JumpUp();
 	void HideCable();
+
 
 
 	bool isAttacking;
