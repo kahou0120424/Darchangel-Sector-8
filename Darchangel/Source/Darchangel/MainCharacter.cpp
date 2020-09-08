@@ -31,6 +31,7 @@
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "NPC.h"
+#include "BrutalStrike.h"
 #include "Chain.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -103,6 +104,12 @@ AMainCharacter::AMainCharacter() :
 	if (AttackMontageObject4.Succeeded())
 	{
 		AttackMontage4 = AttackMontageObject4.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> BrutalStrikeMontageObject(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/BrutalStrike_Montage.BrutalStrike_Montage'"));
+	if (BrutalStrikeMontageObject.Succeeded())
+	{
+		BrutalStrikeMontage = BrutalStrikeMontageObject.Object;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -365,6 +372,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
+	PlayerInputComponent->BindAction("BrutalStrike", IE_Released, this, &AMainCharacter::BrutalStrikeAnimation);
 
 }
 
@@ -527,4 +535,123 @@ void AMainCharacter::HideCable()
 {
 	Cable->SetVisibility(false);
 	stopMoving = false;
+}
+
+
+void AMainCharacter::BrutalStrikeAnimation()
+{
+	if (!BrutalStrikeInCD)
+	{
+		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
+		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, 5.0f, false);
+		BrutalStrikeInCD = true;
+	}
+	
+}
+
+void AMainCharacter::BrutalStikeFunction()
+{
+	if (BurtalStrikeTriggerBox != NULL)
+	{
+		BrutalStrikeSpawnRotation = GetActorRotation();
+		PlayerLocation = GetActorLocation();
+		PlayerForwardPosition = GetActorForwardVector();
+		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire1);
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
+			Bullet->setLifeTime(6.0f);
+			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation2, 0.1f, false);				
+		}
+	}		
+}
+
+void AMainCharacter::BrutalStrikeAnimation2()
+{
+	if (BurtalStrikeTriggerBox != NULL)
+	{
+		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire2);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
+			Bullet->setLifeTime(5.9f);
+			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation3, 0.1f, false);
+		}
+
+	}
+}
+
+void AMainCharacter::BrutalStrikeAnimation3()
+{
+	if (BurtalStrikeTriggerBox != NULL)
+	{
+		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire3);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
+			Bullet->setLifeTime(5.8f);
+			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation4, 0.1f, false);
+		}
+
+	}
+}
+
+void AMainCharacter::BrutalStrikeAnimation4()
+{
+	if (BurtalStrikeTriggerBox != NULL)
+	{
+		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire4);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
+			Bullet->setLifeTime(5.7f);
+			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation5, 0.1f, false);
+		}
+
+	}
+}
+
+void AMainCharacter::BrutalStrikeAnimation5()
+{
+	if (BurtalStrikeTriggerBox != NULL)
+	{
+		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire5);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
+			Bullet->setLifeTime(5.6f);
+			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation6, 0.1f, false);
+		}
+
+	}
+}
+
+void AMainCharacter::BrutalStrikeAnimation6()
+{
+	if (BurtalStrikeTriggerBox != NULL)
+	{
+		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire6);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
+			Bullet->setLifeTime(5.5f);
+		}
+
+	}
+}
+
+void AMainCharacter::FinishBrutalStrikeCD()
+{
+	BrutalStrikeInCD = false;
 }

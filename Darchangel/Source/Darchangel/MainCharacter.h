@@ -44,6 +44,19 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Attack|Range")
 		float rangeHoldTime;
 
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float fire1;
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float fire2;
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float fire3;
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float fire4;
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float fire5;
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float fire6;
+
 	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AttackMontage;
@@ -53,6 +66,8 @@ public:
 		class UAnimMontage* AttackMontage3;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AttackMontage4;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* BrutalStrikeMontage;
 
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
@@ -72,6 +87,8 @@ public:
 		TSubclassOf<class ABullet> StrongBulletProjectileClass;
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AChain> CahinProjectileClass;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class ABrutalStrike> BurtalStrikeTriggerBox;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -99,12 +116,15 @@ public:
 
 	UPROPERTY()
 		FTimerHandle chainHandle;
-
+	UPROPERTY()
+		FTimerHandle brutalStrikeHandle;
+	UPROPERTY()
+		FTimerHandle brutalStrikeCDHandle;
 
 		
 
 	void AttackMove();
-
+	void BrutalStikeFunction();
 	float get_health() const;
 	float get_max_health() const;
 	void set_health(float const new_health);
@@ -127,6 +147,13 @@ protected:
 	void Rope();
 	void JumpUp();
 	void HideCable();
+	void BrutalStrikeAnimation();
+	void BrutalStrikeAnimation2();
+	void BrutalStrikeAnimation3();
+	void BrutalStrikeAnimation4();
+	void BrutalStrikeAnimation5();
+	void BrutalStrikeAnimation6();
+	void FinishBrutalStrikeCD();
 
 
 
@@ -136,6 +163,7 @@ protected:
 	bool stopMoving;
 	bool isMeleeHold;
 	bool isRangeHold;
+	bool BrutalStrikeInCD;
 
 	float atkCD;
 	float pullCD;
@@ -144,6 +172,10 @@ protected:
 	float rangeHoldTimer;
 
 	FVector jumpPos;
+	FRotator BrutalStrikeSpawnRotation;
+	FVector PlayerLocation;
+	FVector PlayerForwardPosition;
+	
 
 public:
 	// Called every frame
