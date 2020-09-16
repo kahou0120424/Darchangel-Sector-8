@@ -545,7 +545,7 @@ void AMainCharacter::BrutalStrikeAnimation()
 	if (!BrutalStrikeInCD)
 	{
 		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
-		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, 5.0f, false);
+		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, BrutalStrikeCD, false);
 		BrutalStrikeInCD = true;
 	}
 	
@@ -569,21 +569,32 @@ void AMainCharacter::BrutalStikeFunction()
 
 void AMainCharacter::GraspOfDeathFunction()
 {
-	if (graspOfDeathProjectile != NULL)
+	if (!GrashofDeathInCD)
 	{
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation();
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
+		if (graspOfDeathProjectile != NULL)
 		{
-			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(graspOfDeathProjectile, SpawnLocation, SpawnRotation);
+			const FRotator SpawnRotation = GetActorRotation();
+			const FVector SpawnLocation = GetActorLocation();
+
+			UWorld* const World = GetWorld();
+			if (World != NULL)
+			{
+				AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(graspOfDeathProjectile, SpawnLocation, SpawnRotation);
+			}
 		}
+		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
+		GrashofDeathInCD = true;
 	}
+	
 }
 
 
 void AMainCharacter::FinishBrutalStrikeCD()
 {
 	BrutalStrikeInCD = false;
+}
+
+void AMainCharacter::FinishGrashofDeathCD()
+{
+	GrashofDeathInCD = false;
 }

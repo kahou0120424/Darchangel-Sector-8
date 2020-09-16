@@ -41,8 +41,16 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Attack|Melee")
 		float meleeHoldTime;
+
 	UPROPERTY(EditAnywhere, Category = "Attack|Range")
 		float rangeHoldTime;
+
+
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float BrutalStrikeCD;
+
+	UPROPERTY(EditAnywhere, Category = "Grash of Death")
+		float GrashofDeathCD;
 
 	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
@@ -105,10 +113,12 @@ public:
 
 	UPROPERTY()
 		FTimerHandle chainHandle;
-	UPROPERTY()
-		FTimerHandle brutalStrikeHandle;
+
 	UPROPERTY()
 		FTimerHandle brutalStrikeCDHandle;
+
+	UPROPERTY()
+		FTimerHandle grashofDeathCDHandle;
 
 		
 
@@ -138,6 +148,7 @@ protected:
 	void HideCable();
 	void BrutalStrikeAnimation();
 	void FinishBrutalStrikeCD();
+	void FinishGrashofDeathCD();
 	void GraspOfDeathFunction();
 
 
@@ -149,6 +160,7 @@ protected:
 	bool isMeleeHold;
 	bool isRangeHold;
 	bool BrutalStrikeInCD;
+	bool GrashofDeathInCD;
 
 	float atkCD;
 	float pullCD;
