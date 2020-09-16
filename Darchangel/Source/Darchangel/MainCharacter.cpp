@@ -33,6 +33,7 @@
 #include "NPC.h"
 #include "BrutalStrike.h"
 #include "Chain.h"
+#include "GraspofDeath.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -372,7 +373,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
-	PlayerInputComponent->BindAction("BrutalStrike", IE_Released, this, &AMainCharacter::BrutalStrikeAnimation);
+	PlayerInputComponent->BindAction("BrutalStrike", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
+	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathFunction);
 
 }
 
@@ -556,100 +558,30 @@ void AMainCharacter::BrutalStikeFunction()
 		BrutalStrikeSpawnRotation = GetActorRotation();
 		PlayerLocation = GetActorLocation();
 		PlayerForwardPosition = GetActorForwardVector();
-		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire1);
+		const FVector SpawnLocation = PlayerLocation;
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
-			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
-			Bullet->setLifeTime(6.0f);
-			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation2, 0.1f, false);				
+			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
 		}
 	}		
 }
 
-void AMainCharacter::BrutalStrikeAnimation2()
+void AMainCharacter::GraspOfDeathFunction()
 {
-	if (BurtalStrikeTriggerBox != NULL)
+	if (graspOfDeathProjectile != NULL)
 	{
-		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire2);
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation();
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
-			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
-			Bullet->setLifeTime(5.9f);
-			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation3, 0.1f, false);
+			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(graspOfDeathProjectile, SpawnLocation, SpawnRotation);
 		}
-
 	}
 }
 
-void AMainCharacter::BrutalStrikeAnimation3()
-{
-	if (BurtalStrikeTriggerBox != NULL)
-	{
-		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire3);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
-			Bullet->setLifeTime(5.8f);
-			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation4, 0.1f, false);
-		}
-
-	}
-}
-
-void AMainCharacter::BrutalStrikeAnimation4()
-{
-	if (BurtalStrikeTriggerBox != NULL)
-	{
-		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire4);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
-			Bullet->setLifeTime(5.7f);
-			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation5, 0.1f, false);
-		}
-
-	}
-}
-
-void AMainCharacter::BrutalStrikeAnimation5()
-{
-	if (BurtalStrikeTriggerBox != NULL)
-	{
-		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire5);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
-			Bullet->setLifeTime(5.6f);
-			GetWorldTimerManager().SetTimer(brutalStrikeHandle, this, &AMainCharacter::BrutalStrikeAnimation6, 0.1f, false);
-		}
-
-	}
-}
-
-void AMainCharacter::BrutalStrikeAnimation6()
-{
-	if (BurtalStrikeTriggerBox != NULL)
-	{
-		const FVector SpawnLocation = PlayerLocation + (PlayerForwardPosition * fire6);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABrutalStrike* Bullet = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);
-			Bullet->setLifeTime(5.5f);
-		}
-
-	}
-}
 
 void AMainCharacter::FinishBrutalStrikeCD()
 {

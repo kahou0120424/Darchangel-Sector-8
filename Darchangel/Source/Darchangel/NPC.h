@@ -33,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
+	void HitByGraspofDeathFunction(FVector location);
+
 	void stun();
 
 	UPROPERTY()
@@ -49,7 +51,7 @@ private:
 	float health;
 	bool isStun;
 	FVector pullLocation;
-
+	FVector playerPos;
 	void endStun();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))

@@ -44,19 +44,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Attack|Range")
 		float rangeHoldTime;
 
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
-		float fire1;
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
-		float fire2;
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
-		float fire3;
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
-		float fire4;
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
-		float fire5;
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
-		float fire6;
-
 	//** Attack Animation
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AttackMontage;
@@ -89,6 +76,8 @@ public:
 		TSubclassOf<class AChain> CahinProjectileClass;
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ABrutalStrike> BurtalStrikeTriggerBox;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AGraspofDeath> graspOfDeathProjectile;
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -148,12 +137,8 @@ protected:
 	void JumpUp();
 	void HideCable();
 	void BrutalStrikeAnimation();
-	void BrutalStrikeAnimation2();
-	void BrutalStrikeAnimation3();
-	void BrutalStrikeAnimation4();
-	void BrutalStrikeAnimation5();
-	void BrutalStrikeAnimation6();
 	void FinishBrutalStrikeCD();
+	void GraspOfDeathFunction();
 
 
 

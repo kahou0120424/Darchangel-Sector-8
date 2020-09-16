@@ -4,22 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "BrutalStrike.generated.h"
+#include "GraspofDeath.generated.h"
 
 UCLASS()
-class DARCHANGEL_API ABrutalStrike : public AActor
+class DARCHANGEL_API AGraspofDeath : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ABrutalStrike();
+	AGraspofDeath();
 
 	UPROPERTY(EditAnywhere, Category = "Damage")
 		float Damage;
 
-	UPROPERTY(EditAnywhere, Category = "Life Time")
-		float lifeTime;
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -28,15 +27,12 @@ protected:
 	UFUNCTION()
 		void OnOverlapBegin(class AActor* OverlappedActor, AActor* OtherActor);
 
-	float DeactiveCounter;
-	bool deactivate;
+	UFUNCTION()
+		void OnOverlapEnd(class AActor* OverlappedActor, AActor* OtherActor);
 
+	float lifeTime;
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	void setLifeTime(float LifeTime);
-
-
 
 };

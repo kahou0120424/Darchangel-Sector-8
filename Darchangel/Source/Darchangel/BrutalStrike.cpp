@@ -14,29 +14,35 @@ ABrutalStrike::ABrutalStrike()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	OnActorBeginOverlap.AddDynamic(this, &ABrutalStrike::OnOverlapBegin);
-	OnActorEndOverlap.AddDynamic(this, &ABrutalStrike::OnOverlapEnd);
+
 }
 
 // Called when the game starts or when spawned
 void ABrutalStrike::BeginPlay()
 {
 	Super::BeginPlay();
+	deactivate = false;
+	DeactiveCounter = 0;
 }
 
 void ABrutalStrike::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (ANPC* const npc = Cast<ANPC>(OtherActor))
+	if (!deactivate)
 	{
-		print("Hit by Brutal Strike");
-		float const new_health = npc->get_health() - npc->get_max_health() * 0.5f;
-		npc->set_health(new_health);
+		if (ANPC* const npc = Cast<ANPC>(OtherActor))
+		{
+			print("Hit by Brutal Strike");
+			float const new_health = npc->get_health() - npc->get_max_health() * Damage;
+			npc->set_health(new_health);
+
+		}
+	}
+	else
+	{
+		print("Deactived");
 	}
 }
 
-void ABrutalStrike::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
-{
-
-}
 
 void ABrutalStrike::setLifeTime(float LifeTime)
 {
@@ -54,6 +60,15 @@ void ABrutalStrike::Tick(float DeltaTime)
 	else
 	{
 		Destroy();
+	}
+
+	if (DeactiveCounter <= 0.5)
+	{
+		DeactiveCounter = DeactiveCounter + DeltaTime;
+	}
+	else
+	{
+		deactivate = true;
 	}
 }
 

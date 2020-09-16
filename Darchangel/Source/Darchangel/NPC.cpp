@@ -18,6 +18,13 @@
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
 
+
+FVector MidPoint(FVector location1, FVector location2)
+{
+	FVector Result = FVector((location1.X + location2.X) / 2, (location1.Y + location2.Y) / 2, location1.Z);
+	return Result;
+}
+
 // Sets default values
 ANPC::ANPC() :
 	health(max_health), 
@@ -144,12 +151,18 @@ void ANPC::on_attack_overlap_end(
 
 void ANPC::stun()
 {
-	//print("stun");
 	isStun = true;
-	//this->SetActorLocation(location);
-	//FLatentActionInfo LatentInfo;
-	//LatentInfo.CallbackTarget = this;
-	//UKismetSystemLibrary::MoveComponentTo(RootComponent, location, this->GetActorRotation(), false, false, duration, false, EMoveComponentAction::Type::Move, LatentInfo);
+	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, 0.5f, false);
+}
+
+
+void ANPC::HitByGraspofDeathFunction(FVector location)
+{
+	isStun = true;
+	playerPos = MidPoint(location, this->GetActorLocation());
+	FLatentActionInfo LatentInfo;
+	LatentInfo.CallbackTarget = this;
+	UKismetSystemLibrary::MoveComponentTo(RootComponent, playerPos, FRotator(0.0f, 0.0f, 0.0f), false, false, 0.2f, false, EMoveComponentAction::Type::Move, LatentInfo);
 	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, 0.5f, false);
 }
 
