@@ -74,18 +74,29 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
 		float bulletRate;
 
+	UPROPERTY(EditAnywhere, Category = "Wall Of Light")
+		float WallOfLightFireRate;
+
 
 	//** Bullet
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ABullet> BulletProjectileClass;
+
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ABullet> StrongBulletProjectileClass;
+
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AChain> CahinProjectileClass;
+
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ABrutalStrike> BurtalStrikeTriggerBox;
+
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AGraspofDeath> graspOfDeathProjectile;
+		TSubclassOf<class AGraspofDeath> GraspOfDeathProjectile;
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AWallOfLight> WallOfLightProjectile;
+
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -150,7 +161,8 @@ protected:
 	void FinishBrutalStrikeCD();
 	void FinishGrashofDeathCD();
 	void GraspOfDeathFunction();
-
+	void WallOfLightFunction();
+	void SwapForm();
 
 
 	bool isAttacking;
@@ -161,6 +173,7 @@ protected:
 	bool isRangeHold;
 	bool BrutalStrikeInCD;
 	bool GrashofDeathInCD;
+	bool isDemon;
 
 	float atkCD;
 	float pullCD;

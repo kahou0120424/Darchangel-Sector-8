@@ -33,9 +33,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
+	void HitByWallOfLightFunction(FVector Velocity, float CountDown, float MoveDuration, FVector PlayerForwardPosition);
+
 	void HitByGraspofDeathFunction(FVector location);
 
-	void stun();
+	void stun(float Time);
+
+	bool HitByWallOfLight;
 
 	UPROPERTY()
 		FTimerHandle Handle;
@@ -47,11 +51,20 @@ protected:
 
 private:	
 	class UWidgetComponent* widget_component;
+
 	float const max_health = 100.0f;
 	float health;
+	float countDown;
+	float moveDuration;
+
 	bool isStun;
+	bool IsLineTranceStart;
+
+	FVector CharacterFowardPositionWallOfLight;
 	FVector pullLocation;
 	FVector playerPos;
+	FVector velocity;
+	
 	void endStun();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))

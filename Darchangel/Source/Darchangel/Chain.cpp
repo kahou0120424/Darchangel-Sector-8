@@ -39,7 +39,7 @@ void AChain::OnCompHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimit
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherActor->ActorHasTag("Enemy")))
 	{
 		ANPC* npc = Cast<ANPC>(OtherActor);
-		npc->stun();
+		npc->stun(0.5f);
 	}
 }
 
