@@ -34,6 +34,7 @@
 #include "BrutalStrike.h"
 #include "Chain.h"
 #include "GraspofDeath.h"
+#include "WallOfLight.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -167,6 +168,8 @@ void AMainCharacter::BeginPlay()
 		sword_collision_box->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_begin);
 		sword_collision_box->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_end);
 	}
+
+	isDemon = true;
 }
 
 void AMainCharacter::RotateToMouseCurse()
@@ -375,6 +378,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
 	PlayerInputComponent->BindAction("BrutalStrike", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
 	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathFunction);
+	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
 
 }
 
@@ -542,6 +546,9 @@ void AMainCharacter::HideCable()
 
 void AMainCharacter::BrutalStrikeAnimation()
 {
+	if (!isDemon)
+		return;
+
 	if (!BrutalStrikeInCD)
 	{
 		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
@@ -569,9 +576,16 @@ void AMainCharacter::BrutalStikeFunction()
 
 void AMainCharacter::GraspOfDeathFunction()
 {
+	if (!isDemon)
+	{
+		WallOfLightFunction();
+		return;
+	}
+		
+
 	if (!GrashofDeathInCD)
 	{
-		if (graspOfDeathProjectile != NULL)
+		if (GraspOfDeathProjectile != NULL)
 		{
 			const FRotator SpawnRotation = GetActorRotation();
 			const FVector SpawnLocation = GetActorLocation();
@@ -579,13 +593,38 @@ void AMainCharacter::GraspOfDeathFunction()
 			UWorld* const World = GetWorld();
 			if (World != NULL)
 			{
-				AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(graspOfDeathProjectile, SpawnLocation, SpawnRotation);
+				AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
 			}
 		}
 		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
 		GrashofDeathInCD = true;
+	}	
+}
+
+void AMainCharacter::WallOfLightFunction()
+{
+	if (WallOfLightProjectile != NULL)
+	{
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			AWallOfLight* projectTile = World->SpawnActor<AWallOfLight>(WallOfLightProjectile, SpawnLocation, SpawnRotation);
+			FVector NewVelocity = GetActorForwardVector() * WallOfLightFireRate;
+			projectTile->Velocity = FVector(NewVelocity);
+			projectTile->CharacterForwardPosition = GetActorForwardVector();
+		}
 	}
-	
+}
+
+void AMainCharacter::SwapForm()
+{
+	if (isDemon)
+		isDemon = false;
+	else
+		isDemon = true;
 }
 
 

@@ -14,6 +14,7 @@
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h"
 #include "GameFramework/Actor.h"
+#include "DrawDebugHelpers.h"
 #include "MainCharacter.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -83,6 +84,60 @@ void ANPC::Tick(float DeltaTime)
 	{
 		GetCharacterMovement()->StopMovementImmediately();
 	}
+
+	if (HitByWallOfLight)
+	{
+		FVector StartTrace = this->GetActorLocation();
+		FVector EndTrace = (velocity * DeltaTime) + StartTrace;
+
+		EndTrace.Z += this->GetActorRotation().Pitch;
+		SetActorLocation(EndTrace);
+
+		if (countDown >= moveDuration)
+		{
+			IsLineTranceStart = false;
+			HitByWallOfLight = false;
+		}
+		else
+		{
+			countDown = countDown + DeltaTime;
+		}
+	}
+
+	if (IsLineTranceStart)
+	{
+		FHitResult OutHit;
+
+		FVector Start = this->GetActorLocation();
+
+		FVector ForwardPosition = CharacterFowardPositionWallOfLight;
+
+		FVector End = Start + (ForwardPosition * 100.0f);
+
+		FCollisionQueryParams CollisionParams;
+		CollisionParams.AddIgnoredActor(this);
+
+		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
+
+		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
+
+		if (!isHit)
+		{
+			HitByWallOfLight = true;			
+		}	
+		else
+		{
+			if (OutHit.Actor->ActorHasTag("Wall"))
+			{
+				print("Hit");
+				IsLineTranceStart = false;
+				HitByWallOfLight = false;
+				stun(5.0f);
+			}
+		}
+	}
+
+	
 }
 
 // Called to bind functionality to input
@@ -125,6 +180,17 @@ void ANPC::set_health(float const new_health)
 	}
 }
 
+void ANPC::HitByWallOfLightFunction(FVector Velocity, float CountDown, float MoveDuration, FVector PlayerForwardPosition)
+{
+	velocity = Velocity;
+	countDown = CountDown;
+	moveDuration = MoveDuration;
+	CharacterFowardPositionWallOfLight = PlayerForwardPosition;
+	IsLineTranceStart = true;
+	//HitByWallOfLight = true;
+	
+}
+
 void ANPC::on_attack_overlap_begin(
 	UPrimitiveComponent* const overlapped_component,
 	AActor* const other_actor,
@@ -149,10 +215,10 @@ void ANPC::on_attack_overlap_end(
 
 }
 
-void ANPC::stun()
+void ANPC::stun(float Time)
 {
 	isStun = true;
-	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, 0.5f, false);
+	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, Time	, false);
 }
 
 
