@@ -117,7 +117,7 @@ void AMainCharacter::BeginPlay()
 	if (sword_collision_box)
 	{
 
-		sword_collision_box->AttachToComponent(GetMesh(), rules, "FX_Sword_Top");
+		sword_collision_box->AttachToComponent(GetMesh(), rules, "Sword_Middle");
 		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 
 	}
@@ -446,6 +446,7 @@ void AMainCharacter::on_attack_overlap_begin(
 {
 	if (ANPC* const npc = Cast<ANPC>(other_actor))
 	{
+		print("Hit");
 		float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
 		npc->set_health(new_health);
 	}
