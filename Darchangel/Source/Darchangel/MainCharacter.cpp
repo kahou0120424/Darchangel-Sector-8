@@ -81,41 +81,6 @@ AMainCharacter::AMainCharacter() :
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // attact the camera on the end of the boom, let the boom adjust the mass controller rotation of the camera
 	FollowCamera->bUsePawnControlRotation = false; // Camera did not rotate relative to the r
 
-
-	// Attack Animation
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryA_Montage.Attack_PrimaryA_Montage'"));
-	if (AttackMontageObject.Succeeded())
-	{
-		AttackMontage = AttackMontageObject.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject2(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryB_Montage.Attack_PrimaryB_Montage'"));
-	if (AttackMontageObject2.Succeeded())
-	{
-		AttackMontage2 = AttackMontageObject2.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject3(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/Attack_PrimaryC_Montage.Attack_PrimaryC_Montage'"));
-	if (AttackMontageObject3.Succeeded())
-	{
-		AttackMontage3 = AttackMontageObject3.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> AttackMontageObject4(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/HeavyAttack_Primary_Montage.HeavyAttack_Primary_Montage'"));
-	if (AttackMontageObject4.Succeeded())
-	{
-		AttackMontage4 = AttackMontageObject4.Object;
-	}
-
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> BrutalStrikeMontageObject(TEXT("AnimMontage'/Game/ParagonGreystone/Characters/Heroes/Greystone/Animations/BrutalStrike_Montage.BrutalStrike_Montage'"));
-	if (BrutalStrikeMontageObject.Succeeded())
-	{
-		BrutalStrikeMontage = BrutalStrikeMontageObject.Object;
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
 	setup_stimulus();
 	if (widget_component)
 	{
@@ -172,123 +137,6 @@ void AMainCharacter::BeginPlay()
 	isDemon = true;
 }
 
-void AMainCharacter::RotateToMouseCurse()
-{
-	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
-	bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
-	FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
-	this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
-}
-
-void AMainCharacter::Raycast() //Chain Of Hell
-{
-	if (!isPulling && !canJumpWall)
-	{
-
-		//RotateToMouseCurse();
-
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);
-			Cable->SetAttachEndTo(chain, "Sphere");
-			Cable->SetVisibility(true);
-			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
-			isPulling = true;
-			//stopMoving = true;
-		}
-	}
-
-	else
-	{
-		JumpUp();
-	}
-
-
-
-}
-
-void AMainCharacter::MeleeAttack() // Melee Attack
-{
-	if (!isAttacking)
-	{
-		if (atkCount == 0)
-		{
-			PlayAnimMontage(AttackMontage, 1.f, FName("Attack_PrimaryA"));
-			atkCount++;
-		}
-		else if (atkCount == 1)
-		{
-			PlayAnimMontage(AttackMontage2, 1.f, FName("Attack_PrimaryB"));
-			atkCount++;
-		}
-		else
-		{
-			PlayAnimMontage(AttackMontage3, 1.f, FName("Attack_PrimaryC"));
-			atkCount = 0;
-		}
-
-		isAttacking = true;
-		isMeleeHold = true;
-	}
-}void AMainCharacter::StrongAttack() // Melee Attack
-{
-	if (meleeHoldTimer >= meleeHoldTime)
-	{
-		PlayAnimMontage(AttackMontage4, 1.f, FName("HeavyAttack_Primary"));
-	}
-	isMeleeHold = false;
-}
-
-void AMainCharacter::RangeAttack() // Range Attack
-{
-
-	if (BulletProjectileClass != NULL)
-	{
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABullet* Bullet = World->SpawnActor<ABullet>(BulletProjectileClass, SpawnLocation, SpawnRotation);
-
-			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
-			Bullet->Velocity = FVector(NewVelocity);
-		}
-
-	}
-	isRangeHold = true;
-
-}
-void AMainCharacter::StrongRangeAttack() // Range Attack
-{
-	if (rangeHoldTimer > rangeHoldTime)
-	{
-		if (StrongBulletProjectileClass != NULL)
-		{
-			const FRotator SpawnRotation = GetActorRotation();
-			const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
-			UWorld* const World = GetWorld();
-			if (World != NULL)
-			{
-				ABullet* Bullet = World->SpawnActor<ABullet>(StrongBulletProjectileClass, SpawnLocation, SpawnRotation);
-
-				FVector NewVelocity = GetActorForwardVector() * 2000.0f;
-				Bullet->Velocity = FVector(NewVelocity);
-			}
-
-		}
-	}
-	isRangeHold = false;
-
-
-}
-
 // Called every frame
 void AMainCharacter::Tick(float DeltaTime)
 {
@@ -303,6 +151,7 @@ void AMainCharacter::Tick(float DeltaTime)
 	if (isAttacking == true)
 	{
 		atkCD += DeltaTime;
+		
 		if (atkCD >= AttackDelay)
 		{
 			isAttacking = false;
@@ -312,7 +161,7 @@ void AMainCharacter::Tick(float DeltaTime)
 	}
 	else
 	{
-		RotateToMouseCurse();
+		//RotateToMouseCurse();
 	}
 	if (isPulling == true)
 	{
@@ -360,6 +209,130 @@ void AMainCharacter::Tick(float DeltaTime)
 
 
 }
+
+void AMainCharacter::RotateToMouseCurse()
+{
+	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
+	bool isHit2 = playerController->GetHitResultUnderCursorByChannel(UEngineTypes::ConvertToTraceType(ECC_Visibility), true, OutHit2);
+	FRotator rotatePoint = UKismetMathLibrary::FindLookAtRotation(this->GetActorLocation(), OutHit2.Location);
+	this->SetActorRotation(FRotator(0, rotatePoint.Yaw, 0));
+}
+
+void AMainCharacter::Raycast() //Chain Of Hell
+{
+	if (!isPulling && !canJumpWall)
+	{
+
+		RotateToMouseCurse();
+
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);
+			Cable->SetAttachEndTo(chain, "Sphere");
+			Cable->SetVisibility(true);
+			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
+			isPulling = true;
+			//stopMoving = true;
+		}
+	}
+
+	else
+	{
+		JumpUp();
+	}
+
+
+
+}
+
+void AMainCharacter::MeleeAttack() // Melee Attack
+{
+	if (!isAttacking)
+	{
+		RotateToMouseCurse();
+		if (atkCount == 0)
+		{
+			PlayAnimMontage(AttackMontage, 1.f, FName("Attack_PrimaryA"));
+			atkCount++;
+		}
+		else if (atkCount == 1)
+		{
+			PlayAnimMontage(AttackMontage2, 1.f, FName("Attack_PrimaryB"));
+			atkCount++;
+		}
+		else
+		{
+			PlayAnimMontage(AttackMontage3, 1.f, FName("Attack_PrimaryC"));
+			atkCount = 0;
+		}
+		
+
+
+		isAttacking = true;
+		isMeleeHold = true;
+	}
+}void AMainCharacter::StrongAttack() // Melee Attack
+{
+	if (meleeHoldTimer >= meleeHoldTime)
+	{
+		PlayAnimMontage(AttackMontage4, 1.f, FName("HeavyAttack_Primary"));
+	}
+	isMeleeHold = false;
+}
+
+void AMainCharacter::RangeAttack() // Range Attack
+{
+
+	if (BulletProjectileClass != NULL)
+	{
+		RotateToMouseCurse();
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABullet* Bullet = World->SpawnActor<ABullet>(BulletProjectileClass, SpawnLocation, SpawnRotation);
+
+			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+			Bullet->Velocity = FVector(NewVelocity);
+		}
+
+	}
+	isRangeHold = true;
+
+}
+void AMainCharacter::StrongRangeAttack() // Range Attack
+{
+	if (rangeHoldTimer > rangeHoldTime)
+	{
+		if (StrongBulletProjectileClass != NULL)
+		{
+			RotateToMouseCurse();
+			const FRotator SpawnRotation = GetActorRotation();
+			const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+			UWorld* const World = GetWorld();
+			if (World != NULL)
+			{
+				ABullet* Bullet = World->SpawnActor<ABullet>(StrongBulletProjectileClass, SpawnLocation, SpawnRotation);
+
+				FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+				Bullet->Velocity = FVector(NewVelocity);
+			}
+
+		}
+	}
+	isRangeHold = false;
+
+
+}
+
+
 
 // Called to bind functionality to input
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
