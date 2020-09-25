@@ -63,6 +63,8 @@ public:
 		class UAnimMontage* AttackMontage4;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* BrutalStrikeMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* GraspOfDeathMontage;
 
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
@@ -96,6 +98,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class AWallOfLight> WallOfLightProjectile;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool HideWeapon;
 
 
 	void MoveForward(float Axis);
@@ -141,6 +146,8 @@ public:
 	void set_health(float const new_health);
 	void WallJumpStart(FVector jumpLocation);
 	void WallJumpEnd();
+	void HideWeaponFunction();
+	void GraspOfDeathFunction();
 	virtual void attack_start();
 	virtual void attack_end();
 
@@ -161,12 +168,12 @@ protected:
 	void BrutalStrikeAnimation();
 	void FinishBrutalStrikeCD();
 	void FinishGrashofDeathCD();
-	void GraspOfDeathFunction();
+	void GraspOfDeathAnimation();
 	void WallOfLightFunction();
 	void SwapForm();
 
 
-	bool isAttacking;
+	bool ForceStop;
 	bool isShooting;
 	bool canJumpWall;
 	bool stopMoving;

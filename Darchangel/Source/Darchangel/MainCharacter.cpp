@@ -114,6 +114,8 @@ void AMainCharacter::BeginPlay()
 		EAttachmentRule::SnapToTarget,
 		EAttachmentRule::KeepWorld,
 		false);
+
+	HideWeapon = false;
 	if (sword_collision_box)
 	{
 
@@ -233,7 +235,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 
 void AMainCharacter::MeleeAttack() // Melee Attack
 {
-	if (!isAttacking)
+	if (!ForceStop)
 	{
 		RotateToMouseCurse();
 		if (atkCount == 0)
@@ -255,7 +257,7 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		
 
 
-		isAttacking = true;
+		ForceStop = true;
 		isMeleeHold = true;
 	}
 }void AMainCharacter::StrongAttack() // Melee Attack
@@ -333,7 +335,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
 	PlayerInputComponent->BindAction("BrutalStrike", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
-	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathFunction);
+	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
 	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
 
 }
@@ -357,7 +359,7 @@ void AMainCharacter::on_distract()
 
 void AMainCharacter::MoveForward(float Axis)
 {
-	if (!isAttacking )
+	if (!ForceStop )
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -371,7 +373,7 @@ void AMainCharacter::MoveForward(float Axis)
 
 void AMainCharacter::MoveRight(float Axis)
 {
-	if (!isAttacking)
+	if (!ForceStop)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -473,6 +475,8 @@ void AMainCharacter::WallJumpEnd()
 }
 
 
+
+
 void AMainCharacter::JumpUp()
 {
 	if (!canJumpWall)
@@ -505,7 +509,9 @@ void AMainCharacter::BrutalStrikeAnimation()
 
 	if (!BrutalStrikeInCD)
 	{
+		
 		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
+		ForceStop = true;
 		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, BrutalStrikeCD, false);
 		BrutalStrikeInCD = true;
 	}
@@ -516,6 +522,7 @@ void AMainCharacter::BrutalStikeFunction()
 {
 	if (BurtalStrikeTriggerBox != NULL)
 	{
+		
 		BrutalStrikeSpawnRotation = GetActorRotation();
 		PlayerLocation = GetActorLocation();
 		PlayerForwardPosition = GetActorForwardVector();
@@ -525,6 +532,7 @@ void AMainCharacter::BrutalStikeFunction()
 		{
 			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
 		}
+		ForceStop = false;
 	}		
 }
 
@@ -537,22 +545,20 @@ void AMainCharacter::GraspOfDeathFunction()
 	}
 		
 
-	if (!GrashofDeathInCD)
+	
+	if (GraspOfDeathProjectile != NULL)
 	{
-		if (GraspOfDeathProjectile != NULL)
-		{
-			const FRotator SpawnRotation = GetActorRotation();
-			const FVector SpawnLocation = GetActorLocation();
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation();
 
-			UWorld* const World = GetWorld();
-			if (World != NULL)
-			{
-				AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
-			}
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
 		}
-		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
-		GrashofDeathInCD = true;
+		ForceStop = false;
 	}	
+	
 }
 
 void AMainCharacter::WallOfLightFunction()
@@ -592,7 +598,26 @@ void AMainCharacter::FinishGrashofDeathCD()
 	GrashofDeathInCD = false;
 }
 
+void AMainCharacter::GraspOfDeathAnimation()
+{
+	if (!GrashofDeathInCD)
+	{
+		PlayAnimMontage(GraspOfDeathMontage, 1.f, FName("Grasp_Of_Death_Animation"));
+		ForceStop = true;
+		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
+		GrashofDeathInCD = true;
+	}
+}
+
 void AMainCharacter::FinishActtack()
 {
-	isAttacking = false;
+	ForceStop = false;
+}
+
+void AMainCharacter::HideWeaponFunction()
+{
+	if (HideWeapon)
+		HideWeapon = false;
+	else
+		HideWeapon = true;
 }
