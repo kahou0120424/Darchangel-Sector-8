@@ -66,7 +66,6 @@ AMainCharacter::AMainCharacter() :
 
 	GetCharacterMovement()->bOrientRotationToMovement = true; // allow the charactor ratote to the direction it is moving  
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1200.0f, 0.0f); //rotation rate
-	//GetCharacterMovement()->JumpZVelocity = 300.0f;
 	GetCharacterMovement()->AirControl = 0.2f;
 	GetCharacterMovement()->BrakingFrictionFactor = 0.0f;
 
@@ -148,21 +147,6 @@ void AMainCharacter::Tick(float DeltaTime)
 		uw->set_bar_value_percent(health / max_health);
 	}
 
-	if (isAttacking == true)
-	{
-		atkCD += DeltaTime;
-		
-		if (atkCD >= AttackDelay)
-		{
-			isAttacking = false;
-			atkCD = 0;
-		}
-
-	}
-	else
-	{
-		//RotateToMouseCurse();
-	}
 	if (isPulling == true)
 	{
 		pullCD += DeltaTime;
@@ -176,7 +160,6 @@ void AMainCharacter::Tick(float DeltaTime)
 	if (isShooting)
 	{
 		i++;
-		//RotateToMouseCurse();
 		if (i >= bulletRate)
 		{
 			RangeAttack();
@@ -236,7 +219,6 @@ void AMainCharacter::Raycast() //Chain Of Hell
 			Cable->SetVisibility(true);
 			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
 			isPulling = true;
-			//stopMoving = true;
 		}
 	}
 
@@ -263,8 +245,9 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		{
 			PlayAnimMontage(AttackMontage2, 1.f, FName("Attack_PrimaryB"));
 			atkCount++;
+
 		}
-		else
+		else if(atkCount == 2)
 		{
 			PlayAnimMontage(AttackMontage3, 1.f, FName("Attack_PrimaryC"));
 			atkCount = 0;
@@ -463,7 +446,6 @@ void AMainCharacter::on_attack_overlap_begin(
 {
 	if (ANPC* const npc = Cast<ANPC>(other_actor))
 	{
-		//print("Hit");
 		float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
 		npc->set_health(new_health);
 	}
@@ -480,14 +462,12 @@ void AMainCharacter::on_attack_overlap_end(
 
 void AMainCharacter::WallJumpStart(FVector jumpLocation)
 {
-	//print("Overlap Begin");
 	canJumpWall = true;
 	jumpPos = jumpLocation;
 }
 
 void AMainCharacter::WallJumpEnd()
 {
-	//print("Overlap End");
 	canJumpWall = false;
 }
 
@@ -609,4 +589,9 @@ void AMainCharacter::FinishBrutalStrikeCD()
 void AMainCharacter::FinishGrashofDeathCD()
 {
 	GrashofDeathInCD = false;
+}
+
+void AMainCharacter::FinishActtack()
+{
+	isAttacking = false;
 }

@@ -135,6 +135,7 @@ public:
 
 	void AttackMove();
 	void BrutalStikeFunction();
+	void FinishActtack();
 	float get_health() const;
 	float get_max_health() const;
 	void set_health(float const new_health);
