@@ -52,7 +52,7 @@ double Distance(FVector a, FVector b)
 // Sets default values
 AMainCharacter::AMainCharacter() :
 	health(max_health),
-	widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
+	//widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
 	sword_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("SwordCollisionBox"))),
 	Cable(CreateDefaultSubobject<UCableComponent>(TEXT("Cable")))
 {
@@ -82,7 +82,7 @@ AMainCharacter::AMainCharacter() :
 	FollowCamera->bUsePawnControlRotation = false; // Camera did not rotate relative to the r
 
 	setup_stimulus();
-	if (widget_component)
+	/*if (widget_component)
 	{
 		widget_component->SetupAttachment(RootComponent);
 		widget_component->SetWidgetSpace(EWidgetSpace::Screen);
@@ -92,7 +92,7 @@ AMainCharacter::AMainCharacter() :
 		{
 			widget_component->SetWidgetClass(widget_class.Class);
 		}
-	}
+	}*/
 
 	if (sword_collision_box)
 	{
@@ -144,11 +144,11 @@ void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
+	/*(auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
 	if (uw)
 	{
 		uw->set_bar_value_percent(health / max_health);
-	}
+	}*/
 
 	PullingCoolDownFunction(DeltaTime);
 
@@ -226,7 +226,6 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 
 		AttackStateCounter = 0;
 		IsAttackState = true;
-		print("Attack State");	
 		ForceStop = true;
 		isMeleeHold = true;
 	}
@@ -522,7 +521,7 @@ void AMainCharacter::GraspOfDeathFunction()
 		{
 			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
 		}
-		ForceStop = false;
+		
 	}	
 	
 }
@@ -690,6 +689,5 @@ void AMainCharacter::StrongRangeChecker(float DeltaTime)
 
 void AMainCharacter::EndAttackState()
 {
-	print("End Attack State");
 	IsAttackState = false;
 }

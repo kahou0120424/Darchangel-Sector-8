@@ -22,6 +22,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ALandmine> LandMineProjectile;
 
+	
+	void ExplosionParticle();
+
 	float BulletRangeCounter;
 	float AoeRange;
 
@@ -38,6 +41,10 @@ public:
 		float AoeRange2;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AOE Range", meta = (AllowPrivateAccess = "true"))
 		float AoeRange3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool StartExplosion = false;
+
+	
 
 	float BulletExpiry = 0;
 };

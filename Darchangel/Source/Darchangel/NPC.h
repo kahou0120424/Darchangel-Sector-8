@@ -41,6 +41,9 @@ public:
 
 	bool HitByWallOfLight;
 
+	void HitByBlessedIdol();
+
+
 	UPROPERTY()
 		FTimerHandle Handle;
 
@@ -59,6 +62,7 @@ private:
 
 	bool isStun;
 	bool IsLineTranceStart;
+	bool IsHitByBlessedIdol;
 
 	FVector CharacterFowardPositionWallOfLight;
 	FVector pullLocation;
@@ -66,6 +70,7 @@ private:
 	FVector velocity;
 	
 	void endStun();
+	void EndBlessedIdolDamageCD();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* montage;

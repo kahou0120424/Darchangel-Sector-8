@@ -1,9 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+
+#include "BlessedIdol.h"
 #include "Engine.h"
 #include "NPC.h"
-#include "BlessedIdol.h"
+#include "Kismet/GameplayStatics.h"
 #include "Landmine.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -19,8 +21,10 @@ ABlessedIdol::ABlessedIdol()
 void ABlessedIdol::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
+
+
 
 // Called every frame
 void ABlessedIdol::Tick(float DeltaTime)
@@ -75,24 +79,20 @@ void ABlessedIdol::Tick(float DeltaTime)
 			);
 
 			if (hit)
-			{
+			{	
 				for (int q = 0; q < OutHits.Num(); q++)
 				{
 					if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
 					{
 						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 						{
-							print("Hit");
-							float const new_health = npc->get_health() - npc->get_max_health() * 0.5f;
-							npc->set_health(new_health);
-							
+							npc->HitByBlessedIdol();							
 						}
 					}
 				}
-			}
+			}	
 		}
-
-		Destroy();
+		ExplosionParticle();
 	}
 
 	else
@@ -101,7 +101,6 @@ void ABlessedIdol::Tick(float DeltaTime)
 
 		SetActorLocation(EndTrace);
 
-		//Velocity += FVector(0.f, 0.f, -200.0f) * DeltaTime;
 	}
 
 	if (BulletExpiry > 1.5)
@@ -121,5 +120,10 @@ void ABlessedIdol::Tick(float DeltaTime)
 		Destroy();
 	}
 
+}
+
+void ABlessedIdol::ExplosionParticle()
+{
+	StartExplosion = true;
 }
 

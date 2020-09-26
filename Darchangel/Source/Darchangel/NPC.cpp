@@ -222,6 +222,8 @@ void ANPC::stun(float Time)
 }
 
 
+
+
 void ANPC::HitByGraspofDeathFunction(FVector location)
 {
 	isStun = true;
@@ -235,5 +237,23 @@ void ANPC::HitByGraspofDeathFunction(FVector location)
 void ANPC::endStun()
 {
 	isStun = false;
+}
+
+
+
+void ANPC::HitByBlessedIdol()
+{
+	if (!IsHitByBlessedIdol)
+	{
+		float const new_health = get_health() - get_max_health() * 0.5f;
+		set_health(new_health);
+		IsHitByBlessedIdol = true;
+	}
+	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::EndBlessedIdolDamageCD, 1.0f, false);
+}
+
+void ANPC::EndBlessedIdolDamageCD()
+{
+	IsHitByBlessedIdol = false;
 }
 

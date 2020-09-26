@@ -111,6 +111,10 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool IsAttackState;
 
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool ForceStop;
+
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -192,8 +196,6 @@ protected:
 	void StrongAttackChecker(float DeltaTime);
 	void StrongRangeChecker(float DeltaTime);
 
-
-	bool ForceStop;
 	bool isShooting;
 	bool canJumpWall;
 	bool stopMoving;
