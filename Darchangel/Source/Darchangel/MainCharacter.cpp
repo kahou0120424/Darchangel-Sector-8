@@ -35,6 +35,7 @@
 #include "Chain.h"
 #include "GraspofDeath.h"
 #include "WallOfLight.h"
+#include "BlessedIdol.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -216,7 +217,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
-			AChain* chain = World->SpawnActor<AChain>(CahinProjectileClass, SpawnLocation, SpawnRotation);
+			AChain* chain = World->SpawnActor<AChain>(ChainProjectileClass, SpawnLocation, SpawnRotation);
 			Cable->SetAttachEndTo(chain, "Sphere");
 			Cable->SetVisibility(true);
 			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
@@ -295,7 +296,7 @@ void AMainCharacter::StrongRangeAttack() // Range Attack
 {
 	if (rangeHoldTimer > rangeHoldTime)
 	{
-		if (StrongBulletProjectileClass != NULL)
+		if (EnhanceBulletProjectileClass != NULL)
 		{
 			RotateToMouseCurse();
 			const FRotator SpawnRotation = GetActorRotation();
@@ -304,7 +305,7 @@ void AMainCharacter::StrongRangeAttack() // Range Attack
 			UWorld* const World = GetWorld();
 			if (World != NULL)
 			{
-				ABullet* Bullet = World->SpawnActor<ABullet>(StrongBulletProjectileClass, SpawnLocation, SpawnRotation);
+				ABullet* Bullet = World->SpawnActor<ABullet>(EnhanceBulletProjectileClass, SpawnLocation, SpawnRotation);
 
 				FVector NewVelocity = GetActorForwardVector() * 2000.0f;
 				Bullet->Velocity = FVector(NewVelocity);
@@ -328,13 +329,12 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
 
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
-
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
 	PlayerInputComponent->BindAction("Normal Attack", IE_Released, this, &AMainCharacter::StrongAttack);
 	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
 	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
 	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
-	PlayerInputComponent->BindAction("BrutalStrike", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
+	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
 	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
 	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
 
@@ -505,7 +505,11 @@ void AMainCharacter::HideCable()
 void AMainCharacter::BrutalStrikeAnimation()
 {
 	if (!isDemon)
+	{
+		WallOfLightFunction();
 		return;
+	}
+		
 
 	if (!BrutalStrikeInCD)
 	{
@@ -538,13 +542,6 @@ void AMainCharacter::BrutalStikeFunction()
 
 void AMainCharacter::GraspOfDeathFunction()
 {
-	if (!isDemon)
-	{
-		WallOfLightFunction();
-		return;
-	}
-		
-
 	
 	if (GraspOfDeathProjectile != NULL)
 	{
@@ -561,8 +558,11 @@ void AMainCharacter::GraspOfDeathFunction()
 	
 }
 
+
+
 void AMainCharacter::WallOfLightFunction()
 {
+	RotateToMouseCurse();
 	if (WallOfLightProjectile != NULL)
 	{
 		const FRotator SpawnRotation = GetActorRotation();
@@ -600,6 +600,12 @@ void AMainCharacter::FinishGrashofDeathCD()
 
 void AMainCharacter::GraspOfDeathAnimation()
 {
+	if (!isDemon)
+	{
+		BlessedIdolFunction();
+		return;
+	}
+	
 	if (!GrashofDeathInCD)
 	{
 		PlayAnimMontage(GraspOfDeathMontage, 1.f, FName("Grasp_Of_Death_Animation"));
@@ -620,4 +626,23 @@ void AMainCharacter::HideWeaponFunction()
 		HideWeapon = false;
 	else
 		HideWeapon = true;
+}
+
+void AMainCharacter::BlessedIdolFunction()
+{
+	
+	if (BlessedIdolProjectile != NULL)
+	{
+		RotateToMouseCurse();
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = this->GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABlessedIdol* projectTile = World->SpawnActor<ABlessedIdol>(BlessedIdolProjectile, SpawnLocation, SpawnRotation);
+			FVector NewVelocity = GetActorForwardVector() * BlessedIdolFIreRate;
+			projectTile->Velocity = FVector(NewVelocity);
+		}
+	}
 }

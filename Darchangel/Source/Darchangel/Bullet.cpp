@@ -56,7 +56,6 @@ void ABullet::Tick(float DeltaTime)
 
 		SetActorLocation(EndTrace);
 
-		//Velocity += FVector(0.f, 0.f, -200.0f) * DeltaTime;
 	}
 
 	if (BulletExpiry > 3)

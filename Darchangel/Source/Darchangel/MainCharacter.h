@@ -79,25 +79,31 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Wall Of Light")
 		float WallOfLightFireRate;
 
+	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
+		float BlessedIdolFIreRate;
+
 
 	//** Bullet
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		TSubclassOf<class ABullet> BulletProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class ABullet> StrongBulletProjectileClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Enhance Bullet")
+		TSubclassOf<class ABullet> EnhanceBulletProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
-		TSubclassOf<class AChain> CahinProjectileClass;
+	UPROPERTY(EditDefaultsOnly, Category = "Chain")
+		TSubclassOf<class AChain> ChainProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, Category = "BurtalStrikeTriggerBox")
 		TSubclassOf<class ABrutalStrike> BurtalStrikeTriggerBox;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, Category = "Grasp of Death")
 		TSubclassOf<class AGraspofDeath> GraspOfDeathProjectile;
 
-	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+	UPROPERTY(EditDefaultsOnly, Category = "Wall Of Light")
 		TSubclassOf<class AWallOfLight> WallOfLightProjectile;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Blessed Idol")
+		TSubclassOf<class ABlessedIdol> BlessedIdolProjectile;
 
 	UPROPERTY(BlueprintReadOnly)
 		bool HideWeapon;
@@ -148,6 +154,7 @@ public:
 	void WallJumpEnd();
 	void HideWeaponFunction();
 	void GraspOfDeathFunction();
+	void BlessedIdolFunction();
 	virtual void attack_start();
 	virtual void attack_end();
 
