@@ -108,6 +108,9 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool HideWeapon;
 
+	UPROPERTY(BlueprintReadOnly)
+		bool IsAttackState;
+
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -126,7 +129,7 @@ public:
 	float seconds = 10;
 	float timer;
 
-	int i = 0;
+	int BulletRateCounter = 0;
 
 
 
@@ -141,6 +144,9 @@ public:
 
 	UPROPERTY()
 		FTimerHandle grashofDeathCDHandle;
+
+	UPROPERTY()
+		FTimerHandle AttackStateHandle;
 
 		
 
@@ -178,6 +184,13 @@ protected:
 	void GraspOfDeathAnimation();
 	void WallOfLightFunction();
 	void SwapForm();
+	void EndAttackState();
+	void AttackStateCounterFunction(float DeltaTime);
+	void PullingCoolDownFunction(float DeltaTime);
+	void BulletRateFunction();
+	void StopCharacter();
+	void StrongAttackChecker(float DeltaTime);
+	void StrongRangeChecker(float DeltaTime);
 
 
 	bool ForceStop;
@@ -195,6 +208,7 @@ protected:
 	float atkCount = 0;
 	float meleeHoldTimer;
 	float rangeHoldTimer;
+	float AttackStateCounter;
 
 	FVector jumpPos;
 	FRotator BrutalStrikeSpawnRotation;

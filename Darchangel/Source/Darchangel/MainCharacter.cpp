@@ -150,50 +150,17 @@ void AMainCharacter::Tick(float DeltaTime)
 		uw->set_bar_value_percent(health / max_health);
 	}
 
-	if (isPulling == true)
-	{
-		pullCD += DeltaTime;
-		if (pullCD >= pullDelay)
-		{
-			isPulling = false;
-			pullCD = 0;
-		}
-	}
+	PullingCoolDownFunction(DeltaTime);
 
-	if (isShooting)
-	{
-		i++;
-		if (i >= bulletRate)
-		{
-			RangeAttack();
-			i = 0;
-		}
-	}
+	BulletRateFunction();
+	
+	StopCharacter();
 
-	if (stopMoving)
-	{
-		GetCharacterMovement()->StopMovementImmediately();
-	}
-
-	if (isMeleeHold)
-	{
-		meleeHoldTimer += DeltaTime;
-	}
-	else
-	{
-		meleeHoldTimer = 0;
-	}
-
-	if (isRangeHold)
-	{
-		rangeHoldTimer += DeltaTime;
-	}
-	else
-	{
-		rangeHoldTimer = 0;
-	}
-
-
+	StrongAttackChecker(DeltaTime);
+	
+	StrongRangeChecker(DeltaTime);
+	
+	AttackStateCounterFunction(DeltaTime);
 }
 
 void AMainCharacter::RotateToMouseCurse()
@@ -257,7 +224,9 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		}
 		
 
-
+		AttackStateCounter = 0;
+		IsAttackState = true;
+		print("Attack State");	
 		ForceStop = true;
 		isMeleeHold = true;
 	}
@@ -588,6 +557,7 @@ void AMainCharacter::SwapForm()
 }
 
 
+
 void AMainCharacter::FinishBrutalStrikeCD()
 {
 	BrutalStrikeInCD = false;
@@ -645,4 +615,81 @@ void AMainCharacter::BlessedIdolFunction()
 			projectTile->Velocity = FVector(NewVelocity);
 		}
 	}
+}
+
+
+void AMainCharacter::AttackStateCounterFunction(float Deltatime)
+{
+	if (IsAttackState)
+	{
+		
+		AttackStateCounter = AttackStateCounter + Deltatime;
+		if (AttackStateCounter >= 5.0)
+			EndAttackState();
+	}
+
+}
+
+void AMainCharacter::PullingCoolDownFunction(float DeltaTime)
+{
+	if (isPulling == true)
+	{
+		pullCD += DeltaTime;
+		if (pullCD >= pullDelay)
+		{
+			isPulling = false;
+			pullCD = 0;
+		}
+	}
+}
+
+void AMainCharacter::BulletRateFunction()
+{
+	if (isShooting)
+	{
+		BulletRateCounter++;
+		if (BulletRateCounter >= bulletRate)
+		{
+			RangeAttack();
+			BulletRateCounter = 0;
+		}
+	}
+}
+
+void AMainCharacter::StopCharacter()
+{
+	if (stopMoving)
+	{
+		GetCharacterMovement()->StopMovementImmediately();
+	}
+}
+
+void AMainCharacter::StrongAttackChecker(float DeltaTime)
+{
+	if (isMeleeHold)
+	{
+		meleeHoldTimer += DeltaTime;
+	}
+	else
+	{
+		meleeHoldTimer = 0;
+	}
+}
+
+void AMainCharacter::StrongRangeChecker(float DeltaTime)
+{
+	if (isRangeHold)
+	{
+		rangeHoldTimer += DeltaTime;
+	}
+	else
+	{
+		rangeHoldTimer = 0;
+	}
+}
+
+void AMainCharacter::EndAttackState()
+{
+	print("End Attack State");
+	IsAttackState = false;
 }
