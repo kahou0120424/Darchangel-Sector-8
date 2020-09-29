@@ -2,6 +2,9 @@
 
 
 #include "Landmine.h"
+#include "NPC.h"
+
+#define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
 
 // Sets default values
 ALandmine::ALandmine()
@@ -15,7 +18,7 @@ ALandmine::ALandmine()
 void ALandmine::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	OnActorBeginOverlap.AddDynamic(this, &ALandmine::OnOverlapBegin);
 }
 
 // Called every frame
@@ -23,5 +26,21 @@ void ALandmine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+
+void ALandmine::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (OtherActor != NULL && OtherActor->ActorHasTag("Enemy"))
+	{
+		print("Hit");
+		if (ANPC* const npc = Cast<ANPC>(OtherActor))
+		{
+			print("Hit by Brutal Strike");
+			float const new_health = npc->get_health() - npc->get_max_health() * Damage;
+			npc->set_health(new_health);
+
+		}
+	}
 }
 

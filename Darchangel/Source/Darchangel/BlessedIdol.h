@@ -22,7 +22,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = Projectile)
 		TSubclassOf<class ALandmine> LandMineProjectile;
 
-	
 	void ExplosionParticle();
 
 	float BulletRangeCounter;

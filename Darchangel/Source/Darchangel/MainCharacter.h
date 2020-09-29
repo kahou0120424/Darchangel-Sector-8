@@ -82,6 +82,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
 		float BlessedIdolFIreRate;
 
+	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
+		float BleesedIdolCooldown;
+
 
 	//** Bullet
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
@@ -152,6 +155,9 @@ public:
 	UPROPERTY()
 		FTimerHandle AttackStateHandle;
 
+	UPROPERTY()
+		FTimerHandle BlessedIdolCDHandle;
+
 		
 
 	void AttackMove();
@@ -195,6 +201,7 @@ protected:
 	void StopCharacter();
 	void StrongAttackChecker(float DeltaTime);
 	void StrongRangeChecker(float DeltaTime);
+	void FinishBlessedIdolCD();
 
 	bool isShooting;
 	bool canJumpWall;
@@ -204,6 +211,7 @@ protected:
 	bool BrutalStrikeInCD;
 	bool GrashofDeathInCD;
 	bool isDemon;
+	bool BlessedIdolInCD;
 
 	float atkCD;
 	float pullCD;

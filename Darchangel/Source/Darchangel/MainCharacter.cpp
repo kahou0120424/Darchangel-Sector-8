@@ -599,29 +599,33 @@ void AMainCharacter::HideWeaponFunction()
 
 void AMainCharacter::BlessedIdolFunction()
 {
-	
-	if (BlessedIdolProjectile != NULL)
+	if (!BlessedIdolInCD)
 	{
-		RotateToMouseCurse();
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = this->GetActorLocation() + (GetActorForwardVector() * 100);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
+		if (BlessedIdolProjectile != NULL)
 		{
-			ABlessedIdol* projectTile = World->SpawnActor<ABlessedIdol>(BlessedIdolProjectile, SpawnLocation, SpawnRotation);
-			FVector NewVelocity = GetActorForwardVector() * BlessedIdolFIreRate;
-			projectTile->Velocity = FVector(NewVelocity);
+			RotateToMouseCurse();
+			const FRotator SpawnRotation = GetActorRotation();
+			const FVector SpawnLocation = this->GetActorLocation() + (GetActorForwardVector() * 100);
+
+			UWorld* const World = GetWorld();
+			if (World != NULL)
+			{
+				ABlessedIdol* projectTile = World->SpawnActor<ABlessedIdol>(BlessedIdolProjectile, SpawnLocation, SpawnRotation);
+				FVector NewVelocity = GetActorForwardVector() * BlessedIdolFIreRate;
+				projectTile->Velocity = FVector(NewVelocity);
+			}
+			BlessedIdolInCD = true;
+			GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
 		}
 	}
+	
 }
 
 
 void AMainCharacter::AttackStateCounterFunction(float Deltatime)
 {
 	if (IsAttackState)
-	{
-		
+	{		
 		AttackStateCounter = AttackStateCounter + Deltatime;
 		if (AttackStateCounter >= 5.0)
 			EndAttackState();
@@ -685,6 +689,11 @@ void AMainCharacter::StrongRangeChecker(float DeltaTime)
 	{
 		rangeHoldTimer = 0;
 	}
+}
+
+void AMainCharacter::FinishBlessedIdolCD()
+{
+	BlessedIdolInCD = false;
 }
 
 void AMainCharacter::EndAttackState()

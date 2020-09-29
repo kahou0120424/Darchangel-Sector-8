@@ -73,7 +73,7 @@ void ABlessedIdol::Tick(float DeltaTime)
 				TraceTypeQuery1,
 				false,
 				ActorsToIgnore,
-				EDrawDebugTrace::ForDuration,
+				EDrawDebugTrace::None,
 				OutHits,
 				true
 			);
