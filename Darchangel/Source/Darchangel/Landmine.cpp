@@ -33,13 +33,10 @@ void ALandmine::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (OtherActor != NULL && OtherActor->ActorHasTag("Enemy"))
 	{
-		print("Hit");
 		if (ANPC* const npc = Cast<ANPC>(OtherActor))
 		{
-			print("Hit by Brutal Strike");
 			float const new_health = npc->get_health() - npc->get_max_health() * Damage;
 			npc->set_health(new_health);
-
 		}
 	}
 }
