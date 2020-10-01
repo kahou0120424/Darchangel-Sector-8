@@ -217,6 +217,7 @@ void ANPC::on_attack_overlap_end(
 
 void ANPC::stun(float Time)
 {
+	print("Stun");
 	isStun = true;
 	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, Time	, false);
 }

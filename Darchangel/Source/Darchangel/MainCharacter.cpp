@@ -171,7 +171,7 @@ void AMainCharacter::RotateToMouseCurse()
 
 void AMainCharacter::Raycast() //Chain Of Hell
 {
-	if (!isPulling && !canJumpWall)
+	/*if (!isPulling && !canJumpWall)
 	{
 
 		RotateToMouseCurse();
@@ -188,14 +188,12 @@ void AMainCharacter::Raycast() //Chain Of Hell
 			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
 			isPulling = true;
 		}
-	}
-
-	else
+	}*/
+	RotateToMouseCurse();
+	if(canJumpWall)
 	{
 		JumpUp();
 	}
-
-
 
 }
 

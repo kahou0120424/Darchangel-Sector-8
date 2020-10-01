@@ -123,6 +123,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool ForceStop;
 
+	
+
 
 	void MoveForward(float Axis);
 	void MoveRight(float Axis);
@@ -213,7 +215,8 @@ protected:
 	void PlayChargingAnimation();
 
 	bool isShooting;
-	bool canJumpWall;
+	UPROPERTY(BlueprintReadWrite)
+		bool canJumpWall;
 	bool stopMoving;
 	bool isRangeHolding;
 	bool BrutalStrikeInCD;

@@ -37,6 +37,7 @@ public:
 
 	void HitByGraspofDeathFunction(FVector location);
 
+	UFUNCTION(BlueprintCallable)
 	void stun(float Time);
 
 	bool HitByWallOfLight;
