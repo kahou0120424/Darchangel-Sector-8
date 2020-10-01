@@ -217,6 +217,8 @@ protected:
 	bool isShooting;
 	UPROPERTY(BlueprintReadWrite)
 		bool canJumpWall;
+	UPROPERTY(BlueprintReadOnly)
+		bool IsMeleeCharging;
 	bool stopMoving;
 	bool isRangeHolding;
 	bool BrutalStrikeInCD;
@@ -225,7 +227,6 @@ protected:
 	bool BlessedIdolInCD;
 	bool StrongAttackStateTwo;
 	bool StrongAttackStateThree;
-	bool PlayStrongAttack = false;
 
 
 	float atkCD;

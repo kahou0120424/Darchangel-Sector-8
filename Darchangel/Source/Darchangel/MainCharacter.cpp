@@ -699,9 +699,6 @@ void AMainCharacter::StrongAttackState()
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 {
-	if (!PlayStrongAttack)
-		return;
-
 	AttackStateCounter = 0;
 	IsAttackState = true;
 
@@ -720,13 +717,13 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	
 	StrongAttackStateTwo = false;
 	StrongAttackStateThree = false;
-	PlayStrongAttack = false;
+	IsMeleeCharging = false;
 }
 
 void AMainCharacter::PlayChargingAnimation()
 {
 	
 	PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
-	PlayStrongAttack = true;
-	ForceStop = true;		
+	ForceStop = true;	
+	IsMeleeCharging = true;
 }
