@@ -216,7 +216,6 @@ protected:
 	bool canJumpWall;
 	bool stopMoving;
 	bool isRangeHolding;
-	bool isMeleeCharging;
 	bool BrutalStrikeInCD;
 	bool GrashofDeathInCD;
 	bool isDemon;

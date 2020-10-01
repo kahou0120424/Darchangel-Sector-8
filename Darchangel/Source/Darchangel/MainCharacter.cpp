@@ -221,11 +221,9 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 			atkCount = 0;
 		}
 
-		GetWorldTimerManager().SetTimer(MeleeCharingHandle, this, &AMainCharacter::PlayChargingAnimation, 0.5f, false);
 		AttackStateCounter = 0;
 		IsAttackState = true;
 		ForceStop = true;
-		isMeleeCharging = true;
 	}
 
 }
@@ -289,10 +287,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
-	PlayerInputComponent->BindAction("Normal Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
 	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
-	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
-	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
+	PlayerInputComponent->BindAction("Strong Attack", IE_Pressed, this, &AMainCharacter::PlayChargingAnimation);
+	PlayerInputComponent->BindAction("Strong Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
 	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
 	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
 	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
@@ -688,8 +685,6 @@ void AMainCharacter::EndAttackState()
 
 void AMainCharacter::StrongAttackState()
 {
-	if (!isMeleeCharging)
-		return;
 
 	if (!StrongAttackStateTwo)
 	{
@@ -706,11 +701,12 @@ void AMainCharacter::StrongAttackState()
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 {
-	isMeleeCharging = false;
 	if (!PlayStrongAttack)
 		return;
+
 	AttackStateCounter = 0;
-	atkCount = 0;
+	IsAttackState = true;
+
 	if (StrongAttackStateTwo)
 	{
 		PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
@@ -723,6 +719,7 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	{
 		PlayAnimMontage(StrongAttackStateOneMontage, 1.0f);
 	}
+	
 	StrongAttackStateTwo = false;
 	StrongAttackStateThree = false;
 	PlayStrongAttack = false;
@@ -730,11 +727,8 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 
 void AMainCharacter::PlayChargingAnimation()
 {
-	if (isMeleeCharging)
-	{
-		PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
-		PlayStrongAttack = true;
-		ForceStop = true;
-	}
-		
+	
+	PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
+	PlayStrongAttack = true;
+	ForceStop = true;		
 }
