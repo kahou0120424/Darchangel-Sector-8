@@ -60,11 +60,17 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AttackMontage3;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-		class UAnimMontage* AttackMontage4;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* BrutalStrikeMontage;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* GraspOfDeathMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* StrongAttackChargeMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* StrongAttackStateOneMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* StrongAttackStateTwoMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* StrongAttackStateThreeMontage;
 
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
@@ -114,9 +120,10 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool IsAttackState;
 
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool ForceStop;
+
+	
 
 
 	void MoveForward(float Axis);
@@ -158,6 +165,9 @@ public:
 	UPROPERTY()
 		FTimerHandle BlessedIdolCDHandle;
 
+	UPROPERTY()
+		FTimerHandle MeleeCharingHandle;
+
 		
 
 	void AttackMove();
@@ -171,6 +181,7 @@ public:
 	void HideWeaponFunction();
 	void GraspOfDeathFunction();
 	void BlessedIdolFunction();
+	void StrongAttackState();
 	virtual void attack_start();
 	virtual void attack_end();
 
@@ -179,7 +190,7 @@ protected:
 	virtual void BeginPlay() override;
 	void Raycast();
 	void MeleeAttack();
-	void StrongAttack();
+	void PlayStrongAttackAnimation();
 	void RangeAttack();
 	void StrongRangeAttack();
 	void RotateToMouseCurse();
@@ -199,24 +210,28 @@ protected:
 	void PullingCoolDownFunction(float DeltaTime);
 	void BulletRateFunction();
 	void StopCharacter();
-	void StrongAttackChecker(float DeltaTime);
 	void StrongRangeChecker(float DeltaTime);
 	void FinishBlessedIdolCD();
+	void PlayChargingAnimation();
 
 	bool isShooting;
-	bool canJumpWall;
+	UPROPERTY(BlueprintReadWrite)
+		bool canJumpWall;
+	UPROPERTY(BlueprintReadOnly)
+		bool IsMeleeCharging;
 	bool stopMoving;
-	bool isMeleeHold;
-	bool isRangeHold;
+	bool isRangeHolding;
 	bool BrutalStrikeInCD;
 	bool GrashofDeathInCD;
 	bool isDemon;
 	bool BlessedIdolInCD;
+	bool StrongAttackStateTwo;
+	bool StrongAttackStateThree;
+
 
 	float atkCD;
 	float pullCD;
 	float atkCount = 0;
-	float meleeHoldTimer;
 	float rangeHoldTimer;
 	float AttackStateCounter;
 

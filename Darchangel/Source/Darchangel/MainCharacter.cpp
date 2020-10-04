@@ -156,8 +156,6 @@ void AMainCharacter::Tick(float DeltaTime)
 	
 	StopCharacter();
 
-	StrongAttackChecker(DeltaTime);
-	
 	StrongRangeChecker(DeltaTime);
 	
 	AttackStateCounterFunction(DeltaTime);
@@ -173,7 +171,7 @@ void AMainCharacter::RotateToMouseCurse()
 
 void AMainCharacter::Raycast() //Chain Of Hell
 {
-	if (!isPulling && !canJumpWall)
+	/*if (!isPulling && !canJumpWall)
 	{
 
 		RotateToMouseCurse();
@@ -190,14 +188,12 @@ void AMainCharacter::Raycast() //Chain Of Hell
 			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
 			isPulling = true;
 		}
-	}
-
-	else
+	}*/
+	RotateToMouseCurse();
+	if(canJumpWall)
 	{
 		JumpUp();
 	}
-
-
 
 }
 
@@ -208,36 +204,27 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		RotateToMouseCurse();
 		if (atkCount == 0)
 		{
-			PlayAnimMontage(AttackMontage, 1.f, FName("Attack_PrimaryA"));
+			PlayAnimMontage(AttackMontage, 1.f);	
 			atkCount++;
 		}
 		else if (atkCount == 1)
 		{
-			PlayAnimMontage(AttackMontage2, 1.f, FName("Attack_PrimaryB"));
+			PlayAnimMontage(AttackMontage2, 1.f);
 			atkCount++;
 
 		}
-		else if(atkCount == 2)
+		else if (atkCount == 2)
 		{
-			PlayAnimMontage(AttackMontage3, 1.f, FName("Attack_PrimaryC"));
+			PlayAnimMontage(AttackMontage3, 1.f);
 			atkCount = 0;
 		}
-		
 
 		AttackStateCounter = 0;
 		IsAttackState = true;
 		ForceStop = true;
-		isMeleeHold = true;
 	}
-}void AMainCharacter::StrongAttack() // Melee Attack
-{
-	if (meleeHoldTimer >= meleeHoldTime)
-	{
-		PlayAnimMontage(AttackMontage4, 1.f, FName("HeavyAttack_Primary"));
-	}
-	isMeleeHold = false;
-}
 
+}
 void AMainCharacter::RangeAttack() // Range Attack
 {
 
@@ -257,7 +244,7 @@ void AMainCharacter::RangeAttack() // Range Attack
 		}
 
 	}
-	isRangeHold = true;
+	isRangeHolding = true;
 
 }
 void AMainCharacter::StrongRangeAttack() // Range Attack
@@ -281,7 +268,7 @@ void AMainCharacter::StrongRangeAttack() // Range Attack
 
 		}
 	}
-	isRangeHold = false;
+	isRangeHolding = false;
 
 
 }
@@ -298,10 +285,9 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
 	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
-	PlayerInputComponent->BindAction("Normal Attack", IE_Released, this, &AMainCharacter::StrongAttack);
 	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
-	PlayerInputComponent->BindAction("Shoot", IE_Pressed, this, &AMainCharacter::RangeAttack);
-	PlayerInputComponent->BindAction("Shoot", IE_Released, this, &AMainCharacter::StrongRangeAttack);
+	PlayerInputComponent->BindAction("Strong Attack", IE_Pressed, this, &AMainCharacter::PlayChargingAnimation);
+	PlayerInputComponent->BindAction("Strong Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
 	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
 	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
 	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
@@ -622,6 +608,8 @@ void AMainCharacter::BlessedIdolFunction()
 }
 
 
+
+
 void AMainCharacter::AttackStateCounterFunction(float Deltatime)
 {
 	if (IsAttackState)
@@ -667,21 +655,11 @@ void AMainCharacter::StopCharacter()
 	}
 }
 
-void AMainCharacter::StrongAttackChecker(float DeltaTime)
-{
-	if (isMeleeHold)
-	{
-		meleeHoldTimer += DeltaTime;
-	}
-	else
-	{
-		meleeHoldTimer = 0;
-	}
-}
+
 
 void AMainCharacter::StrongRangeChecker(float DeltaTime)
 {
-	if (isRangeHold)
+	if (isRangeHolding)
 	{
 		rangeHoldTimer += DeltaTime;
 	}
@@ -696,7 +674,56 @@ void AMainCharacter::FinishBlessedIdolCD()
 	BlessedIdolInCD = false;
 }
 
+
+
 void AMainCharacter::EndAttackState()
 {
 	IsAttackState = false;
+}
+
+void AMainCharacter::StrongAttackState()
+{
+
+	if (!StrongAttackStateTwo)
+	{
+		StrongAttackStateTwo = true;
+		return;
+	}
+	else
+	{
+		StrongAttackStateTwo = false;
+		StrongAttackStateThree = true;
+	}
+
+}
+
+void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
+{
+	AttackStateCounter = 0;
+	IsAttackState = true;
+
+	if (StrongAttackStateTwo)
+	{
+		PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
+	}
+	else if (StrongAttackStateThree)
+	{
+		PlayAnimMontage(StrongAttackStateThreeMontage, 1.0f);
+	}
+	else
+	{
+		PlayAnimMontage(StrongAttackStateOneMontage, 1.0f);
+	}
+	
+	StrongAttackStateTwo = false;
+	StrongAttackStateThree = false;
+	IsMeleeCharging = false;
+}
+
+void AMainCharacter::PlayChargingAnimation()
+{
+	
+	PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
+	ForceStop = true;	
+	IsMeleeCharging = true;
 }
