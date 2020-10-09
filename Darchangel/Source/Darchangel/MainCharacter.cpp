@@ -722,7 +722,8 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 
 void AMainCharacter::PlayChargingAnimation()
 {
-	
+	if (ForceStop)
+		return;
 	PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
 	ForceStop = true;	
 	IsMeleeCharging = true;
