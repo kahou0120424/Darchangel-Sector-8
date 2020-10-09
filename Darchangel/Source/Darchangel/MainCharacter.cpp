@@ -202,23 +202,41 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 	if (!ForceStop)
 	{
 		RotateToMouseCurse();
-		if (atkCount == 0)
+		if (isDemon)
 		{
-			PlayAnimMontage(AttackMontage, 1.f);	
-			atkCount++;
-		}
-		else if (atkCount == 1)
-		{
-			PlayAnimMontage(AttackMontage2, 1.f);
-			atkCount++;
+			if (atkCount == 0)
+			{
+				PlayAnimMontage(DemonAttackMontage1, 1.f);
+				atkCount++;
+			}
+			else if (atkCount == 1)
+			{
+				PlayAnimMontage(DemonAttackMontage2, 1.f);
+				atkCount++;
 
+			}
+			else if (atkCount == 2)
+			{
+				PlayAnimMontage(DemonAttackMontage3, 1.f);
+				atkCount = 0;
+			}
+			
 		}
-		else if (atkCount == 2)
+		else
 		{
-			PlayAnimMontage(AttackMontage3, 1.f);
-			atkCount = 0;
-		}
+			if (atkCount == 0)
+			{
+				PlayAnimMontage(AngelAttackMontage1, 1.f);
+				atkCount++;
+			}
+			else if (atkCount == 1)
+			{
+				PlayAnimMontage(AngelAttackMontage2, 1.f);
+				atkCount = 0;
 
+			}
+			
+		}
 		AttackStateCounter = 0;
 		IsAttackState = true;
 		ForceStop = true;
@@ -490,7 +508,6 @@ void AMainCharacter::BrutalStikeFunction()
 		{
 			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
 		}
-		ForceStop = false;
 	}		
 }
 
@@ -535,6 +552,7 @@ void AMainCharacter::WallOfLightFunction()
 
 void AMainCharacter::SwapForm()
 {
+	atkCount = 0;
 	if (isDemon)
 		isDemon = false;
 	else
@@ -557,7 +575,7 @@ void AMainCharacter::GraspOfDeathAnimation()
 {
 	if (!isDemon)
 	{
-		BlessedIdolFunction();
+		PlayBlessedIdolAnimation();
 		return;
 	}
 	
@@ -683,17 +701,28 @@ void AMainCharacter::EndAttackState()
 
 void AMainCharacter::StrongAttackState()
 {
-
-	if (!StrongAttackStateTwo)
+	if (isDemon)
 	{
-		StrongAttackStateTwo = true;
-		return;
+		if (!StrongAttackStateTwo)
+		{
+			StrongAttackStateTwo = true;
+			return;
+		}
+		else
+		{
+			StrongAttackStateTwo = false;
+			StrongAttackStateThree = true;
+		}
 	}
 	else
 	{
-		StrongAttackStateTwo = false;
-		StrongAttackStateThree = true;
+		if (!StrongAttackStateTwo)
+		{
+			StrongAttackStateTwo = true;
+			return;
+		}
 	}
+	
 
 }
 
@@ -702,18 +731,33 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	AttackStateCounter = 0;
 	IsAttackState = true;
 
-	if (StrongAttackStateTwo)
+	if (isDemon)
 	{
-		PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
-	}
-	else if (StrongAttackStateThree)
-	{
-		PlayAnimMontage(StrongAttackStateThreeMontage, 1.0f);
+		if (StrongAttackStateTwo)
+		{
+			PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
+		}
+		else if (StrongAttackStateThree)
+		{
+			PlayAnimMontage(StrongAttackStateThreeMontage, 1.0f);
+		}
+		else
+		{
+			PlayAnimMontage(StrongAttackStateOneMontage, 1.0f);
+		}
 	}
 	else
 	{
-		PlayAnimMontage(StrongAttackStateOneMontage, 1.0f);
+		if (StrongAttackStateTwo)
+		{
+			PlayAnimMontage(AngelStrongAttack2Montage, 1.0f);
+		}
+		else
+		{
+			PlayAnimMontage(AngelStrongAttack1Montage, 1.0f);
+		}
 	}
+	
 	
 	StrongAttackStateTwo = false;
 	StrongAttackStateThree = false;
@@ -724,7 +768,20 @@ void AMainCharacter::PlayChargingAnimation()
 {
 	if (ForceStop)
 		return;
-	PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
-	ForceStop = true;	
+	if (isDemon)
+	{
+		PlayAnimMontage(DemonChargeMontage, 1.0f);
+		ForceStop = true;
+	}
+		
+	else
+		PlayAnimMontage(AngelChargeMontage, 1.0f);
+		
 	IsMeleeCharging = true;
+}
+
+void AMainCharacter::PlayBlessedIdolAnimation()
+{
+	PlayAnimMontage(BlessedIdolMontage, 1.0f);
+	ForceStop = true;
 }

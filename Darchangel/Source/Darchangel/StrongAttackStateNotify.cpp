@@ -17,7 +17,6 @@ void UStrongAttackStateNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSeq
 		if (player != NULL)
 		{
 			player->StrongAttackState();
-			print("Charge");
 		}
 	}
 
