@@ -552,6 +552,8 @@ void AMainCharacter::WallOfLightFunction()
 
 void AMainCharacter::SwapForm()
 {
+	if (ForceStop)
+		return;
 	atkCount = 0;
 	if (isDemon)
 		isDemon = false;
