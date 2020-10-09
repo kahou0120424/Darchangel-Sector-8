@@ -771,12 +771,12 @@ void AMainCharacter::PlayChargingAnimation()
 	if (isDemon)
 	{
 		PlayAnimMontage(DemonChargeMontage, 1.0f);
-		ForceStop = true;
+		
 	}
 		
 	else
 		PlayAnimMontage(AngelChargeMontage, 1.0f);
-		
+	ForceStop = true;
 	IsMeleeCharging = true;
 }
 
