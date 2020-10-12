@@ -53,24 +53,39 @@ public:
 		float GrashofDeathCD;
 
 	//** Attack Animation
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-		class UAnimMontage* AttackMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-		class UAnimMontage* AttackMontage2;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-		class UAnimMontage* AttackMontage3;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* DemonAttackMontage1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* DemonAttackMontage2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* DemonAttackMontage3;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* BrutalStrikeMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* GraspOfDeathMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
-		class UAnimMontage* StrongAttackChargeMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* DemonChargeMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* StrongAttackStateOneMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* StrongAttackStateTwoMontage;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = Animation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* StrongAttackStateThreeMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AngelAttackMontage1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AngelAttackMontage2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AngelChargeMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* WallOfLightMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* BlessedIdolMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AngelStrongAttack1Montage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AngelStrongAttack2Montage;
 
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
@@ -113,6 +128,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Blessed Idol")
 		TSubclassOf<class ABlessedIdol> BlessedIdolProjectile;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Charge Attack")
+		TSubclassOf<class AChargeParticle> ChargeParticle;
 
 	UPROPERTY(BlueprintReadOnly)
 		bool HideWeapon;
@@ -168,6 +186,9 @@ public:
 	UPROPERTY()
 		FTimerHandle MeleeCharingHandle;
 
+	UPROPERTY()
+		FTimerHandle ChargeParticleDelay;
+
 		
 
 	void AttackMove();
@@ -182,6 +203,7 @@ public:
 	void GraspOfDeathFunction();
 	void BlessedIdolFunction();
 	void StrongAttackState();
+	void ComboExpiredFunction();
 	virtual void attack_start();
 	virtual void attack_end();
 
@@ -213,6 +235,10 @@ protected:
 	void StrongRangeChecker(float DeltaTime);
 	void FinishBlessedIdolCD();
 	void PlayChargingAnimation();
+	void PlayBlessedIdolAnimation();
+	void SpawnChargeParticle();
+
+	AChargeParticle* ChargePaticleReference;
 
 	bool isShooting;
 	UPROPERTY(BlueprintReadWrite)
@@ -227,6 +253,7 @@ protected:
 	bool BlessedIdolInCD;
 	bool StrongAttackStateTwo;
 	bool StrongAttackStateThree;
+	bool SpawnedParticle;
 
 
 	float atkCD;

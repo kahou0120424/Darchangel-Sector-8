@@ -36,6 +36,7 @@
 #include "GraspofDeath.h"
 #include "WallOfLight.h"
 #include "BlessedIdol.h"
+#include "ChargeParticle.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -120,7 +121,7 @@ void AMainCharacter::BeginPlay()
 	if (sword_collision_box)
 	{
 
-		sword_collision_box->AttachToComponent(GetMesh(), rules, "Sword_Middle");
+		sword_collision_box->AttachToComponent(GetMesh(), rules, "Demon_Sword_Middle");
 		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 
 	}
@@ -202,23 +203,38 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 	if (!ForceStop)
 	{
 		RotateToMouseCurse();
-		if (atkCount == 0)
+		if (isDemon)
 		{
-			PlayAnimMontage(AttackMontage, 1.f);	
-			atkCount++;
-		}
-		else if (atkCount == 1)
-		{
-			PlayAnimMontage(AttackMontage2, 1.f);
-			atkCount++;
+			if (atkCount == 0)
+			{
+				PlayAnimMontage(DemonAttackMontage1, 1.f);
+			}
+			else if (atkCount == 1)
+			{
+				PlayAnimMontage(DemonAttackMontage2, 1.f);
 
+			}
+			else if (atkCount == 2)
+			{
+				PlayAnimMontage(DemonAttackMontage3, 1.f);
+			
+			}
+			
 		}
-		else if (atkCount == 2)
+		else
 		{
-			PlayAnimMontage(AttackMontage3, 1.f);
-			atkCount = 0;
-		}
+			if (atkCount == 0)
+			{
+				PlayAnimMontage(AngelAttackMontage1, 1.f);;
+			}
+			else if (atkCount == 1)
+			{
+				PlayAnimMontage(AngelAttackMontage2, 1.f);
+				
 
+			}
+			
+		}
 		AttackStateCounter = 0;
 		IsAttackState = true;
 		ForceStop = true;
@@ -490,7 +506,6 @@ void AMainCharacter::BrutalStikeFunction()
 		{
 			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
 		}
-		ForceStop = false;
 	}		
 }
 
@@ -535,6 +550,9 @@ void AMainCharacter::WallOfLightFunction()
 
 void AMainCharacter::SwapForm()
 {
+	if (ForceStop)
+		return;
+	atkCount = 0;
 	if (isDemon)
 		isDemon = false;
 	else
@@ -557,7 +575,7 @@ void AMainCharacter::GraspOfDeathAnimation()
 {
 	if (!isDemon)
 	{
-		BlessedIdolFunction();
+		PlayBlessedIdolAnimation();
 		return;
 	}
 	
@@ -573,7 +591,20 @@ void AMainCharacter::GraspOfDeathAnimation()
 void AMainCharacter::FinishActtack()
 {
 	ForceStop = false;
+	if (atkCount < 2 && isDemon)
+	{
+		atkCount++;
+	}
+	else if(!isDemon && atkCount < 1)
+	{
+		atkCount++;
+	}
+	else
+	{
+		atkCount = 0;
+	}
 }
+	
 
 void AMainCharacter::HideWeaponFunction()
 {
@@ -683,37 +714,149 @@ void AMainCharacter::EndAttackState()
 
 void AMainCharacter::StrongAttackState()
 {
-
-	if (!StrongAttackStateTwo)
+	if (isDemon)
 	{
-		StrongAttackStateTwo = true;
-		return;
+		if (!StrongAttackStateTwo)
+		{
+			StrongAttackStateTwo = true;
+			return;
+		}
+		else
+		{
+			StrongAttackStateTwo = false;
+			StrongAttackStateThree = true;
+		}
 	}
 	else
 	{
-		StrongAttackStateTwo = false;
-		StrongAttackStateThree = true;
+		if (!StrongAttackStateTwo)
+		{
+			StrongAttackStateTwo = true;
+			return;
+		}
 	}
+	
 
+}
+
+void AMainCharacter::ComboExpiredFunction()
+{
+	atkCount = 0;
 }
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 {
+	if (!IsMeleeCharging)
+		return;
+
 	AttackStateCounter = 0;
 	IsAttackState = true;
 
-	if (StrongAttackStateTwo)
+	if (SpawnedParticle == true)
 	{
-		PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
+		ChargePaticleReference->Destroy();
+		SpawnedParticle = false;
 	}
-	else if (StrongAttackStateThree)
+
+	if (isDemon)
 	{
-		PlayAnimMontage(StrongAttackStateThreeMontage, 1.0f);
+		if (StrongAttackStateTwo)
+		{
+			PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
+
+			FVector StartPosition = this->GetActorLocation();
+			FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
+			TArray<AActor*> ActorsToIgnore;
+			ActorsToIgnore.Add(GetOwner());
+
+			TArray<FHitResult> OutHits;
+
+			bool hit = UKismetSystemLibrary::SphereTraceMulti(
+				GetWorld(),
+				StartPosition,
+				EndPosition,
+				200.0f,
+				TraceTypeQuery1,
+				false,
+				ActorsToIgnore,
+				EDrawDebugTrace::None,
+				OutHits,
+				true
+			);
+
+			if (hit)
+			{
+				for (int q = 0; q < OutHits.Num(); q++)
+				{
+					if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+					{
+						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+						{
+							print("Hit");
+							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
+							npc->set_health(new_health);
+						}
+					}
+				}
+			}
+		}
+		else if (StrongAttackStateThree)
+		{
+			PlayAnimMontage(StrongAttackStateThreeMontage, 1.0f);
+
+			FVector StartPosition = this->GetActorLocation();
+			FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
+			TArray<AActor*> ActorsToIgnore;
+			ActorsToIgnore.Add(GetOwner());
+
+			TArray<FHitResult> OutHits;
+
+			bool hit = UKismetSystemLibrary::SphereTraceMulti(
+				GetWorld(),
+				StartPosition,
+				EndPosition,
+				300.0f,
+				TraceTypeQuery1,
+				false,
+				ActorsToIgnore,
+				EDrawDebugTrace::None,
+				OutHits,
+				true
+			);
+
+			if (hit)
+			{
+				for (int q = 0; q < OutHits.Num(); q++)
+				{
+					if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+					{
+						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+						{
+							print("Hit");
+							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
+							npc->set_health(new_health);
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			PlayAnimMontage(StrongAttackStateOneMontage, 1.0f);
+		}
 	}
 	else
 	{
-		PlayAnimMontage(StrongAttackStateOneMontage, 1.0f);
+		if (StrongAttackStateTwo)
+		{
+			PlayAnimMontage(AngelStrongAttack2Montage, 1.0f);
+		}
+		else
+		{
+			PlayAnimMontage(AngelStrongAttack1Montage, 1.0f);
+		}
 	}
+	
 	
 	StrongAttackStateTwo = false;
 	StrongAttackStateThree = false;
@@ -722,8 +865,39 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 
 void AMainCharacter::PlayChargingAnimation()
 {
-	
-	PlayAnimMontage(StrongAttackChargeMontage, 1.0f);
-	ForceStop = true;	
+	if (ForceStop)
+		return;
+	if (isDemon)
+	{
+		PlayAnimMontage(DemonChargeMontage, 1.0f);
+		GetWorldTimerManager().SetTimer(ChargeParticleDelay, this, &AMainCharacter::SpawnChargeParticle, 0.4, false);
+	}
+		
+	else
+		PlayAnimMontage(AngelChargeMontage, 1.0f);
+	ForceStop = true;
 	IsMeleeCharging = true;
+}
+
+void AMainCharacter::PlayBlessedIdolAnimation()
+{
+	PlayAnimMontage(BlessedIdolMontage, 1.0f);
+	ForceStop = true;
+}
+
+void AMainCharacter::SpawnChargeParticle()
+{
+	if (!IsMeleeCharging)
+		return;
+
+	const FRotator SpawnRotation = GetActorRotation();
+	const FVector SpawnLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z - 80.0f);
+
+	UWorld* const World = GetWorld();
+
+	if (World != NULL)
+	{
+		ChargePaticleReference = World->SpawnActor<AChargeParticle>(ChargeParticle, SpawnLocation, SpawnRotation);
+		SpawnedParticle = true;
+	}
 }
