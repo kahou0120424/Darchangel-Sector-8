@@ -129,6 +129,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Blessed Idol")
 		TSubclassOf<class ABlessedIdol> BlessedIdolProjectile;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Charge Attack")
+		TSubclassOf<class AChargeParticle> ChargeParticle;
+
 	UPROPERTY(BlueprintReadOnly)
 		bool HideWeapon;
 
@@ -183,6 +186,9 @@ public:
 	UPROPERTY()
 		FTimerHandle MeleeCharingHandle;
 
+	UPROPERTY()
+		FTimerHandle ChargeParticleDelay;
+
 		
 
 	void AttackMove();
@@ -229,6 +235,9 @@ protected:
 	void FinishBlessedIdolCD();
 	void PlayChargingAnimation();
 	void PlayBlessedIdolAnimation();
+	void SpawnChargeParticle();
+
+	AChargeParticle* ChargePaticleReference;
 
 	bool isShooting;
 	UPROPERTY(BlueprintReadWrite)
@@ -243,6 +252,7 @@ protected:
 	bool BlessedIdolInCD;
 	bool StrongAttackStateTwo;
 	bool StrongAttackStateThree;
+	bool SpawnedParticle;
 
 
 	float atkCD;

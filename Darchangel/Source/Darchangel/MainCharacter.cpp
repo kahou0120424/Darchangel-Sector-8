@@ -36,6 +36,7 @@
 #include "GraspofDeath.h"
 #include "WallOfLight.h"
 #include "BlessedIdol.h"
+#include "ChargeParticle.h"
 #include "Kismet/GameplayStatics.h"
 
 #define print(text) if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 1.5, FColor::Green,text)
@@ -730,18 +731,99 @@ void AMainCharacter::StrongAttackState()
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 {
+	if (!IsMeleeCharging)
+		return;
+
 	AttackStateCounter = 0;
 	IsAttackState = true;
+
+	if (SpawnedParticle == true)
+	{
+		ChargePaticleReference->Destroy();
+		SpawnedParticle = false;
+	}
 
 	if (isDemon)
 	{
 		if (StrongAttackStateTwo)
 		{
 			PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
+
+			FVector StartPosition = this->GetActorLocation();
+			FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
+			TArray<AActor*> ActorsToIgnore;
+			ActorsToIgnore.Add(GetOwner());
+
+			TArray<FHitResult> OutHits;
+
+			bool hit = UKismetSystemLibrary::SphereTraceMulti(
+				GetWorld(),
+				StartPosition,
+				EndPosition,
+				200.0f,
+				TraceTypeQuery1,
+				false,
+				ActorsToIgnore,
+				EDrawDebugTrace::None,
+				OutHits,
+				true
+			);
+
+			if (hit)
+			{
+				for (int q = 0; q < OutHits.Num(); q++)
+				{
+					if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+					{
+						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+						{
+							print("Hit");
+							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
+							npc->set_health(new_health);
+						}
+					}
+				}
+			}
 		}
 		else if (StrongAttackStateThree)
 		{
 			PlayAnimMontage(StrongAttackStateThreeMontage, 1.0f);
+
+			FVector StartPosition = this->GetActorLocation();
+			FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
+			TArray<AActor*> ActorsToIgnore;
+			ActorsToIgnore.Add(GetOwner());
+
+			TArray<FHitResult> OutHits;
+
+			bool hit = UKismetSystemLibrary::SphereTraceMulti(
+				GetWorld(),
+				StartPosition,
+				EndPosition,
+				300.0f,
+				TraceTypeQuery1,
+				false,
+				ActorsToIgnore,
+				EDrawDebugTrace::None,
+				OutHits,
+				true
+			);
+
+			if (hit)
+			{
+				for (int q = 0; q < OutHits.Num(); q++)
+				{
+					if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+					{
+						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+						{
+							print("Hit");
+							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
+							npc->set_health(new_health);
+						}
+					}
+				}
+			}
 		}
 		else
 		{
@@ -773,7 +855,7 @@ void AMainCharacter::PlayChargingAnimation()
 	if (isDemon)
 	{
 		PlayAnimMontage(DemonChargeMontage, 1.0f);
-		
+		GetWorldTimerManager().SetTimer(ChargeParticleDelay, this, &AMainCharacter::SpawnChargeParticle, 0.4, false);
 	}
 		
 	else
@@ -786,4 +868,21 @@ void AMainCharacter::PlayBlessedIdolAnimation()
 {
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
 	ForceStop = true;
+}
+
+void AMainCharacter::SpawnChargeParticle()
+{
+	if (!IsMeleeCharging)
+		return;
+
+	const FRotator SpawnRotation = GetActorRotation();
+	const FVector SpawnLocation = FVector(this->GetActorLocation().X, this->GetActorLocation().Y, this->GetActorLocation().Z - 80.0f);
+
+	UWorld* const World = GetWorld();
+
+	if (World != NULL)
+	{
+		ChargePaticleReference = World->SpawnActor<AChargeParticle>(ChargeParticle, SpawnLocation, SpawnRotation);
+		SpawnedParticle = true;
+	}
 }
