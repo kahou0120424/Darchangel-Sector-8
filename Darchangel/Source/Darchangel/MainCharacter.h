@@ -203,6 +203,7 @@ public:
 	void GraspOfDeathFunction();
 	void BlessedIdolFunction();
 	void StrongAttackState();
+	void ComboExpiredFunction();
 	virtual void attack_start();
 	virtual void attack_end();
 

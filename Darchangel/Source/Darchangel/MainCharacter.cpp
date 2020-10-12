@@ -121,7 +121,7 @@ void AMainCharacter::BeginPlay()
 	if (sword_collision_box)
 	{
 
-		sword_collision_box->AttachToComponent(GetMesh(), rules, "Sword_Middle");
+		sword_collision_box->AttachToComponent(GetMesh(), rules, "Demon_Sword_Middle");
 		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 
 	}
@@ -208,18 +208,16 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 			if (atkCount == 0)
 			{
 				PlayAnimMontage(DemonAttackMontage1, 1.f);
-				atkCount++;
 			}
 			else if (atkCount == 1)
 			{
 				PlayAnimMontage(DemonAttackMontage2, 1.f);
-				atkCount++;
 
 			}
 			else if (atkCount == 2)
 			{
 				PlayAnimMontage(DemonAttackMontage3, 1.f);
-				atkCount = 0;
+			
 			}
 			
 		}
@@ -227,13 +225,12 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		{
 			if (atkCount == 0)
 			{
-				PlayAnimMontage(AngelAttackMontage1, 1.f);
-				atkCount++;
+				PlayAnimMontage(AngelAttackMontage1, 1.f);;
 			}
 			else if (atkCount == 1)
 			{
 				PlayAnimMontage(AngelAttackMontage2, 1.f);
-				atkCount = 0;
+				
 
 			}
 			
@@ -594,7 +591,20 @@ void AMainCharacter::GraspOfDeathAnimation()
 void AMainCharacter::FinishActtack()
 {
 	ForceStop = false;
+	if (atkCount < 2 && isDemon)
+	{
+		atkCount++;
+	}
+	else if(!isDemon && atkCount < 1)
+	{
+		atkCount++;
+	}
+	else
+	{
+		atkCount = 0;
+	}
 }
+	
 
 void AMainCharacter::HideWeaponFunction()
 {
@@ -727,6 +737,11 @@ void AMainCharacter::StrongAttackState()
 	}
 	
 
+}
+
+void AMainCharacter::ComboExpiredFunction()
+{
+	atkCount = 0;
 }
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
