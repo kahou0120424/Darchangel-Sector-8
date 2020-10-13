@@ -118,6 +118,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		TSubclassOf<class ABullet> BulletProjectileClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+		TSubclassOf<class ABullet> Bullet2ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+		TSubclassOf<class ABullet> Bullet3ProjectileClass;
+
 	UPROPERTY(EditDefaultsOnly, Category = "Enhance Bullet")
 		TSubclassOf<class ABullet> EnhanceBulletProjectileClass;
 
@@ -218,6 +224,8 @@ public:
 	void RangeAttack();
 	void PlayChargingAnimation();
 	void AngelChargingAnimation();
+	void SpawnStrongRangeAttackBullet();
+	void SpawnStrongRangeAttackBullet2();
 	virtual void attack_start();
 	virtual void attack_end();
 
@@ -280,7 +288,7 @@ protected:
 	bool StrongAttackStateThree;
 	bool SpawnedParticle;
 	bool IsRangeCharging;
-
+	bool IsRangeHold;
 
 	float atkCD;
 	float pullCD;

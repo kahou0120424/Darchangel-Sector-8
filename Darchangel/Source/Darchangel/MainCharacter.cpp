@@ -758,8 +758,7 @@ void AMainCharacter::ComboExpiredFunction()
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 {
-	if (!IsMeleeCharging)
-		return;
+	
 
 	AttackStateCounter = 0;
 	IsAttackState = true;
@@ -772,6 +771,9 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 
 	if (isDemon)
 	{
+		if (!IsMeleeCharging)
+			return;
+
 		if (StrongAttackStateTwo)
 		{
 			PlayAnimMontage(StrongAttackStateTwoMontage, 1.0f);
@@ -859,9 +861,14 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	}
 	else
 	{
+		IsRangeHold = false;
+		if (!IsRangeCharging)
+			return;
+
 		if (StrongAttackStateTwo)
 		{
 			PlayAnimMontage(AngelStrongAttack2Montage, 1.0f);
+
 		}
 		else
 		{
@@ -873,6 +880,7 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	StrongAttackStateTwo = false;
 	StrongAttackStateThree = false;
 	IsMeleeCharging = false;
+	IsRangeCharging = false;
 }
 
 void AMainCharacter::PlayChargingAnimation()
@@ -894,7 +902,49 @@ void AMainCharacter::PlayChargingAnimation()
 
 void AMainCharacter::AngelChargingAnimation()
 {
+	if (!IsRangeHold)
+		return;
+
+	IsRangeCharging = true;
 	PlayAnimMontage(AngelChargeMontage, 1.0f);
+}
+
+void AMainCharacter::SpawnStrongRangeAttackBullet()
+{
+	if (Bullet2ProjectileClass != NULL)
+	{
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABullet* Bullet = World->SpawnActor<ABullet>(Bullet2ProjectileClass, SpawnLocation, SpawnRotation);
+
+			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+			Bullet->Velocity = FVector(NewVelocity);
+		}
+
+	}
+}
+
+void AMainCharacter::SpawnStrongRangeAttackBullet2()
+{
+	if (Bullet3ProjectileClass != NULL)
+	{
+		const FRotator SpawnRotation = GetActorRotation();
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
+		UWorld* const World = GetWorld();
+		if (World != NULL)
+		{
+			ABullet* Bullet = World->SpawnActor<ABullet>(Bullet3ProjectileClass, SpawnLocation, SpawnRotation);
+
+			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+			Bullet->Velocity = FVector(NewVelocity);
+		}
+
+	}
 }
 
 void AMainCharacter::PlayBlessedIdolAnimation()
@@ -920,8 +970,9 @@ void AMainCharacter::PlayWallOfLightAnimation()
 
 void AMainCharacter::PlayRangeAnimation()
 {
-	PlayAnimMontage(AngelNormalRangeAttackMontage, 1.0f);
+	IsRangeHold = true;
 	IsRangeCharging = true;
+	PlayAnimMontage(AngelNormalRangeAttackMontage, 1.0f);
 }
 
 void AMainCharacter::SpawnChargeParticle()
