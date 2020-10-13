@@ -160,6 +160,11 @@ void AMainCharacter::Tick(float DeltaTime)
 	StrongRangeChecker(DeltaTime);
 	
 	AttackStateCounterFunction(DeltaTime);
+
+	if (IsRangeCharging)
+	{
+		RotateToMouseCurse();
+	}
 }
 
 void AMainCharacter::RotateToMouseCurse()
@@ -246,7 +251,7 @@ void AMainCharacter::RangeAttack() // Range Attack
 
 	if (BulletProjectileClass != NULL)
 	{
-		RotateToMouseCurse();
+		IsRangeCharging = false;
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
 
@@ -260,7 +265,7 @@ void AMainCharacter::RangeAttack() // Range Attack
 		}
 
 	}
-	isRangeHolding = true;
+	//isRangeHolding = true;
 
 }
 void AMainCharacter::StrongRangeAttack() // Range Attack
@@ -476,7 +481,7 @@ void AMainCharacter::BrutalStrikeAnimation()
 {
 	if (!isDemon)
 	{
-		WallOfLightFunction();
+		PlayWallOfLightAnimation();
 		return;
 	}
 		
@@ -534,8 +539,9 @@ void AMainCharacter::WallOfLightFunction()
 	RotateToMouseCurse();
 	if (WallOfLightProjectile != NULL)
 	{
+		IsRangeCharging = false;
 		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 2);
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
@@ -544,6 +550,7 @@ void AMainCharacter::WallOfLightFunction()
 			FVector NewVelocity = GetActorForwardVector() * WallOfLightFireRate;
 			projectTile->Velocity = FVector(NewVelocity);
 			projectTile->CharacterForwardPosition = GetActorForwardVector();
+			
 		}
 	}
 }
@@ -616,11 +623,9 @@ void AMainCharacter::HideWeaponFunction()
 
 void AMainCharacter::BlessedIdolFunction()
 {
-	if (!BlessedIdolInCD)
-	{
 		if (BlessedIdolProjectile != NULL)
 		{
-			RotateToMouseCurse();
+			IsRangeCharging = false;
 			const FRotator SpawnRotation = GetActorRotation();
 			const FVector SpawnLocation = this->GetActorLocation() + (GetActorForwardVector() * 100);
 
@@ -631,10 +636,8 @@ void AMainCharacter::BlessedIdolFunction()
 				FVector NewVelocity = GetActorForwardVector() * BlessedIdolFIreRate;
 				projectTile->Velocity = FVector(NewVelocity);
 			}
-			BlessedIdolInCD = true;
-			GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
+			
 		}
-	}
 	
 }
 
@@ -705,6 +708,11 @@ void AMainCharacter::FinishBlessedIdolCD()
 	BlessedIdolInCD = false;
 }
 
+void AMainCharacter::FinishWallOfLightCD()
+{
+	WallOfLightInCD = false;
+}
+
 
 
 void AMainCharacter::EndAttackState()
@@ -729,10 +737,14 @@ void AMainCharacter::StrongAttackState()
 	}
 	else
 	{
-		if (!StrongAttackStateTwo)
+		if (!StrongAttackStateOne)
 		{
 			StrongAttackStateTwo = true;
 			return;
+		}
+		else
+		{
+			StrongAttackStateOne = true;
 		}
 	}
 	
@@ -871,18 +883,45 @@ void AMainCharacter::PlayChargingAnimation()
 	{
 		PlayAnimMontage(DemonChargeMontage, 1.0f);
 		GetWorldTimerManager().SetTimer(ChargeParticleDelay, this, &AMainCharacter::SpawnChargeParticle, 0.4, false);
+		ForceStop = true;
 	}
-		
+
 	else
-		PlayAnimMontage(AngelChargeMontage, 1.0f);
-	ForceStop = true;
+		PlayRangeAnimation();
+	
 	IsMeleeCharging = true;
+}
+
+void AMainCharacter::AngelChargingAnimation()
+{
+	PlayAnimMontage(AngelChargeMontage, 1.0f);
 }
 
 void AMainCharacter::PlayBlessedIdolAnimation()
 {
+	if (BlessedIdolInCD)
+		return;
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
 	ForceStop = true;
+	IsRangeCharging = true;
+	BlessedIdolInCD = true;
+	GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
+}
+
+void AMainCharacter::PlayWallOfLightAnimation()
+{
+	if (WallOfLightInCD)
+		return;
+	IsRangeCharging = true;
+	PlayAnimMontage(WallOfLightMontage, 1.0f);
+	WallOfLightInCD = true;
+	GetWorldTimerManager().SetTimer(WallOfLightHandle, this, &AMainCharacter::FinishWallOfLightCD, WallOfLightCooldown, false);
+}
+
+void AMainCharacter::PlayRangeAnimation()
+{
+	PlayAnimMontage(AngelNormalRangeAttackMontage, 1.0f);
+	IsRangeCharging = true;
 }
 
 void AMainCharacter::SpawnChargeParticle()
