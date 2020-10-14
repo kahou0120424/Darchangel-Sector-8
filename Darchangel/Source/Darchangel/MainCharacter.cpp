@@ -737,14 +737,18 @@ void AMainCharacter::StrongAttackState()
 	}
 	else
 	{
-		if (!StrongAttackStateOne)
+		if (!StrongAttackStateOne && !StrongAttackStateTwo)
 		{
-			StrongAttackStateTwo = true;
+			StrongAttackStateOne = true;
+			print("State 1");
 			return;
 		}
 		else
 		{
-			StrongAttackStateOne = true;
+			print("State 2");
+			StrongAttackStateOne = false;
+			StrongAttackStateTwo = true;
+
 		}
 	}
 	
@@ -861,26 +865,30 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	}
 	else
 	{
-		IsRangeHold = false;
-		if (!IsRangeCharging)
-			return;
+		//IsRangeHold = false;
+		//if (!IsRangeCharging)
+			//return;
 
+		IsRangeCharging = false;
+		if (!IsRangeHold)
+			return;
+		IsRangeHold = false;
 		if (StrongAttackStateTwo)
 		{
 			PlayAnimMontage(AngelStrongAttack2Montage, 1.0f);
 
 		}
-		else
+		else if(StrongAttackStateOne)
 		{
 			PlayAnimMontage(AngelStrongAttack1Montage, 1.0f);
 		}
+		
 	}
 	
-	
+	StrongAttackStateOne = false;
 	StrongAttackStateTwo = false;
 	StrongAttackStateThree = false;
 	IsMeleeCharging = false;
-	IsRangeCharging = false;
 }
 
 void AMainCharacter::PlayChargingAnimation()
@@ -895,7 +903,11 @@ void AMainCharacter::PlayChargingAnimation()
 	}
 
 	else
+	{
 		PlayRangeAnimation();
+		IsRangeHold = true;
+	}
+		
 	
 	IsMeleeCharging = true;
 }

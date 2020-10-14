@@ -91,6 +91,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AngelNormalRangeAttackMontage;
 
+
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
 		float AttackDelay;
