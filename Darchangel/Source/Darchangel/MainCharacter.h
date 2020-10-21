@@ -53,6 +53,7 @@ public:
 		float GrashofDeathCD;
 
 	//** Attack Animation
+	// Demon
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* DemonAttackMontage1;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
@@ -72,6 +73,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* StrongAttackStateThreeMontage;
 
+	// Angel
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AngelAttackMontage1;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
@@ -86,6 +88,9 @@ public:
 		class UAnimMontage* AngelStrongAttack1Montage;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AngelStrongAttack2Montage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* AngelNormalRangeAttackMontage;
+
 
 	//** Character Settings
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
@@ -100,6 +105,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Wall Of Light")
 		float WallOfLightFireRate;
 
+	UPROPERTY(EditAnywhere, Category = "Wall Of Light")
+		float WallOfLightCooldown;
+
 	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
 		float BlessedIdolFIreRate;
 
@@ -110,6 +118,12 @@ public:
 	//** Bullet
 	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
 		TSubclassOf<class ABullet> BulletProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+		TSubclassOf<class ABullet> Bullet2ProjectileClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+		TSubclassOf<class ABullet> Bullet3ProjectileClass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Enhance Bullet")
 		TSubclassOf<class ABullet> EnhanceBulletProjectileClass;
@@ -189,6 +203,9 @@ public:
 	UPROPERTY()
 		FTimerHandle ChargeParticleDelay;
 
+	UPROPERTY()
+		FTimerHandle WallOfLightHandle;
+
 		
 
 	void AttackMove();
@@ -202,8 +219,14 @@ public:
 	void HideWeaponFunction();
 	void GraspOfDeathFunction();
 	void BlessedIdolFunction();
+	void WallOfLightFunction();
 	void StrongAttackState();
 	void ComboExpiredFunction();
+	void RangeAttack();
+	void PlayChargingAnimation();
+	void AngelChargingAnimation();
+	void SpawnStrongRangeAttackBullet();
+	void SpawnStrongRangeAttackBullet2();
 	virtual void attack_start();
 	virtual void attack_end();
 
@@ -213,7 +236,6 @@ protected:
 	void Raycast();
 	void MeleeAttack();
 	void PlayStrongAttackAnimation();
-	void RangeAttack();
 	void StrongRangeAttack();
 	void RotateToMouseCurse();
 	void Fire();
@@ -225,7 +247,6 @@ protected:
 	void FinishBrutalStrikeCD();
 	void FinishGrashofDeathCD();
 	void GraspOfDeathAnimation();
-	void WallOfLightFunction();
 	void SwapForm();
 	void EndAttackState();
 	void AttackStateCounterFunction(float DeltaTime);
@@ -234,9 +255,15 @@ protected:
 	void StopCharacter();
 	void StrongRangeChecker(float DeltaTime);
 	void FinishBlessedIdolCD();
-	void PlayChargingAnimation();
-	void PlayBlessedIdolAnimation();
+	void FinishWallOfLightCD();
 	void SpawnChargeParticle();
+
+	// Play Animation Function
+
+
+	void PlayBlessedIdolAnimation();
+	void PlayWallOfLightAnimation();
+	void PlayRangeAnimation();
 
 	AChargeParticle* ChargePaticleReference;
 
@@ -245,16 +272,24 @@ protected:
 		bool canJumpWall;
 	UPROPERTY(BlueprintReadOnly)
 		bool IsMeleeCharging;
+	UPROPERTY(BlueprintReadOnly)
+		bool BlessedIdolInCD;
+	UPROPERTY(BlueprintReadOnly)
+		bool GrashofDeathInCD;
+	UPROPERTY(BlueprintReadOnly)
+		bool BrutalStrikeInCD;
+	UPROPERTY(BlueprintReadOnly)
+		bool WallOfLightInCD;
+
 	bool stopMoving;
 	bool isRangeHolding;
-	bool BrutalStrikeInCD;
-	bool GrashofDeathInCD;
 	bool isDemon;
-	bool BlessedIdolInCD;
+	bool StrongAttackStateOne;
 	bool StrongAttackStateTwo;
 	bool StrongAttackStateThree;
 	bool SpawnedParticle;
-
+	bool IsRangeCharging;
+	bool IsRangeHold;
 
 	float atkCD;
 	float pullCD;
