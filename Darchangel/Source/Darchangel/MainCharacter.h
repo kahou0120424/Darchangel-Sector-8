@@ -236,7 +236,6 @@ protected:
 	void Raycast();
 	void MeleeAttack();
 	void PlayStrongAttackAnimation();
-	void StrongRangeAttack();
 	void RotateToMouseCurse();
 	void Fire();
 	void FinishFire();

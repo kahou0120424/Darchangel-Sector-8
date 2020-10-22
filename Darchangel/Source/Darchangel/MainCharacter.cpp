@@ -101,10 +101,6 @@ AMainCharacter::AMainCharacter() :
 		sword_collision_box->SetBoxExtent(extent, false);
 		sword_collision_box->SetCollisionProfileName("NoCollision");
 	}
-
-
-
-
 }
 
 // Called when the game starts or when spawned
@@ -167,6 +163,25 @@ void AMainCharacter::Tick(float DeltaTime)
 	}
 }
 
+// Called to bind functionality to input
+void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
+
+	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
+	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
+	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
+	PlayerInputComponent->BindAction("Strong Attack", IE_Pressed, this, &AMainCharacter::PlayChargingAnimation);
+	PlayerInputComponent->BindAction("Strong Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
+	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
+	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
+	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
+
+}
+
 void AMainCharacter::RotateToMouseCurse()
 {
 	APlayerController* playerController = (APlayerController*)GetWorld()->GetFirstPlayerController();
@@ -177,30 +192,11 @@ void AMainCharacter::RotateToMouseCurse()
 
 void AMainCharacter::Raycast() //Chain Of Hell
 {
-	/*if (!isPulling && !canJumpWall)
-	{
-
-		RotateToMouseCurse();
-
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			AChain* chain = World->SpawnActor<AChain>(ChainProjectileClass, SpawnLocation, SpawnRotation);
-			Cable->SetAttachEndTo(chain, "Sphere");
-			Cable->SetVisibility(true);
-			GetWorldTimerManager().SetTimer(chainHandle, this, &AMainCharacter::HideCable, 0.7f, false);
-			isPulling = true;
-		}
-	}*/
 	RotateToMouseCurse();
 	if(canJumpWall)
 	{
 		JumpUp();
 	}
-
 }
 
 void AMainCharacter::MeleeAttack() // Melee Attack
@@ -248,7 +244,6 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 }
 void AMainCharacter::RangeAttack() // Range Attack
 {
-
 	if (BulletProjectileClass != NULL)
 	{
 		IsRangeCharging = false;
@@ -263,56 +258,7 @@ void AMainCharacter::RangeAttack() // Range Attack
 			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
 			Bullet->Velocity = FVector(NewVelocity);
 		}
-
 	}
-	//isRangeHolding = true;
-
-}
-void AMainCharacter::StrongRangeAttack() // Range Attack
-{
-	if (rangeHoldTimer > rangeHoldTime)
-	{
-		if (EnhanceBulletProjectileClass != NULL)
-		{
-			RotateToMouseCurse();
-			const FRotator SpawnRotation = GetActorRotation();
-			const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
-			UWorld* const World = GetWorld();
-			if (World != NULL)
-			{
-				ABullet* Bullet = World->SpawnActor<ABullet>(EnhanceBulletProjectileClass, SpawnLocation, SpawnRotation);
-
-				FVector NewVelocity = GetActorForwardVector() * 2000.0f;
-				Bullet->Velocity = FVector(NewVelocity);
-			}
-
-		}
-	}
-	isRangeHolding = false;
-
-
-}
-
-
-
-// Called to bind functionality to input
-void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMainCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMainCharacter::MoveRight);
-
-	PlayerInputComponent->BindAction("ChainsOfHell", IE_Pressed, this, &AMainCharacter::Raycast);
-	PlayerInputComponent->BindAction("Normal Attack", IE_Pressed, this, &AMainCharacter::MeleeAttack);
-	PlayerInputComponent->BindAction("Distract", IE_Pressed, this, &AMainCharacter::on_distract);
-	PlayerInputComponent->BindAction("Strong Attack", IE_Pressed, this, &AMainCharacter::PlayChargingAnimation);
-	PlayerInputComponent->BindAction("Strong Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
-	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
-	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
-	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
-
 }
 
 void AMainCharacter::setup_stimulus()
@@ -359,9 +305,6 @@ void AMainCharacter::MoveRight(float Axis)
 	}
 
 }
-
-
-
 
 void AMainCharacter::AttackMove() // Move forward while attacking
 {
@@ -448,9 +391,6 @@ void AMainCharacter::WallJumpEnd()
 {
 	canJumpWall = false;
 }
-
-
-
 
 void AMainCharacter::JumpUp()
 {
@@ -865,10 +805,6 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	}
 	else
 	{
-		//IsRangeHold = false;
-		//if (!IsRangeCharging)
-			//return;
-
 		IsRangeCharging = false;
 		if (!IsRangeHold)
 			return;
