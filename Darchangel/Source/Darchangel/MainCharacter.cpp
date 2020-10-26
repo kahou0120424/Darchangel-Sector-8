@@ -426,13 +426,13 @@ void AMainCharacter::BrutalStrikeAnimation()
 	}
 		
 
-	if (!BrutalStrikeInCD)
+	if (!BrutalStrikeInCD )
 	{
 		
 		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
 		ForceStop = true;
 		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, BrutalStrikeCD, false);
-		BrutalStrikeInCD = true;
+		//BrutalStrikeInCD = true;
 	}
 	
 }
@@ -526,12 +526,12 @@ void AMainCharacter::GraspOfDeathAnimation()
 		return;
 	}
 	
-	if (!GrashofDeathInCD)
+	if (!GrashofDeathInCD )
 	{
 		PlayAnimMontage(GraspOfDeathMontage, 1.f, FName("Grasp_Of_Death_Animation"));
 		ForceStop = true;
 		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
-		GrashofDeathInCD = true;
+		//GrashofDeathInCD = true;
 	}
 }
 
@@ -902,7 +902,7 @@ void AMainCharacter::PlayBlessedIdolAnimation()
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
 	ForceStop = true;
 	IsRangeCharging = true;
-	BlessedIdolInCD = true;
+	//BlessedIdolInCD = true;
 	GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
 }
 
@@ -912,7 +912,7 @@ void AMainCharacter::PlayWallOfLightAnimation()
 		return;
 	IsRangeCharging = true;
 	PlayAnimMontage(WallOfLightMontage, 1.0f);
-	WallOfLightInCD = true;
+	//WallOfLightInCD = true;
 	GetWorldTimerManager().SetTimer(WallOfLightHandle, this, &AMainCharacter::FinishWallOfLightCD, WallOfLightCooldown, false);
 }
 
