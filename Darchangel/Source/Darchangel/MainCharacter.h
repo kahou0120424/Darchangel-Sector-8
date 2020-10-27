@@ -269,15 +269,15 @@ protected:
 	bool isShooting;
 	UPROPERTY(BlueprintReadWrite)
 		bool canJumpWall;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool IsMeleeCharging;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool BlessedIdolInCD;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool GrashofDeathInCD;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool BrutalStrikeInCD;
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 		bool WallOfLightInCD;
 
 	bool stopMoving;
