@@ -54,7 +54,8 @@ double Distance(FVector a, FVector b)
 AMainCharacter::AMainCharacter() :
 	health(max_health),
 	//widget_component(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
-	sword_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("SwordCollisionBox"))),
+	Demon_Sword_Collision_Box(CreateDefaultSubobject<UBoxComponent>(TEXT("DemonSwordCollisionBox"))),
+	Angel_Sword_Collision_Box(CreateDefaultSubobject<UBoxComponent>(TEXT("AngelSwordCollisionBox"))),
 	Cable(CreateDefaultSubobject<UCableComponent>(TEXT("Cable")))
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
@@ -83,23 +84,20 @@ AMainCharacter::AMainCharacter() :
 	FollowCamera->bUsePawnControlRotation = false; // Camera did not rotate relative to the r
 
 	setup_stimulus();
-	/*if (widget_component)
-	{
-		widget_component->SetupAttachment(RootComponent);
-		widget_component->SetWidgetSpace(EWidgetSpace::Screen);
-		widget_component->SetRelativeLocation(FVector(0.0f, 0.0f, 85.0f));
-		static ConstructorHelpers::FClassFinder<UUserWidget> widget_class(TEXT("/Game/UI/HealthBar_BP"));
-		if (widget_class.Succeeded())
-		{
-			widget_component->SetWidgetClass(widget_class.Class);
-		}
-	}*/
 
-	if (sword_collision_box)
+
+	if (Demon_Sword_Collision_Box)
 	{
 		FVector const extent(50.0f);
-		sword_collision_box->SetBoxExtent(extent, false);
-		sword_collision_box->SetCollisionProfileName("NoCollision");
+		Demon_Sword_Collision_Box->SetBoxExtent(extent, false);
+		Demon_Sword_Collision_Box->SetCollisionProfileName("NoCollision");
+	}	
+	
+	if (Angel_Sword_Collision_Box)
+	{
+		FVector const extent(50.0f);
+		Angel_Sword_Collision_Box->SetBoxExtent(extent, false);
+		Angel_Sword_Collision_Box->SetCollisionProfileName("NoCollision");
 	}
 }
 
@@ -114,11 +112,18 @@ void AMainCharacter::BeginPlay()
 		false);
 
 	HideWeapon = false;
-	if (sword_collision_box)
+	if (Demon_Sword_Collision_Box)
 	{
 
-		sword_collision_box->AttachToComponent(GetMesh(), rules, "Demon_Sword_Middle");
-		sword_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
+		Demon_Sword_Collision_Box->AttachToComponent(GetMesh(), rules, "Demon_Sword_Middle");
+		Demon_Sword_Collision_Box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
+
+	}
+	if (Angel_Sword_Collision_Box)
+	{
+
+		Angel_Sword_Collision_Box->AttachToComponent(GetMesh(), rules, "Dagger_Middle");
+		Angel_Sword_Collision_Box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 
 	}
 
@@ -127,10 +132,15 @@ void AMainCharacter::BeginPlay()
 		Cable->AttachToComponent(GetMesh(), rules, "index_01_l");
 	}
 
-	if (sword_collision_box)
+	if (Demon_Sword_Collision_Box)
 	{
-		sword_collision_box->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_begin);
-		sword_collision_box->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_end);
+		Demon_Sword_Collision_Box->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_begin);
+		Demon_Sword_Collision_Box->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_end);
+	}
+	if (Angel_Sword_Collision_Box)
+	{
+		Angel_Sword_Collision_Box->OnComponentBeginOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_begin);
+		Angel_Sword_Collision_Box->OnComponentEndOverlap.AddDynamic(this, &AMainCharacter::on_attack_overlap_end);
 	}
 
 	isDemon = true;
@@ -140,12 +150,6 @@ void AMainCharacter::BeginPlay()
 void AMainCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*(auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
-	if (uw)
-	{
-		uw->set_bar_value_percent(health / max_health);
-	}*/
 
 	PullingCoolDownFunction(DeltaTime);
 
@@ -346,14 +350,31 @@ void AMainCharacter::set_health(float const new_health)
 
 void AMainCharacter::attack_start()
 {
-	sword_collision_box->SetCollisionProfileName("Sword");
-	sword_collision_box->SetNotifyRigidBodyCollision(true);
+	if (isDemon)
+	{
+		Demon_Sword_Collision_Box->SetCollisionProfileName("Sword");
+		Demon_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+	}
+	else
+	{
+		Angel_Sword_Collision_Box->SetCollisionProfileName("Sword");
+		Angel_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+	}
+	
 }
 
 void AMainCharacter::attack_end()
 {
-	sword_collision_box->SetCollisionProfileName("NoCollision");
-	sword_collision_box->SetNotifyRigidBodyCollision(false);
+	if (isDemon)
+	{
+		Demon_Sword_Collision_Box->SetCollisionProfileName("Sword");
+		Demon_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+	}
+	else
+	{
+		Angel_Sword_Collision_Box->SetCollisionProfileName("Sword");
+		Angel_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+	}
 }
 
 void AMainCharacter::on_attack_overlap_begin(
@@ -429,12 +450,9 @@ void AMainCharacter::BrutalStrikeAnimation()
 		
 
 	if (!BrutalStrikeInCD)
-	{
-		
+	{	
 		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
-		//ForceStop = true;
 		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, BrutalStrikeCD, false);
-		//BrutalStrikeInCD = true;
 	}
 	
 }
@@ -534,9 +552,7 @@ void AMainCharacter::GraspOfDeathAnimation()
 	if (!GrashofDeathInCD )
 	{
 		PlayAnimMontage(GraspOfDeathMontage, 1.f, FName("Grasp_Of_Death_Animation"));
-		//ForceStop = true;
 		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
-		//GrashofDeathInCD = true;
 	}
 }
 
@@ -580,14 +596,9 @@ void AMainCharacter::BlessedIdolFunction()
 				ABlessedIdol* projectTile = World->SpawnActor<ABlessedIdol>(BlessedIdolProjectile, SpawnLocation, SpawnRotation);
 				FVector NewVelocity = GetActorForwardVector() * BlessedIdolFIreRate;
 				projectTile->Velocity = FVector(NewVelocity);
-			}
-			
+			}		
 		}
-	
 }
-
-
-
 
 void AMainCharacter::AttackStateCounterFunction(float Deltatime)
 {
@@ -903,9 +914,7 @@ void AMainCharacter::PlayBlessedIdolAnimation()
 	if (BlessedIdolInCD)
 		return;
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
-	//ForceStop = true;
 	IsRangeCharging = true;
-	//BlessedIdolInCD = true;
 	GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
 }
 
@@ -914,9 +923,7 @@ void AMainCharacter::PlayWallOfLightAnimation()
 	if (WallOfLightInCD)
 		return;
 	IsRangeCharging = true;
-	//ForceStop = true;
 	PlayAnimMontage(WallOfLightMontage, 1.0f);
-	//WallOfLightInCD = true;
 	GetWorldTimerManager().SetTimer(WallOfLightHandle, this, &AMainCharacter::FinishWallOfLightCD, WallOfLightCooldown, false);
 }
 
