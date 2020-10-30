@@ -419,6 +419,8 @@ void AMainCharacter::HideCable()
 
 void AMainCharacter::BrutalStrikeAnimation()
 {
+	if (ForceStop)
+		return;
 	if (!isDemon)
 	{
 		PlayWallOfLightAnimation();
@@ -426,11 +428,11 @@ void AMainCharacter::BrutalStrikeAnimation()
 	}
 		
 
-	if (!BrutalStrikeInCD )
+	if (!BrutalStrikeInCD)
 	{
 		
 		PlayAnimMontage(BrutalStrikeMontage, 1.f, FName("Brutal_Strike_Animation"));
-		ForceStop = true;
+		//ForceStop = true;
 		GetWorldTimerManager().SetTimer(brutalStrikeCDHandle, this, &AMainCharacter::FinishBrutalStrikeCD, BrutalStrikeCD, false);
 		//BrutalStrikeInCD = true;
 	}
@@ -520,6 +522,9 @@ void AMainCharacter::FinishGrashofDeathCD()
 
 void AMainCharacter::GraspOfDeathAnimation()
 {
+	if (ForceStop)
+		return;
+
 	if (!isDemon)
 	{
 		PlayBlessedIdolAnimation();
@@ -529,7 +534,7 @@ void AMainCharacter::GraspOfDeathAnimation()
 	if (!GrashofDeathInCD )
 	{
 		PlayAnimMontage(GraspOfDeathMontage, 1.f, FName("Grasp_Of_Death_Animation"));
-		ForceStop = true;
+		//ForceStop = true;
 		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
 		//GrashofDeathInCD = true;
 	}
@@ -702,8 +707,6 @@ void AMainCharacter::ComboExpiredFunction()
 
 void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 {
-	
-
 	AttackStateCounter = 0;
 	IsAttackState = true;
 
@@ -900,7 +903,7 @@ void AMainCharacter::PlayBlessedIdolAnimation()
 	if (BlessedIdolInCD)
 		return;
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
-	ForceStop = true;
+	//ForceStop = true;
 	IsRangeCharging = true;
 	//BlessedIdolInCD = true;
 	GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
@@ -911,6 +914,7 @@ void AMainCharacter::PlayWallOfLightAnimation()
 	if (WallOfLightInCD)
 		return;
 	IsRangeCharging = true;
+	//ForceStop = true;
 	PlayAnimMontage(WallOfLightMontage, 1.0f);
 	//WallOfLightInCD = true;
 	GetWorldTimerManager().SetTimer(WallOfLightHandle, this, &AMainCharacter::FinishWallOfLightCD, WallOfLightCooldown, false);
