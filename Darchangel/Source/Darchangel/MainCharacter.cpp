@@ -91,6 +91,7 @@ AMainCharacter::AMainCharacter() :
 		FVector const extent(50.0f);
 		Demon_Sword_Collision_Box->SetBoxExtent(extent, false);
 		Demon_Sword_Collision_Box->SetCollisionProfileName("NoCollision");
+		Demon_Sword_Collision_Box->SetGenerateOverlapEvents(false);
 	}	
 	
 	if (Angel_Sword_Collision_Box)
@@ -98,6 +99,7 @@ AMainCharacter::AMainCharacter() :
 		FVector const extent(50.0f);
 		Angel_Sword_Collision_Box->SetBoxExtent(extent, false);
 		Angel_Sword_Collision_Box->SetCollisionProfileName("NoCollision");
+		Angel_Sword_Collision_Box->SetGenerateOverlapEvents(false);
 	}
 }
 
@@ -354,11 +356,14 @@ void AMainCharacter::attack_start()
 	{
 		Demon_Sword_Collision_Box->SetCollisionProfileName("Sword");
 		Demon_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+		Demon_Sword_Collision_Box->SetGenerateOverlapEvents(true);
 	}
 	else
 	{
 		Angel_Sword_Collision_Box->SetCollisionProfileName("Sword");
 		Angel_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+		Angel_Sword_Collision_Box->SetGenerateOverlapEvents(true);
+	
 	}
 	
 }
@@ -369,11 +374,13 @@ void AMainCharacter::attack_end()
 	{
 		Demon_Sword_Collision_Box->SetCollisionProfileName("Sword");
 		Demon_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+		Demon_Sword_Collision_Box->SetGenerateOverlapEvents(false);
 	}
 	else
 	{
 		Angel_Sword_Collision_Box->SetCollisionProfileName("Sword");
 		Angel_Sword_Collision_Box->SetNotifyRigidBodyCollision(true);
+		Angel_Sword_Collision_Box->SetGenerateOverlapEvents(false);
 	}
 }
 
@@ -387,7 +394,6 @@ void AMainCharacter::on_attack_overlap_begin(
 {
 	if (ANPC* const npc = Cast<ANPC>(other_actor))
 	{
-		print("Hit");
 		float const new_health = npc->get_health() - npc->get_max_health() * 0.3f;
 		npc->set_health(new_health);
 	}
@@ -458,7 +464,7 @@ void AMainCharacter::BrutalStrikeAnimation()
 }
 
 void AMainCharacter::BrutalStikeFunction()
-{
+{/*
 	if (BurtalStrikeTriggerBox != NULL)
 	{
 		
@@ -471,13 +477,48 @@ void AMainCharacter::BrutalStikeFunction()
 		{
 			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
 		}
-	}		
+	}*/	
+	FVector StartPosition = this->GetActorLocation();
+	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetOwner());
+
+	TArray<FHitResult> OutHits;
+
+	bool hit = UKismetSystemLibrary::SphereTraceMulti(
+		GetWorld(),
+		StartPosition,
+		EndPosition,
+		BrutalStrikeHitBoxRadius,
+		TraceTypeQuery1,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::None,
+		OutHits,
+		true
+	);
+
+	if (hit)
+	{
+		for (int q = 0; q < OutHits.Num(); q++)
+		{
+			if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+			{
+				if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+				{
+					float const new_health = npc->get_health() - npc->get_max_health() * BrutalStrikeDamage;
+					npc->set_health(new_health);
+				}
+			}
+		}
+	}
+
 }
 
 void AMainCharacter::GraspOfDeathFunction()
 {
 	
-	if (GraspOfDeathProjectile != NULL)
+	/*if (GraspOfDeathProjectile != NULL)
 	{
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation();
@@ -488,8 +529,43 @@ void AMainCharacter::GraspOfDeathFunction()
 			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
 		}
 		
-	}	
-	
+	}*/	
+
+	FVector StartPosition = this->GetActorLocation();
+	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetOwner());
+
+	TArray<FHitResult> OutHits;
+
+	bool hit = UKismetSystemLibrary::SphereTraceMulti(
+		GetWorld(),
+		StartPosition,
+		EndPosition,
+		GraspOfDeathHitBoxRadius,
+		TraceTypeQuery1,
+		false,
+		ActorsToIgnore,
+		EDrawDebugTrace::None,
+		OutHits,
+		true
+	);
+
+	if (hit)
+	{
+		for (int q = 0; q < OutHits.Num(); q++)
+		{
+			if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+			{
+				if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+				{
+					float const new_health = npc->get_health() - npc->get_max_health() * GraspOfDeathDamage;
+					npc->set_health(new_health);
+					npc->HitByGraspofDeathFunction(this->GetActorLocation());
+				}
+			}
+		}
+	}
 }
 
 
@@ -533,9 +609,9 @@ void AMainCharacter::FinishBrutalStrikeCD()
 	BrutalStrikeInCD = false;
 }
 
-void AMainCharacter::FinishGrashofDeathCD()
+void AMainCharacter::FinishGraspofDeathCD()
 {
-	GrashofDeathInCD = false;
+	GraspofDeathInCD = false;
 }
 
 void AMainCharacter::GraspOfDeathAnimation()
@@ -549,10 +625,10 @@ void AMainCharacter::GraspOfDeathAnimation()
 		return;
 	}
 	
-	if (!GrashofDeathInCD )
+	if (!GraspofDeathInCD )
 	{
 		PlayAnimMontage(GraspOfDeathMontage, 1.f, FName("Grasp_Of_Death_Animation"));
-		GetWorldTimerManager().SetTimer(grashofDeathCDHandle, this, &AMainCharacter::FinishGrashofDeathCD, GrashofDeathCD, false);
+		GetWorldTimerManager().SetTimer(graspofDeathCDHandle, this, &AMainCharacter::FinishGraspofDeathCD, GraspofDeathCD, false);
 	}
 }
 
@@ -696,12 +772,10 @@ void AMainCharacter::StrongAttackState()
 		if (!StrongAttackStateOne && !StrongAttackStateTwo)
 		{
 			StrongAttackStateOne = true;
-			print("State 1");
 			return;
 		}
 		else
 		{
-			print("State 2");
 			StrongAttackStateOne = false;
 			StrongAttackStateTwo = true;
 
@@ -764,7 +838,6 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 					{
 						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 						{
-							print("Hit");
 							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
 							npc->set_health(new_health);
 						}
@@ -804,7 +877,6 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 					{
 						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 						{
-							print("Hit");
 							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
 							npc->set_health(new_health);
 						}

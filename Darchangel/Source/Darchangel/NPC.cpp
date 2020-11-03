@@ -117,7 +117,7 @@ void ANPC::Tick(float DeltaTime)
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(this);
 
-		DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
+		//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
 
 		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
 
@@ -129,7 +129,7 @@ void ANPC::Tick(float DeltaTime)
 		{
 			if (OutHit.Actor->ActorHasTag("Wall"))
 			{
-				print("Hit");
+				//print("Hit");
 				IsLineTranceStart = false;
 				HitByWallOfLight = false;
 				stun(5.0f);

@@ -50,8 +50,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
 		float BrutalStrikeCD;
 
-	UPROPERTY(EditAnywhere, Category = "Grash of Death")
-		float GrashofDeathCD;
+	UPROPERTY(EditAnywhere, Category = "Grasp of Death")
+		float GraspofDeathCD;
 
 	//** Attack Animation
 	// Demon
@@ -114,6 +114,18 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
 		float BleesedIdolCooldown;
+
+	UPROPERTY(EditAnywhere, Category = "Grasp Of Death")
+		float GraspOfDeathHitBoxRadius;
+
+	UPROPERTY(EditAnywhere, Category = "Grasp Of Death")
+		float GraspOfDeathDamage;
+	
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float BrutalStrikeHitBoxRadius;
+
+	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+		float BrutalStrikeDamage;
 
 
 	//** Bullet
@@ -190,7 +202,7 @@ public:
 		FTimerHandle brutalStrikeCDHandle;
 
 	UPROPERTY()
-		FTimerHandle grashofDeathCDHandle;
+		FTimerHandle graspofDeathCDHandle;
 
 	UPROPERTY()
 		FTimerHandle AttackStateHandle;
@@ -245,7 +257,7 @@ protected:
 	void HideCable();
 	void BrutalStrikeAnimation();
 	void FinishBrutalStrikeCD();
-	void FinishGrashofDeathCD();
+	void FinishGraspofDeathCD();
 	void GraspOfDeathAnimation();
 	void SwapForm();
 	void EndAttackState();
@@ -275,7 +287,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		bool BlessedIdolInCD;
 	UPROPERTY(BlueprintReadWrite)
-		bool GrashofDeathInCD;
+		bool GraspofDeathInCD;
 	UPROPERTY(BlueprintReadWrite)
 		bool BrutalStrikeInCD;
 	UPROPERTY(BlueprintReadWrite)
