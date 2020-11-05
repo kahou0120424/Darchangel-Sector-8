@@ -313,6 +313,8 @@ protected:
 	FRotator BrutalStrikeSpawnRotation;
 	FVector PlayerLocation;
 	FVector PlayerForwardPosition;
+	FVector BulletSpawnForwardPosition;
+	FRotator BulletSpawnRotation;
 	
 
 public:

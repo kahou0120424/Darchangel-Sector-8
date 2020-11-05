@@ -166,6 +166,8 @@ void AMainCharacter::Tick(float DeltaTime)
 	if (IsRangeCharging)
 	{
 		RotateToMouseCurse();
+		BulletSpawnForwardPosition = this->GetActorForwardVector();
+		BulletSpawnRotation = this->GetActorRotation();
 	}
 }
 
@@ -250,11 +252,15 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 }
 void AMainCharacter::RangeAttack() // Range Attack
 {
+	
 	if (BulletProjectileClass != NULL)
 	{
 		IsRangeCharging = false;
+		//const FRotator SpawnRotation = BulletSpawnRotation;
 		const FRotator SpawnRotation = GetActorRotation();
+		//const FVector SpawnLocation = GetActorLocation() + (BulletSpawnForwardPosition * 100);
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
+
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
@@ -944,7 +950,7 @@ void AMainCharacter::AngelChargingAnimation()
 }
 
 void AMainCharacter::SpawnStrongRangeAttackBullet()
-{
+{	
 	if (Bullet2ProjectileClass != NULL)
 	{
 		const FRotator SpawnRotation = GetActorRotation();

@@ -25,9 +25,9 @@ void AChargeParticle::Tick(float DeltaTime)
 
 	counter += DeltaTime;
 
-	if (counter <= 5)
+	if (counter <= 2)
 	{
-		scale += FVector(0.05, 0.05, 0.05);
+		scale += FVector(0.15, 0.15, 0.15);
 		this->SetActorScale3D(scale);
 	}
 
