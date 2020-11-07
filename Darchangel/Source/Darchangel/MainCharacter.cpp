@@ -256,11 +256,9 @@ void AMainCharacter::RangeAttack() // Range Attack
 	if (BulletProjectileClass != NULL)
 	{
 		IsRangeCharging = false;
-		//const FRotator SpawnRotation = BulletSpawnRotation;
 		const FRotator SpawnRotation = GetActorRotation();
-		//const FVector SpawnLocation = GetActorLocation() + (BulletSpawnForwardPosition * 100);
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
+		IsRangeCharging = false;
 
 		UWorld* const World = GetWorld();
 		if (World != NULL)
@@ -897,7 +895,6 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	}
 	else
 	{
-		IsRangeCharging = false;
 		if (!IsRangeHold)
 			return;
 		IsRangeHold = false;
@@ -955,7 +952,7 @@ void AMainCharacter::SpawnStrongRangeAttackBullet()
 	{
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
+		IsRangeCharging = false;
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
@@ -963,6 +960,7 @@ void AMainCharacter::SpawnStrongRangeAttackBullet()
 
 			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
 			Bullet->Velocity = FVector(NewVelocity);
+		
 		}
 
 	}
@@ -974,7 +972,7 @@ void AMainCharacter::SpawnStrongRangeAttackBullet2()
 	{
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 100);
-
+		IsRangeCharging = false;
 		UWorld* const World = GetWorld();
 		if (World != NULL)
 		{
@@ -982,6 +980,7 @@ void AMainCharacter::SpawnStrongRangeAttackBullet2()
 
 			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
 			Bullet->Velocity = FVector(NewVelocity);
+		;
 		}
 
 	}
