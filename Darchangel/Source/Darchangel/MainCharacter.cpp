@@ -265,7 +265,7 @@ void AMainCharacter::RangeAttack() // Range Attack
 		{
 			ABullet* Bullet = World->SpawnActor<ABullet>(BulletProjectileClass, SpawnLocation, SpawnRotation);
 
-			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+			FVector NewVelocity = GetActorForwardVector() * 3000.0f;
 			Bullet->Velocity = FVector(NewVelocity);
 		}
 	}
@@ -550,7 +550,7 @@ void AMainCharacter::GraspOfDeathFunction()
 		TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHits,
 		true
 	);

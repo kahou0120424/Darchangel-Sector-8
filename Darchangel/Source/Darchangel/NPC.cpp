@@ -228,6 +228,7 @@ void ANPC::stun(float Time)
 void ANPC::HitByGraspofDeathFunction(FVector location)
 {
 	isStun = true;
+	print("Hit by grasp of death");
 	playerPos = MidPoint(location, this->GetActorLocation());
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
