@@ -271,6 +271,8 @@ void AMainCharacter::RangeAttack() // Range Attack
 	}
 }
 
+
+
 void AMainCharacter::setup_stimulus()
 {
 	stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("stimulus"));
@@ -497,7 +499,7 @@ void AMainCharacter::BrutalStikeFunction()
 		TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHits,
 		true
 	);
@@ -657,9 +659,16 @@ void AMainCharacter::FinishActtack()
 void AMainCharacter::HideWeaponFunction()
 {
 	if (HideWeapon)
+	{
 		HideWeapon = false;
+	}
+		
 	else
+	{
 		HideWeapon = true;
+	}
+		
+
 }
 
 void AMainCharacter::BlessedIdolFunction()
