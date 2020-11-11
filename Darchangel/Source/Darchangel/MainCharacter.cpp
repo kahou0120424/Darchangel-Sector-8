@@ -265,11 +265,13 @@ void AMainCharacter::RangeAttack() // Range Attack
 		{
 			ABullet* Bullet = World->SpawnActor<ABullet>(BulletProjectileClass, SpawnLocation, SpawnRotation);
 
-			FVector NewVelocity = GetActorForwardVector() * 2000.0f;
+			FVector NewVelocity = GetActorForwardVector() * 3000.0f;
 			Bullet->Velocity = FVector(NewVelocity);
 		}
 	}
 }
+
+
 
 void AMainCharacter::setup_stimulus()
 {
@@ -497,7 +499,7 @@ void AMainCharacter::BrutalStikeFunction()
 		TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHits,
 		true
 	);
@@ -550,7 +552,7 @@ void AMainCharacter::GraspOfDeathFunction()
 		TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None,
+		EDrawDebugTrace::ForDuration,
 		OutHits,
 		true
 	);
@@ -657,9 +659,16 @@ void AMainCharacter::FinishActtack()
 void AMainCharacter::HideWeaponFunction()
 {
 	if (HideWeapon)
+	{
 		HideWeapon = false;
+	}
+		
 	else
+	{
 		HideWeapon = true;
+	}
+		
+
 }
 
 void AMainCharacter::BlessedIdolFunction()
