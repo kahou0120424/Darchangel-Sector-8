@@ -186,7 +186,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Strong Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
 	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
 	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
-	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
+	//PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
 
 }
 
@@ -470,20 +470,7 @@ void AMainCharacter::BrutalStrikeAnimation()
 }
 
 void AMainCharacter::BrutalStikeFunction()
-{/*
-	if (BurtalStrikeTriggerBox != NULL)
-	{
-		
-		BrutalStrikeSpawnRotation = GetActorRotation();
-		PlayerLocation = GetActorLocation();
-		PlayerForwardPosition = GetActorForwardVector();
-		const FVector SpawnLocation = PlayerLocation;
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
-		}
-	}*/	
+{	
 	FVector StartPosition = this->GetActorLocation();
 	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
 	TArray<AActor*> ActorsToIgnore;
@@ -524,18 +511,7 @@ void AMainCharacter::BrutalStikeFunction()
 void AMainCharacter::GraspOfDeathFunction()
 {
 	
-	/*if (GraspOfDeathProjectile != NULL)
-	{
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation();
 
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
-		}
-		
-	}*/	
 
 	FVector StartPosition = this->GetActorLocation();
 	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
@@ -599,13 +575,18 @@ void AMainCharacter::WallOfLightFunction()
 
 void AMainCharacter::SwapForm()
 {
-	if (ForceStop)
-		return;
 	atkCount = 0;
 	if (isDemon)
+	{
 		isDemon = false;
+		PlayAnimMontage(ToDemonMontage, 1.f, FName("ToDemon_Animation"));
+	}		
 	else
+	{
 		isDemon = true;
+		PlayAnimMontage(ToAngelMontage, 1.f, FName("ToAngel_Animation"));
+	}
+		
 }
 
 

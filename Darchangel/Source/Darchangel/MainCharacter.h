@@ -73,6 +73,8 @@ public:
 		class UAnimMontage* StrongAttackStateTwoMontage;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* StrongAttackStateThreeMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Demon", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* ToDemonMontage;
 
 	// Angel
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
@@ -91,6 +93,8 @@ public:
 		class UAnimMontage* AngelStrongAttack2Montage;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* AngelNormalRangeAttackMontage;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation | Angel", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* ToAngelMontage;
 
 
 	//** Character Settings
@@ -259,7 +263,7 @@ protected:
 	void FinishBrutalStrikeCD();
 	void FinishGraspofDeathCD();
 	void GraspOfDeathAnimation();
-	void SwapForm();
+	
 	void EndAttackState();
 	void AttackStateCounterFunction(float DeltaTime);
 	void PullingCoolDownFunction(float DeltaTime);
@@ -292,6 +296,9 @@ protected:
 		bool BrutalStrikeInCD;
 	UPROPERTY(BlueprintReadWrite)
 		bool WallOfLightInCD;
+
+	UFUNCTION(BlueprintCallable)
+	void SwapForm();
 
 	bool stopMoving;
 	bool isRangeHolding;
