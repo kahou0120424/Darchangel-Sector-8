@@ -117,24 +117,26 @@ void ANPC::Tick(float DeltaTime)
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(this);
 
-		//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 1, 0, 1);
-
 		bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility, CollisionParams);
 
 		if (!isHit)
 		{
 			HitByWallOfLight = true;			
 		}	
-		else
+		/*else
 		{
+			//print("Hit");
 			if (OutHit.Actor->ActorHasTag("Wall"))
 			{
-				//print("Hit");
-				IsLineTranceStart = false;
-				HitByWallOfLight = false;
+				//IsLineTranceStart = false;
+				//HitByWallOfLight = false;
 				stun(5.0f);
 			}
-		}
+			else
+			{
+				return;
+			}
+		}*/
 	}
 
 	
@@ -173,7 +175,7 @@ float ANPC::get_max_health() const
 void ANPC::set_health(float const new_health)
 {
 	health = new_health;
-
+	stun(0.5);
 	if (health <= 0)
 	{
 		GetWorld()->DestroyActor(this);

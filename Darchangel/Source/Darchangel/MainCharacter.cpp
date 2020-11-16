@@ -154,8 +154,6 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	PullingCoolDownFunction(DeltaTime);
-
-	BulletRateFunction();
 	
 	StopCharacter();
 
@@ -186,7 +184,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAction("Strong Attack", IE_Released, this, &AMainCharacter::PlayStrongAttackAnimation);
 	PlayerInputComponent->BindAction("BrutalStrike/Wall Of Light", IE_Pressed, this, &AMainCharacter::BrutalStrikeAnimation);
 	PlayerInputComponent->BindAction("Grasp of Death / Blessed Idol", IE_Pressed, this, &AMainCharacter::GraspOfDeathAnimation);
-	PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
+	//PlayerInputComponent->BindAction("Swap Form", IE_Pressed, this, &AMainCharacter::SwapForm);
 
 }
 
@@ -209,7 +207,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 
 void AMainCharacter::MeleeAttack() // Melee Attack
 {
-	if (!ForceStop)
+	if (!ForceStop && !CannotDash)
 	{
 		RotateToMouseCurse();
 		if (isDemon)
@@ -234,13 +232,11 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		{
 			if (atkCount == 0)
 			{
-				PlayAnimMontage(AngelAttackMontage1, 1.f);;
+				PlayAnimMontage(AngelAttackMontage2, 1.f);
 			}
 			else if (atkCount == 1)
 			{
-				PlayAnimMontage(AngelAttackMontage2, 1.f);
-				
-
+				PlayAnimMontage(AngelAttackMontage1, 1.f);
 			}
 			
 		}
@@ -253,6 +249,7 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 void AMainCharacter::RangeAttack() // Range Attack
 {
 	
+
 	if (BulletProjectileClass != NULL)
 	{
 		IsRangeCharging = false;
@@ -400,8 +397,17 @@ void AMainCharacter::on_attack_overlap_begin(
 {
 	if (ANPC* const npc = Cast<ANPC>(other_actor))
 	{
-		float const new_health = npc->get_health() - npc->get_max_health() * 0.3f;
-		npc->set_health(new_health);
+		if (isDemon)
+		{
+			float const new_health = npc->get_health() - DemonMeleeDamage;
+			npc->set_health(new_health);
+		}
+		else
+		{
+			float const new_health = npc->get_health() - AngelMeleeDamage;
+			npc->set_health(new_health);
+		}
+		
 	}
 }
 
@@ -452,7 +458,7 @@ void AMainCharacter::HideCable()
 
 void AMainCharacter::BrutalStrikeAnimation()
 {
-	if (ForceStop)
+	if (ForceStop || CannotDash)
 		return;
 	if (!isDemon)
 	{
@@ -470,39 +476,47 @@ void AMainCharacter::BrutalStrikeAnimation()
 }
 
 void AMainCharacter::BrutalStikeFunction()
-{/*
-	if (BurtalStrikeTriggerBox != NULL)
-	{
-		
-		BrutalStrikeSpawnRotation = GetActorRotation();
-		PlayerLocation = GetActorLocation();
-		PlayerForwardPosition = GetActorForwardVector();
-		const FVector SpawnLocation = PlayerLocation;
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			ABrutalStrike* brutalStikeProjectile = World->SpawnActor<ABrutalStrike>(BurtalStrikeTriggerBox, SpawnLocation, BrutalStrikeSpawnRotation);		
-		}
-	}*/	
+{	
 	FVector StartPosition = this->GetActorLocation();
 	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetOwner());
 
 	TArray<FHitResult> OutHits;
+	bool hit;
+	if (ShowBrutalStrikeCollisionBox)
+	{
+		 hit = UKismetSystemLibrary::SphereTraceMulti(
+			GetWorld(),
+			StartPosition,
+			EndPosition,
+			BrutalStrikeHitBoxRadius,
+			TraceTypeQuery1,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::ForDuration,
+			OutHits,
+			true
+		);
+	}
+	else
+	{
+		 hit = UKismetSystemLibrary::SphereTraceMulti(
+			GetWorld(),
+			StartPosition,
+			EndPosition,
+			BrutalStrikeHitBoxRadius,
+			TraceTypeQuery1,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::None,
+			OutHits,
+			true
+		);
+	}
+	
 
-	bool hit = UKismetSystemLibrary::SphereTraceMulti(
-		GetWorld(),
-		StartPosition,
-		EndPosition,
-		BrutalStrikeHitBoxRadius,
-		TraceTypeQuery1,
-		false,
-		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration,
-		OutHits,
-		true
-	);
+	
 
 	if (hit)
 	{
@@ -512,7 +526,7 @@ void AMainCharacter::BrutalStikeFunction()
 			{
 				if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 				{
-					float const new_health = npc->get_health() - npc->get_max_health() * BrutalStrikeDamage;
+					float const new_health = npc->get_health() - BrutalStrikeDamage;
 					npc->set_health(new_health);
 				}
 			}
@@ -523,39 +537,43 @@ void AMainCharacter::BrutalStikeFunction()
 
 void AMainCharacter::GraspOfDeathFunction()
 {
-	
-	/*if (GraspOfDeathProjectile != NULL)
-	{
-		const FRotator SpawnRotation = GetActorRotation();
-		const FVector SpawnLocation = GetActorLocation();
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			AGraspofDeath* projectTile = World->SpawnActor<AGraspofDeath>(GraspOfDeathProjectile, SpawnLocation, SpawnRotation);
-		}
-		
-	}*/	
-
 	FVector StartPosition = this->GetActorLocation();
 	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(GetOwner());
 
 	TArray<FHitResult> OutHits;
-
-	bool hit = UKismetSystemLibrary::SphereTraceMulti(
-		GetWorld(),
-		StartPosition,
-		EndPosition,
-		GraspOfDeathHitBoxRadius,
-		TraceTypeQuery1,
-		false,
-		ActorsToIgnore,
-		EDrawDebugTrace::ForDuration,
-		OutHits,
-		true
-	);
+	bool hit;
+	if (ShowGrapOfDeathCollisionBox)
+	{
+			hit = UKismetSystemLibrary::SphereTraceMulti(
+			GetWorld(),
+			StartPosition,
+			EndPosition,
+			GraspOfDeathHitBoxRadius,
+			TraceTypeQuery1,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::ForDuration,
+			OutHits,
+			true
+		);
+	}
+	else
+	{
+		 hit = UKismetSystemLibrary::SphereTraceMulti(
+			GetWorld(),
+			StartPosition,
+			EndPosition,
+			GraspOfDeathHitBoxRadius,
+			TraceTypeQuery1,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::None,
+			OutHits,
+			true
+		);
+	}
 
 	if (hit)
 	{
@@ -565,7 +583,7 @@ void AMainCharacter::GraspOfDeathFunction()
 			{
 				if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 				{
-					float const new_health = npc->get_health() - npc->get_max_health() * GraspOfDeathDamage;
+					float const new_health = npc->get_health() - GraspOfDeathDamage;
 					npc->set_health(new_health);
 					npc->HitByGraspofDeathFunction(this->GetActorLocation());
 				}
@@ -599,13 +617,18 @@ void AMainCharacter::WallOfLightFunction()
 
 void AMainCharacter::SwapForm()
 {
-	if (ForceStop)
-		return;
 	atkCount = 0;
 	if (isDemon)
+	{
 		isDemon = false;
+		PlayAnimMontage(ToAngelMontage, 1.f, FName("ToAngel_Animation"));
+	}		
 	else
+	{
 		isDemon = true;
+		PlayAnimMontage(ToDemonMontage, 1.f, FName("ToDemon_Animation"));
+	}
+		
 }
 
 
@@ -622,7 +645,7 @@ void AMainCharacter::FinishGraspofDeathCD()
 
 void AMainCharacter::GraspOfDeathAnimation()
 {
-	if (ForceStop)
+	if (ForceStop || CannotDash)
 		return;
 
 	if (!isDemon)
@@ -640,12 +663,13 @@ void AMainCharacter::GraspOfDeathAnimation()
 
 void AMainCharacter::FinishActtack()
 {
+	
 	ForceStop = false;
 	if (atkCount < 2 && isDemon)
 	{
 		atkCount++;
 	}
-	else if(!isDemon && atkCount < 1)
+	else if (!isDemon && atkCount < 1)
 	{
 		atkCount++;
 	}
@@ -653,6 +677,8 @@ void AMainCharacter::FinishActtack()
 	{
 		atkCount = 0;
 	}
+	
+	
 }
 	
 
@@ -669,6 +695,36 @@ void AMainCharacter::HideWeaponFunction()
 	}
 		
 
+}
+
+void AMainCharacter::CannotDashFunction()
+{
+	if (CannotDash)
+	{
+		CannotDash = false;
+	}
+	else
+	{
+		CannotDash = true;
+	}
+}
+
+void AMainCharacter::FinishNormalRangeAnimationFunction()
+{
+	FinishNormalRangeAnimation = true;
+}
+
+void AMainCharacter::AngelHideSwordFunction()
+{
+	if (HideAngelWeapon)
+	{
+		HideAngelWeapon = false;
+	}
+
+	else
+	{
+		HideAngelWeapon = true;
+	}
 }
 
 void AMainCharacter::BlessedIdolFunction()
@@ -713,18 +769,7 @@ void AMainCharacter::PullingCoolDownFunction(float DeltaTime)
 	}
 }
 
-void AMainCharacter::BulletRateFunction()
-{
-	if (isShooting)
-	{
-		BulletRateCounter++;
-		if (BulletRateCounter >= bulletRate)
-		{
-			RangeAttack();
-			BulletRateCounter = 0;
-		}
-	}
-}
+
 
 void AMainCharacter::StopCharacter()
 {
@@ -827,21 +872,40 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 			FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
 			TArray<AActor*> ActorsToIgnore;
 			ActorsToIgnore.Add(GetOwner());
-
+			bool hit;
 			TArray<FHitResult> OutHits;
 
-			bool hit = UKismetSystemLibrary::SphereTraceMulti(
-				GetWorld(),
-				StartPosition,
-				EndPosition,
-				200.0f,
-				TraceTypeQuery1,
-				false,
-				ActorsToIgnore,
-				EDrawDebugTrace::None,
-				OutHits,
-				true
-			);
+			if (ShowStrongAttack2CollisionBox)
+			{
+				 hit = UKismetSystemLibrary::SphereTraceMulti(
+					GetWorld(),
+					StartPosition,
+					EndPosition,
+					200.0f,
+					TraceTypeQuery1,
+					false,
+					ActorsToIgnore,
+					EDrawDebugTrace::ForDuration,
+					OutHits,
+					true
+				);
+			}
+			else
+			{
+				 hit = UKismetSystemLibrary::SphereTraceMulti(
+					GetWorld(),
+					StartPosition,
+					EndPosition,
+					200.0f,
+					TraceTypeQuery1,
+					false,
+					ActorsToIgnore,
+					EDrawDebugTrace::None,
+					OutHits,
+					true
+				);
+			}
+			
 
 			if (hit)
 			{
@@ -851,7 +915,7 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 					{
 						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 						{
-							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
+							float const new_health = npc->get_health() - StrongAttack2Damage;
 							npc->set_health(new_health);
 						}
 					}
@@ -868,19 +932,38 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 			ActorsToIgnore.Add(GetOwner());
 
 			TArray<FHitResult> OutHits;
-
-			bool hit = UKismetSystemLibrary::SphereTraceMulti(
-				GetWorld(),
-				StartPosition,
-				EndPosition,
-				300.0f,
-				TraceTypeQuery1,
-				false,
-				ActorsToIgnore,
-				EDrawDebugTrace::None,
-				OutHits,
-				true
-			);
+			bool hit;
+			if (ShowStrongAttack3CollisionBox)
+			{
+				 hit = UKismetSystemLibrary::SphereTraceMulti(
+					GetWorld(),
+					StartPosition,
+					EndPosition,
+					300.0f,
+					TraceTypeQuery1,
+					false,
+					ActorsToIgnore,
+					EDrawDebugTrace::ForDuration,
+					OutHits,
+					true
+				);
+			}
+			else
+			{
+				 hit = UKismetSystemLibrary::SphereTraceMulti(
+					GetWorld(),
+					StartPosition,
+					EndPosition,
+					300.0f,
+					TraceTypeQuery1,
+					false,
+					ActorsToIgnore,
+					EDrawDebugTrace::None,
+					OutHits,
+					true
+				);
+			}
+			
 
 			if (hit)
 			{
@@ -890,7 +973,7 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 					{
 						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 						{
-							float const new_health = npc->get_health() - npc->get_max_health() * 0.2f;
+							float const new_health = npc->get_health() - StrongAttack3Damage;
 							npc->set_health(new_health);
 						}
 					}
@@ -906,6 +989,7 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	{
 		if (!IsRangeHold)
 			return;
+
 		IsRangeHold = false;
 		if (StrongAttackStateTwo)
 		{
@@ -938,7 +1022,11 @@ void AMainCharacter::PlayChargingAnimation()
 
 	else
 	{
+		if (!FinishNormalRangeAnimation)
+			return;
+
 		PlayRangeAnimation();
+		FinishNormalRangeAnimation = false;
 		IsRangeHold = true;
 	}
 		
