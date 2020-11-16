@@ -39,7 +39,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Chains Of Hell")
 		float duration = 0.2f;
-
+		
 	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Attack|Melee")
 		float meleeHoldTime;
 
@@ -191,8 +191,16 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 		bool HideWeapon;
 
+	UPROPERTY(BlueprintReadWrite)
+		bool HideAngelWeapon;
+
+
 	UPROPERTY(BlueprintReadOnly)
 		bool IsAttackState;
+
+	UPROPERTY(BlueprintReadOnly)
+		bool CannotDash;
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool ForceStop;
@@ -216,9 +224,6 @@ public:
 	float percent;
 	float seconds = 10;
 	float timer;
-
-	int BulletRateCounter = 0;
-
 
 
 	UPROPERTY()
@@ -259,6 +264,9 @@ public:
 	void WallJumpStart(FVector jumpLocation);
 	void WallJumpEnd();
 	void HideWeaponFunction();
+	void CannotDashFunction();
+	void FinishNormalRangeAnimationFunction();
+	void AngelHideSwordFunction();
 	void GraspOfDeathFunction();
 	void BlessedIdolFunction();
 	void WallOfLightFunction();
@@ -292,7 +300,6 @@ protected:
 	void EndAttackState();
 	void AttackStateCounterFunction(float DeltaTime);
 	void PullingCoolDownFunction(float DeltaTime);
-	void BulletRateFunction();
 	void StopCharacter();
 	void StrongRangeChecker(float DeltaTime);
 	void FinishBlessedIdolCD();
@@ -334,6 +341,7 @@ protected:
 	bool SpawnedParticle;
 	bool IsRangeCharging;
 	bool IsRangeHold;
+	bool FinishNormalRangeAnimation = true;
 
 	float atkCD;
 	float pullCD;

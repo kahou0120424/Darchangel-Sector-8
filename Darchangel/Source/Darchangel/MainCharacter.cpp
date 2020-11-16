@@ -154,8 +154,6 @@ void AMainCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	PullingCoolDownFunction(DeltaTime);
-
-	BulletRateFunction();
 	
 	StopCharacter();
 
@@ -209,7 +207,7 @@ void AMainCharacter::Raycast() //Chain Of Hell
 
 void AMainCharacter::MeleeAttack() // Melee Attack
 {
-	if (!ForceStop)
+	if (!ForceStop && !CannotDash)
 	{
 		RotateToMouseCurse();
 		if (isDemon)
@@ -251,6 +249,7 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 void AMainCharacter::RangeAttack() // Range Attack
 {
 	
+
 	if (BulletProjectileClass != NULL)
 	{
 		IsRangeCharging = false;
@@ -459,7 +458,7 @@ void AMainCharacter::HideCable()
 
 void AMainCharacter::BrutalStrikeAnimation()
 {
-	if (ForceStop)
+	if (ForceStop || CannotDash)
 		return;
 	if (!isDemon)
 	{
@@ -538,9 +537,6 @@ void AMainCharacter::BrutalStikeFunction()
 
 void AMainCharacter::GraspOfDeathFunction()
 {
-	
-
-
 	FVector StartPosition = this->GetActorLocation();
 	FVector EndPosition = StartPosition + FVector(1.0, 0.0, 0.0);
 	TArray<AActor*> ActorsToIgnore;
@@ -625,12 +621,12 @@ void AMainCharacter::SwapForm()
 	if (isDemon)
 	{
 		isDemon = false;
-		PlayAnimMontage(ToDemonMontage, 1.f, FName("ToDemon_Animation"));
+		PlayAnimMontage(ToAngelMontage, 1.f, FName("ToAngel_Animation"));
 	}		
 	else
 	{
 		isDemon = true;
-		PlayAnimMontage(ToAngelMontage, 1.f, FName("ToAngel_Animation"));
+		PlayAnimMontage(ToDemonMontage, 1.f, FName("ToDemon_Animation"));
 	}
 		
 }
@@ -649,7 +645,7 @@ void AMainCharacter::FinishGraspofDeathCD()
 
 void AMainCharacter::GraspOfDeathAnimation()
 {
-	if (ForceStop)
+	if (ForceStop || CannotDash)
 		return;
 
 	if (!isDemon)
@@ -701,6 +697,36 @@ void AMainCharacter::HideWeaponFunction()
 
 }
 
+void AMainCharacter::CannotDashFunction()
+{
+	if (CannotDash)
+	{
+		CannotDash = false;
+	}
+	else
+	{
+		CannotDash = true;
+	}
+}
+
+void AMainCharacter::FinishNormalRangeAnimationFunction()
+{
+	FinishNormalRangeAnimation = true;
+}
+
+void AMainCharacter::AngelHideSwordFunction()
+{
+	if (HideAngelWeapon)
+	{
+		HideAngelWeapon = false;
+	}
+
+	else
+	{
+		HideAngelWeapon = true;
+	}
+}
+
 void AMainCharacter::BlessedIdolFunction()
 {
 		if (BlessedIdolProjectile != NULL)
@@ -743,18 +769,7 @@ void AMainCharacter::PullingCoolDownFunction(float DeltaTime)
 	}
 }
 
-void AMainCharacter::BulletRateFunction()
-{
-	if (isShooting)
-	{
-		BulletRateCounter++;
-		if (BulletRateCounter >= bulletRate)
-		{
-			RangeAttack();
-			BulletRateCounter = 0;
-		}
-	}
-}
+
 
 void AMainCharacter::StopCharacter()
 {
@@ -974,6 +989,7 @@ void AMainCharacter::PlayStrongAttackAnimation() // Melee Attack
 	{
 		if (!IsRangeHold)
 			return;
+
 		IsRangeHold = false;
 		if (StrongAttackStateTwo)
 		{
@@ -1006,7 +1022,11 @@ void AMainCharacter::PlayChargingAnimation()
 
 	else
 	{
+		if (!FinishNormalRangeAnimation)
+			return;
+
 		PlayRangeAnimation();
+		FinishNormalRangeAnimation = false;
 		IsRangeHold = true;
 	}
 		
