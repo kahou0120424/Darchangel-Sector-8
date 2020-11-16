@@ -34,23 +34,23 @@ public:
 		UCameraComponent* FollowCamera;
 
 
-	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Chains Of Hell")
 		float pullDelay = 3;
 
-	UPROPERTY(EditAnywhere, Category = "Chains Of Hell")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Chains Of Hell")
 		float duration = 0.2f;
 
-	UPROPERTY(EditAnywhere, Category = "Attack|Melee")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Attack|Melee")
 		float meleeHoldTime;
 
-	UPROPERTY(EditAnywhere, Category = "Attack|Range")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Attack|Range")
 		float rangeHoldTime;
 
 
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Brutal Strike")
 		float BrutalStrikeCD;
 
-	UPROPERTY(EditAnywhere, Category = "Grasp of Death")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Grasp of Death")
 		float GraspofDeathCD;
 
 	//** Attack Animation
@@ -107,60 +107,85 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = CharacterSetting, meta = (AllowPrivateAccess = "true"))
 		float bulletRate;
 
-	UPROPERTY(EditAnywhere, Category = "Wall Of Light")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Wall Of Light")
 		float WallOfLightFireRate;
 
-	UPROPERTY(EditAnywhere, Category = "Wall Of Light")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Wall Of Light")
 		float WallOfLightCooldown;
 
-	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Blessed Idol")
 		float BlessedIdolFIreRate;
 
-	UPROPERTY(EditAnywhere, Category = "Blessed Idol")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Blessed Idol")
 		float BleesedIdolCooldown;
 
-	UPROPERTY(EditAnywhere, Category = "Grasp Of Death")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Grasp Of Death")
 		float GraspOfDeathHitBoxRadius;
 
-	UPROPERTY(EditAnywhere, Category = "Grasp Of Death")
-		float GraspOfDeathDamage;
-	
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Grasp Of Death")
+		bool ShowGrapOfDeathCollisionBox;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Brutal Strike")
 		float BrutalStrikeHitBoxRadius;
 
-	UPROPERTY(EditAnywhere, Category = "Brutal Strike")
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Brutal Strike")
+		bool ShowBrutalStrikeCollisionBox;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Grasp Of Death (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float GraspOfDeathDamage;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Brutal Strike (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
 		float BrutalStrikeDamage;
 
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit | Angel Melee (Min 0.0, Max 100.0)" , meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float AngelMeleeDamage;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Demon Melee (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float DemonMeleeDamage;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Demon Strong Attack| Attack 2 (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float StrongAttack2Damage;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Demon Strong Attack")
+		bool ShowStrongAttack2CollisionBox;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Demon Strong Attack| Attack 3 (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float StrongAttack3Damage;
+
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Demon Strong Attack")
+		bool ShowStrongAttack3CollisionBox;
 
 	//** Bullet
-	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Bullet")
 		TSubclassOf<class ABullet> BulletProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Bullet")
 		TSubclassOf<class ABullet> Bullet2ProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Bullet")
 		TSubclassOf<class ABullet> Bullet3ProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Enhance Bullet")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Enhance Bullet")
 		TSubclassOf<class ABullet> EnhanceBulletProjectileClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Chain")
-		TSubclassOf<class AChain> ChainProjectileClass;
+	// Cancel 
+	/*UPROPERTY(EditDefaultsOnly, Category = "Chain")
+		TSubclassOf<class AChain> ChainProjectileClass;*/
 
-	UPROPERTY(EditDefaultsOnly, Category = "BurtalStrikeTriggerBox")
+	// Replace
+	/*UPROPERTY(EditDefaultsOnly, Category = "BurtalStrikeTriggerBox")
 		TSubclassOf<class ABrutalStrike> BurtalStrikeTriggerBox;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Grasp of Death")
-		TSubclassOf<class AGraspofDeath> GraspOfDeathProjectile;
+		TSubclassOf<class AGraspofDeath> GraspOfDeathProjectile;*/
 
-	UPROPERTY(EditDefaultsOnly, Category = "Wall Of Light")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Wall Of Light")
 		TSubclassOf<class AWallOfLight> WallOfLightProjectile;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Blessed Idol")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Blessed Idol")
 		TSubclassOf<class ABlessedIdol> BlessedIdolProjectile;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Charge Attack")
+	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Charge Attack")
 		TSubclassOf<class AChargeParticle> ChargeParticle;
 
 	UPROPERTY(BlueprintReadOnly)
