@@ -651,6 +651,7 @@ void AMainCharacter::GraspOfDeathAnimation()
 	if (!isDemon)
 	{
 		PlayBlessedIdolAnimation();
+		
 		return;
 	}
 	
@@ -711,7 +712,15 @@ void AMainCharacter::CannotDashFunction()
 
 void AMainCharacter::FinishNormalRangeAnimationFunction()
 {
-	FinishNormalRangeAnimation = true;
+	if (FinishNormalRangeAnimation == true)
+	{
+		FinishNormalRangeAnimation = false;
+	}
+	else
+	{
+		FinishNormalRangeAnimation = true;
+	}
+	
 }
 
 void AMainCharacter::AngelHideSwordFunction()
@@ -796,6 +805,7 @@ void AMainCharacter::StrongRangeChecker(float DeltaTime)
 void AMainCharacter::FinishBlessedIdolCD()
 {
 	BlessedIdolInCD = false;
+	TestBlessedIdolInCD = false;
 }
 
 void AMainCharacter::FinishWallOfLightCD()
@@ -1085,7 +1095,7 @@ void AMainCharacter::SpawnStrongRangeAttackBullet2()
 
 void AMainCharacter::PlayBlessedIdolAnimation()
 {
-	if (BlessedIdolInCD)
+	if (TestBlessedIdolInCD)
 		return;
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
 	IsRangeCharging = true;
