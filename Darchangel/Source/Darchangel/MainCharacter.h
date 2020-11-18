@@ -323,6 +323,8 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		bool BlessedIdolInCD;
 	UPROPERTY(BlueprintReadWrite)
+		bool TestBlessedIdolInCD;
+	UPROPERTY(BlueprintReadWrite)
 		bool GraspofDeathInCD;
 	UPROPERTY(BlueprintReadWrite)
 		bool BrutalStrikeInCD;
