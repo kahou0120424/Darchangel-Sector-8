@@ -321,9 +321,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		bool IsMeleeCharging;
 	UPROPERTY(BlueprintReadWrite)
-		bool BlessedIdolInCD;
-	UPROPERTY(BlueprintReadWrite)
-		bool TestBlessedIdolInCD;
+		bool BlessedIdolInCD;;
 	UPROPERTY(BlueprintReadWrite)
 		bool GraspofDeathInCD;
 	UPROPERTY(BlueprintReadWrite)

@@ -597,10 +597,9 @@ void AMainCharacter::GraspOfDeathFunction()
 
 void AMainCharacter::WallOfLightFunction()
 {
-	RotateToMouseCurse();
+	
 	if (WallOfLightProjectile != NULL)
 	{
-		IsRangeCharging = false;
 		const FRotator SpawnRotation = GetActorRotation();
 		const FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 2);
 
@@ -806,7 +805,6 @@ void AMainCharacter::StrongRangeChecker(float DeltaTime)
 void AMainCharacter::FinishBlessedIdolCD()
 {
 	BlessedIdolInCD = false;
-	TestBlessedIdolInCD = false;
 }
 
 void AMainCharacter::FinishWallOfLightCD()
@@ -1096,10 +1094,10 @@ void AMainCharacter::SpawnStrongRangeAttackBullet2()
 
 void AMainCharacter::PlayBlessedIdolAnimation()
 {
-	if (TestBlessedIdolInCD)
+	if (BlessedIdolInCD)
 		return;
 	PlayAnimMontage(BlessedIdolMontage, 1.0f);
-	IsRangeCharging = true;
+	RotateToMouseCurse();
 	GetWorldTimerManager().SetTimer(BlessedIdolCDHandle, this, &AMainCharacter::FinishBlessedIdolCD, BleesedIdolCooldown, false);
 }
 
@@ -1107,7 +1105,7 @@ void AMainCharacter::PlayWallOfLightAnimation()
 {
 	if (WallOfLightInCD)
 		return;
-	IsRangeCharging = true;
+	RotateToMouseCurse();
 	PlayAnimMontage(WallOfLightMontage, 1.0f);
 	GetWorldTimerManager().SetTimer(WallOfLightHandle, this, &AMainCharacter::FinishWallOfLightCD, WallOfLightCooldown, false);
 }
