@@ -343,6 +343,8 @@ protected:
 	bool SpawnedParticle;
 	bool IsRangeCharging;
 	bool IsRangeHold;
+
+	UPROPERTY(BlueprintReadOnly)
 	bool FinishNormalRangeAnimation = true;
 
 	float atkCD;

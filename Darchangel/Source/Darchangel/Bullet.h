@@ -31,6 +31,18 @@ public:
 	UPROPERTY(EditAnywhere)
 		float percentageDamage ;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
+		class UBoxComponent* BulletCollision;
+		
+	UFUNCTION()
+		void on_overlap_begin(
+			UPrimitiveComponent* const overlapped_component,
+			AActor* const other_actor,
+			UPrimitiveComponent* other_component,
+			int const other_body_index,
+			bool const from_sweep,
+			FHitResult const& sweep_result);
+
 	float BulletExpiry = 0;
 
 };

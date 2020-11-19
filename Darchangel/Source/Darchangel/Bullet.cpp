@@ -5,8 +5,8 @@
 #include "Engine.h"
 #include "NPC.h"
 
-// Sets default values
-ABullet::ABullet()
+// Sets default values 
+ABullet::ABullet() : BulletCollision(CreateDefaultSubobject<UBoxComponent>(TEXT("BulletCollision")))
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -14,6 +14,12 @@ ABullet::ABullet()
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
 	RootComponent = RootComp;
 
+
+	if (BulletCollision)
+	{
+		FVector const extent(50.0f);
+		BulletCollision->SetBoxExtent(extent, false);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -21,6 +27,11 @@ void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
 	
+
+	if (BulletCollision)
+	{
+		BulletCollision->OnComponentBeginOverlap.AddDynamic(this, &ABullet::on_overlap_begin);
+	}
 }
 
 // Called every frame
@@ -63,5 +74,9 @@ void ABullet::Tick(float DeltaTime)
 		Destroy();
 	}
 
+}
+
+void ABullet::on_overlap_begin(UPrimitiveComponent* const overlapped_component, AActor* const other_actor, UPrimitiveComponent* other_component, int const other_body_index, bool const from_sweep, FHitResult const& sweep_result)
+{
 }
 

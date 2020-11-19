@@ -232,11 +232,12 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		{
 			if (atkCount == 0)
 			{
-				PlayAnimMontage(AngelAttackMontage2, 1.f);
+				PlayAnimMontage(AngelAttackMontage1, 1.f);
+			
 			}
 			else if (atkCount == 1)
 			{
-				PlayAnimMontage(AngelAttackMontage1, 1.f);
+				PlayAnimMontage(AngelAttackMontage2, 1.f);
 			}
 			
 		}
