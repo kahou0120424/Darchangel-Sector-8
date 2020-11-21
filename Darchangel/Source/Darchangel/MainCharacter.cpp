@@ -230,6 +230,8 @@ void AMainCharacter::MeleeAttack() // Melee Attack
 		}
 		else
 		{
+			if (!FinishNormalRangeAnimation)
+				return;
 			if (atkCount == 0)
 			{
 				PlayAnimMontage(AngelAttackMontage1, 1.f);
