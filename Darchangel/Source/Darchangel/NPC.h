@@ -42,7 +42,7 @@ public:
 
 	bool HitByWallOfLight;
 
-	void HitByBlessedIdol();
+	void HitByBlessedIdol(float damage);
 
 
 	UPROPERTY()

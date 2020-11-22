@@ -245,11 +245,11 @@ void ANPC::endStun()
 
 
 
-void ANPC::HitByBlessedIdol()
+void ANPC::HitByBlessedIdol(float damage)
 {
 	if (!IsHitByBlessedIdol)
 	{
-		float const new_health = get_health() - get_max_health() * 0.5f;
+		float const new_health = get_health() - damage;
 		set_health(new_health);
 		IsHitByBlessedIdol = true;
 	}

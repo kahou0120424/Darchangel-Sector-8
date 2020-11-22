@@ -26,8 +26,9 @@ void AWallOfLight::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (ANPC* const npc = Cast<ANPC>(OtherActor))
 	{
-		//print("hit npc");
 		npc->HitByWallOfLightFunction(Velocity, countDown, moveDuration, CharacterForwardPosition);
+		float const new_health = npc->get_health() - Damage;
+		npc->set_health(new_health);
 	}
 }
 

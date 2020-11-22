@@ -86,7 +86,7 @@ void ABlessedIdol::Tick(float DeltaTime)
 					{
 						if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 						{
-							npc->HitByBlessedIdol();							
+							npc->HitByBlessedIdol(Damage);
 						}
 					}
 				}

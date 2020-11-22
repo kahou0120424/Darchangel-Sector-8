@@ -44,4 +44,7 @@ public:
 	FVector Velocity;
 	FVector CharacterForwardPosition;
 
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit | Wall Of Light (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float Damage;
+
 };

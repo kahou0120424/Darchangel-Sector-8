@@ -46,7 +46,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Attack|Range")
 		float rangeHoldTime;
 
-
 	UPROPERTY(EditAnywhere, Category = "Designer Please Edit |Brutal Strike")
 		float BrutalStrikeCD;
 

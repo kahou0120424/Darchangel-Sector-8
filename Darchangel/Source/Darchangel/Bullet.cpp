@@ -53,7 +53,7 @@ void ABullet::Tick(float DeltaTime)
 		if (hitResult.GetActor() && hitResult.GetActor()->ActorHasTag("Enemy"))
 		{
 			ANPC* npc = Cast<ANPC>(hitResult.GetActor());
-			float const new_health = npc->get_health() - npc->get_max_health() * percentageDamage;
+			float const new_health = npc->get_health() - Damage;
 			npc->set_health(new_health);	
 
 		}

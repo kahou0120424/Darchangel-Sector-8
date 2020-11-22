@@ -25,11 +25,10 @@ public:
 
 	USceneComponent* RootComp;
 
-	UPROPERTY(EditAnywhere)
-		FVector Velocity = FVector(100.0f);
+	FVector Velocity = FVector(100.0f);
 
-	UPROPERTY(EditAnywhere)
-		float percentageDamage ;
+	UPROPERTY(EditAnywhere, Category = "Designer Please Edit | Arrow (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
+		float Damage ;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
 		class UBoxComponent* BulletCollision;

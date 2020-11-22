@@ -31,18 +31,20 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnywhere)
-		FVector Velocity = FVector(100.0f);
+	FVector Velocity = FVector(100.0f);
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AOE Range", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Designer Please Edit | AOE Range", meta = (AllowPrivateAccess = "true"))
 		float AoeRange1;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AOE Range", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Designer Please Edit | AOE Range", meta = (AllowPrivateAccess = "true"))
 		float AoeRange2;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "AOE Range", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Designer Please Edit | AOE Range", meta = (AllowPrivateAccess = "true"))
 		float AoeRange3;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool StartExplosion = false;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Designer Please Edit | Damage", meta = (AllowPrivateAccess = "true"))
+		float Damage;
 	
 
 	float BulletExpiry = 0;
