@@ -529,6 +529,7 @@ void AMainCharacter::BrutalStikeFunction()
 			{
 				if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
 				{
+					print("Hit");
 					float const new_health = npc->get_health() - BrutalStrikeDamage;
 					npc->set_health(new_health);
 				}
