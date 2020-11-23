@@ -178,7 +178,8 @@ void ANPC::set_health(float const new_health)
 	stun(0.5);
 	if (health <= 0)
 	{
-		GetWorld()->DestroyActor(this);
+		//GetWorld()->DestroyActor(this);
+		GetMesh()->SetSimulatePhysics(true);
 	}
 }
 
