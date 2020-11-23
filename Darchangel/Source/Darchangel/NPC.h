@@ -29,7 +29,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	float get_health() const;
 	float get_max_health() const;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Health")
+	float health;
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
@@ -57,7 +58,7 @@ private:
 	class UWidgetComponent* widget_component;
 
 	float const max_health = 100.0f;
-	float health;
+	
 	float countDown;
 	float moveDuration;
 
