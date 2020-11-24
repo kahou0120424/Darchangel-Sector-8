@@ -41,12 +41,12 @@ ANPC::ANPC() :
 	{
 		widget_component->SetupAttachment(RootComponent);
 		widget_component->SetWidgetSpace(EWidgetSpace::Screen);
-		widget_component->SetRelativeLocation(FVector(0.0f, 0.0f, 85.0f));
-		/*static ConstructorHelpers::FClassFinder<UUserWidget> widget_class(TEXT("/Game/UI/HealthBar_BP"));
+		widget_component->SetRelativeLocation(FVector(0.0f, 0.0f, 95.0f));
+		static ConstructorHelpers::FClassFinder<UUserWidget> widget_class(TEXT("/Game/UI/HealthBar_BP"));
 		if (widget_class.Succeeded())
 		{
 			widget_component->SetWidgetClass(widget_class.Class);
-		}*/
+		}
 	}
 }
 
@@ -71,7 +71,7 @@ void ANPC::BeginPlay()
 }
 
 // Called every frame
-void ANPC::Tick(float DeltaTime)
+void ANPC::Tick(float const DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
@@ -178,8 +178,8 @@ void ANPC::set_health(float const new_health)
 	stun(0.5);
 	if (health <= 0)
 	{
-		//GetWorld()->DestroyActor(this);
-		GetMesh()->SetSimulatePhysics(true);
+		GetWorld()->DestroyActor(this);
+		//GetMesh()->SetSimulatePhysics(true);
 	}
 }
 

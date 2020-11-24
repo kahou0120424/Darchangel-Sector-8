@@ -18,7 +18,7 @@ public:
 	ANPC();
 
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	void Tick(float const DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
@@ -26,12 +26,11 @@ public:
 	void melee_attack();
 	UAnimMontage* get_montage() const;
 		
-	UFUNCTION(BlueprintCallable, Category = "NPC Health")
+	//UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	float get_health() const;
 	float get_max_health() const;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Health")
-	float health;
-	UFUNCTION(BlueprintCallable, Category = "NPC Health")
+
+	//UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
 	void HitByWallOfLightFunction(FVector Velocity, float CountDown, float MoveDuration, FVector PlayerForwardPosition);
@@ -58,6 +57,7 @@ private:
 	class UWidgetComponent* widget_component;
 
 	float const max_health = 100.0f;
+	float health;
 	
 	float countDown;
 	float moveDuration;
