@@ -220,7 +220,7 @@ void ANPC::on_attack_overlap_end(
 
 void ANPC::stun(float Time)
 {
-	print("Stun");
+	//print("Stun");
 	isStun = true;
 	GetWorldTimerManager().SetTimer(Handle, this, &ANPC::endStun, Time	, false);
 }
@@ -231,7 +231,7 @@ void ANPC::stun(float Time)
 void ANPC::HitByGraspofDeathFunction(FVector location)
 {
 	isStun = true;
-	print("Hit by grasp of death");
+	//print("Hit by grasp of death");
 	playerPos = MidPoint(location, this->GetActorLocation());
 	FLatentActionInfo LatentInfo;
 	LatentInfo.CallbackTarget = this;
