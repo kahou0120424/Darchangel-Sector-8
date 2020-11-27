@@ -338,8 +338,11 @@ protected:
 	bool StrongAttackStateTwo;
 	bool StrongAttackStateThree;
 	bool SpawnedParticle;
-	bool IsRangeCharging;
 	bool IsRangeHold;
+
+
+	UPROPERTY(BlueprintReadOnly)
+	bool IsRangeCharging;
 
 	UPROPERTY(BlueprintReadOnly)
 	bool FinishNormalRangeAnimation = true;

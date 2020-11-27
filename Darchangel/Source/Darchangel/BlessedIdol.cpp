@@ -41,13 +41,69 @@ void ABlessedIdol::Tick(float DeltaTime)
 	FCollisionQueryParams CollisonParams;
 	CollisonParams.AddIgnoredActor(this);
 
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
+	FVector StartPosition = this->GetActorLocation();
+	FVector EndPosition = StartPosition + FVector(0.0f, 0.0f, 0.1f);
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetOwner());
+	TArray<FHitResult> OutHits;
+
+	if (isHit)	
+	{
+		if (BulletRangeCounter < 0.2f)
+		{
+			AoeRange = AoeRange1;
+		}
+		else if (BulletRangeCounter >= 0.2 && BulletRangeCounter <= 0.5)
+		{
+			AoeRange = AoeRange2;
+		}
+		else
+		{
+			AoeRange = AoeRange3;
+		}
+
+		bool hit = UKismetSystemLibrary::SphereTraceMulti(
+			GetWorld(),
+			StartPosition,
+			EndPosition,
+			AoeRange,
+			TraceTypeQuery1,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::ForDuration,
+			OutHits,
+			true
+		);
+
+		if (hit)
+		{
+			for (int q = 0; q < OutHits.Num(); q++)
+			{
+				if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+				{
+					if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+					{
+						npc->HitByBlessedIdol(Damage);
+					}
+				}
+			}
+		}
+		ExplosionParticle();
+		isHit = false;
+		
+	}
+	else
+	{
+		SetActorLocation(EndTrace);
+	}
+
+	/*if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
 	{
 		if (hitResult.GetActor() && hitResult.GetComponent()->ComponentHasTag("Enemy"))
 		{
-			FVector StartPosition = this->GetActorLocation();
-			FVector EndPosition = StartPosition + FVector(0.0f, 0.0f, 0.1f);
-			TArray<AActor*> ActorsToIgnore;
+			//FVector StartPosition = this->GetActorLocation();
+			//FVector EndPosition = StartPosition + FVector(0.0f, 0.0f, 0.1f);
+			//TArray<AActor*> ActorsToIgnore;
 			ActorsToIgnore.Add(GetOwner());
 
 			TArray<FHitResult> OutHits;
@@ -73,7 +129,7 @@ void ABlessedIdol::Tick(float DeltaTime)
 				TraceTypeQuery1,
 				false,
 				ActorsToIgnore,
-				EDrawDebugTrace::None,
+				EDrawDebugTrace::ForDuration,
 				OutHits,
 				true
 			);
@@ -90,18 +146,19 @@ void ABlessedIdol::Tick(float DeltaTime)
 						}
 					}
 				}
-			}	
+			}
 		}
 		ExplosionParticle();
+		
 	}
 
-	else
+	/*else
 	{
 		BulletExpiry += DeltaTime;
 
 		SetActorLocation(EndTrace);
 
-	}
+	}*/
 
 	if (BulletExpiry > 1.5)
 	{
