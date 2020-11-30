@@ -6,20 +6,10 @@
 #include "NPC.h"
 
 // Sets default values 
-ABullet::ABullet() : BulletCollision(CreateDefaultSubobject<UBoxComponent>(TEXT("BulletCollision")))
+ABullet::ABullet() 
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
-	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComp"));
-	RootComponent = RootComp;
-
-
-	if (BulletCollision)
-	{
-		FVector const extent(50.0f);
-		BulletCollision->SetBoxExtent(extent, false);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -27,11 +17,6 @@ void ABullet::BeginPlay()
 {
 	Super::BeginPlay();
 	
-
-	if (BulletCollision)
-	{
-		BulletCollision->OnComponentBeginOverlap.AddDynamic(this, &ABullet::on_overlap_begin);
-	}
 }
 
 // Called every frame
@@ -48,7 +33,13 @@ void ABullet::Tick(float DeltaTime)
 	FCollisionQueryParams CollisonParams;
 	CollisonParams.AddIgnoredActor(this);
 
-	if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
+	FVector StartPosition = this->GetActorLocation();
+	FVector EndPosition = StartPosition + FVector(0.0f, 0.0f, 0.1f);
+	TArray<AActor*> ActorsToIgnore;
+	ActorsToIgnore.Add(GetOwner());
+	TArray<FHitResult> OutHits;
+
+	/*if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
 	{
 		if (hitResult.GetActor() && hitResult.GetActor()->ActorHasTag("Enemy"))
 		{
@@ -59,8 +50,39 @@ void ABullet::Tick(float DeltaTime)
 		}
 		
 		Destroy();
-	}
+	}*/
 	
+	if (HitEnemy)
+	{
+		bool hit = UKismetSystemLibrary::SphereTraceMulti(
+			GetWorld(),
+			StartPosition,
+			EndPosition,
+			100,
+			TraceTypeQuery1,
+			false,
+			ActorsToIgnore,
+			EDrawDebugTrace::None,
+			OutHits,
+			true
+		);
+
+		if (hit)
+		{
+			for (int q = 0; q < OutHits.Num(); q++)
+			{
+				if (OutHits[q].GetActor() != NULL && OutHits[q].Actor->ActorHasTag("Enemy"))
+				{
+					if (ANPC* const npc = Cast<ANPC>((OutHits[q].GetActor())))
+					{
+						float const new_health = npc->get_health() - Damage;
+						npc->set_health(new_health);
+					}
+				}
+			}
+		}
+		Destroy();
+	}
 	else
 	{
 		BulletExpiry += DeltaTime;
@@ -74,9 +96,12 @@ void ABullet::Tick(float DeltaTime)
 		Destroy();
 	}
 
+	if (HitWall)
+	{
+		Destroy();
+	}
+
 }
 
-void ABullet::on_overlap_begin(UPrimitiveComponent* const overlapped_component, AActor* const other_actor, UPrimitiveComponent* other_component, int const other_body_index, bool const from_sweep, FHitResult const& sweep_result)
-{
-}
+
 

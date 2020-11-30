@@ -47,7 +47,10 @@ public:
 		float Damage;
 
 	UPROPERTY(BlueprintReadWrite)
-		bool isHit;
+		bool HitEnemy;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool HitWall;
 	
 
 	float BulletExpiry = 0;
