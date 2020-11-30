@@ -30,7 +30,7 @@ public:
 	float get_health() const;
 	float get_max_health() const;
 
-	//UFUNCTION(BlueprintCallable, Category = "NPC Health")
+	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
 	void HitByWallOfLightFunction(FVector Velocity, float CountDown, float MoveDuration, FVector PlayerForwardPosition);
