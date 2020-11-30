@@ -47,7 +47,7 @@ void ABlessedIdol::Tick(float DeltaTime)
 	ActorsToIgnore.Add(GetOwner());
 	TArray<FHitResult> OutHits;
 
-	if (isHit)	
+	if (HitEnemy)	
 	{
 		if (BulletRangeCounter < 0.2f)
 		{
@@ -89,11 +89,12 @@ void ABlessedIdol::Tick(float DeltaTime)
 			}
 		}
 		ExplosionParticle();
-		isHit = false;
+		HitEnemy = false;
 		
 	}
 	else
 	{
+		BulletExpiry += DeltaTime;
 		SetActorLocation(EndTrace);
 	}
 
@@ -159,6 +160,11 @@ void ABlessedIdol::Tick(float DeltaTime)
 		SetActorLocation(EndTrace);
 
 	}*/
+
+	if (HitWall)
+	{
+		ExplosionParticle();
+	}
 
 	if (BulletExpiry > 1.5)
 	{

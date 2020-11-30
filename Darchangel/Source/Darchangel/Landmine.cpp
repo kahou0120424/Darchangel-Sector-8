@@ -37,7 +37,13 @@ void ALandmine::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 		{
 			float const new_health = npc->get_health() - npc->get_max_health() * Damage;
 			npc->set_health(new_health);
+			ExplosionParticle();
 		}
 	}
+}
+
+void ALandmine::ExplosionParticle()
+{
+	StartExplosion = true;
 }
 

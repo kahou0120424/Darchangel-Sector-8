@@ -15,6 +15,9 @@ public:
 	// Sets default values for this actor's properties
 	ALandmine();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool StartExplosion = false;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -24,6 +27,8 @@ protected:
 
 	UFUNCTION()
 		void OnOverlapBegin(class AActor* OverlappedActor, AActor* OtherActor);
+
+	void ExplosionParticle();
 
 public:	
 	// Called every frame
