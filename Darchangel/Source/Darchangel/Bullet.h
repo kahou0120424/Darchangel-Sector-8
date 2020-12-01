@@ -28,6 +28,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Designer Please Edit | Arrow (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
 		float Damage ;
 
+	UPROPERTY(EditAnywhere, Category = "Max Charge Arrow")
+		bool IsMaxChargeArrow;
 
 	float BulletExpiry = 0;
 

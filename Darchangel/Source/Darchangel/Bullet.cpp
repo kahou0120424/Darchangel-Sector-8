@@ -81,7 +81,16 @@ void ABullet::Tick(float DeltaTime)
 				}
 			}
 		}
-		Destroy();
+		if (IsMaxChargeArrow)
+		{
+			SetActorLocation(EndTrace);
+			BulletExpiry += DeltaTime;
+		}
+		else
+		{
+			Destroy();
+		}
+		
 	}
 	else
 	{
