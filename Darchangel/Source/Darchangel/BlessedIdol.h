@@ -45,6 +45,12 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Designer Please Edit | Damage", meta = (AllowPrivateAccess = "true"))
 		float Damage;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool HitEnemy;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool HitWall;
 	
 
 	float BulletExpiry = 0;

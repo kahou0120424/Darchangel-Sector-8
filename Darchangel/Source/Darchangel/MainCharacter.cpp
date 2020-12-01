@@ -621,6 +621,14 @@ void AMainCharacter::WallOfLightFunction()
 void AMainCharacter::SwapForm()
 {
 	atkCount = 0;
+	if (CannotDash)
+	{
+		return;
+	}
+	if (IsRangeCharging == true )
+	{
+		return;
+	}
 	if (isDemon)
 	{
 		isDemon = false;

@@ -23,25 +23,21 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	USceneComponent* RootComp;
-
 	FVector Velocity = FVector(100.0f);
 
 	UPROPERTY(EditAnywhere, Category = "Designer Please Edit | Arrow (Min 0.0, Max 100.0)", meta = (ClapMin = "0.0", ClampMax = "100.0"))
 		float Damage ;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Collision, meta = (AllowPrivateAccess = "true"))
-		class UBoxComponent* BulletCollision;
-		
-	UFUNCTION()
-		void on_overlap_begin(
-			UPrimitiveComponent* const overlapped_component,
-			AActor* const other_actor,
-			UPrimitiveComponent* other_component,
-			int const other_body_index,
-			bool const from_sweep,
-			FHitResult const& sweep_result);
+	UPROPERTY(EditAnywhere, Category = "Max Charge Arrow")
+		bool IsMaxChargeArrow;
 
 	float BulletExpiry = 0;
 
+
+
+	UPROPERTY(BlueprintReadWrite)
+		bool HitEnemy;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool HitWall;
 };
