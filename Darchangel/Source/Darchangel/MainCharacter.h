@@ -167,6 +167,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Project Tile | Enhance Bullet")
 		TSubclassOf<class ABullet> EnhanceBulletProjectileClass;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HitLocation", meta = (AllowPrivateAccess = "true"))
+		bool isHit;
 	// Cancel 
 	/*UPROPERTY(EditDefaultsOnly, Category = "Chain")
 		TSubclassOf<class AChain> ChainProjectileClass;*/

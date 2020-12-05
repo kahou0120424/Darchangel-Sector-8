@@ -404,6 +404,7 @@ void AMainCharacter::on_attack_overlap_begin(
 		{
 			float const new_health = npc->get_health() - DemonMeleeDamage;
 			npc->set_health(new_health);
+			isHit = true;
 		}
 		else
 		{
