@@ -48,8 +48,16 @@ void ABullet::Tick(float DeltaTime)
 			npc->set_health(new_health);	
 
 		}
+		if (IsMaxChargeArrow)
+		{
+			SetActorLocation(EndTrace);
+			BulletExpiry += DeltaTime;
+		}
+		else
+		{
+			Destroy();
+		}
 		
-		Destroy();
 	}
 	else
 	{
