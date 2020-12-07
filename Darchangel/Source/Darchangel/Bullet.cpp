@@ -39,7 +39,7 @@ void ABullet::Tick(float DeltaTime)
 	ActorsToIgnore.Add(GetOwner());
 	TArray<FHitResult> OutHits;
 
-	/*if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
+	if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
 	{
 		if (hitResult.GetActor() && hitResult.GetActor()->ActorHasTag("Enemy"))
 		{
@@ -50,9 +50,18 @@ void ABullet::Tick(float DeltaTime)
 		}
 		
 		Destroy();
-	}*/
+	}
+	else
+	{
+		BulletExpiry += DeltaTime;
+		SetActorLocation(EndTrace);
+	}
+	if (BulletExpiry > 3)
+	{
+		Destroy();
+	}
 	
-	if (HitEnemy)
+	/*if (HitEnemy)
 	{
 		bool hit = UKismetSystemLibrary::SphereTraceMulti(
 			GetWorld(),
@@ -100,15 +109,12 @@ void ABullet::Tick(float DeltaTime)
 
 	}
 
-	if (BulletExpiry > 3)
-	{
-		Destroy();
-	}
+	
 
 	if (HitWall)
 	{
 		Destroy();
-	}
+	}*/
 
 }
 
