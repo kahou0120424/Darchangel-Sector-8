@@ -166,7 +166,7 @@ void ABlessedIdol::Tick(float DeltaTime)
 		ExplosionParticle();
 	}
 
-	if (BulletExpiry > 1.5)
+	if (BulletExpiry > 0.7)
 	{
 		if (LandMineProjectile != NULL)
 		{
