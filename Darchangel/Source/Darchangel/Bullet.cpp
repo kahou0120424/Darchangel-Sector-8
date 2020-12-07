@@ -41,6 +41,7 @@ void ABullet::Tick(float DeltaTime)
 
 	if (GetWorld()->LineTraceSingleByChannel(hitResult, StartTrace, EndTrace, ECC_Destructible, CollisonParams))
 	{
+		
 		if (hitResult.GetActor() && hitResult.GetActor()->ActorHasTag("Enemy"))
 		{
 			ANPC* npc = Cast<ANPC>(hitResult.GetActor());
@@ -48,7 +49,12 @@ void ABullet::Tick(float DeltaTime)
 			npc->set_health(new_health);	
 
 		}
-		if (IsMaxChargeArrow)
+		else if (IsMaxChargeArrow)
+		{
+			SetActorLocation(EndTrace);
+			BulletExpiry += DeltaTime;
+		}
+		else if (hitResult.GetActor()->ActorHasTag("Sheild"))
 		{
 			SetActorLocation(EndTrace);
 			BulletExpiry += DeltaTime;
