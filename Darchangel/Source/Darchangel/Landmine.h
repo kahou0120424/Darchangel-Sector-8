@@ -18,6 +18,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool StartExplosion = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float lifeTime;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

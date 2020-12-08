@@ -25,7 +25,14 @@ void ALandmine::BeginPlay()
 void ALandmine::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (lifeTime <= 0)
+	{
+		ExplosionParticle();
+	}
+	else
+	{
+		lifeTime -= DeltaTime;
+	}
 }
 
 
@@ -35,7 +42,7 @@ void ALandmine::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 	{
 		if (ANPC* const npc = Cast<ANPC>(OtherActor))
 		{
-			float const new_health = npc->get_health() - npc->get_max_health() * Damage;
+			float const new_health = npc->get_health() -  Damage;
 			npc->set_health(new_health);
 			ExplosionParticle();
 		}
