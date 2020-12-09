@@ -1,13 +1,13 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AngelHideSwordNotify.h"
+#include "AngelShowSwardNotify.h"
 
 #include "Engine.h"
 
 #include "MainCharacter.h"
 
-void UAngelHideSwordNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+void UAngelShowSwardNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 
 	if (MeshComp != NULL && MeshComp->GetOwner() != NULL)
@@ -15,7 +15,7 @@ void UAngelHideSwordNotify::Notify(USkeletalMeshComponent* MeshComp, UAnimSequen
 		AMainCharacter* player = Cast<AMainCharacter>(MeshComp->GetOwner());
 		if (player != NULL)
 		{
-			player->AngelHideSwordFunction(true);
+			player->AngelHideSwordFunction(false);
 		}
 	}
 }

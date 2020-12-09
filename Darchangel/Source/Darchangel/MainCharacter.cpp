@@ -735,17 +735,9 @@ void AMainCharacter::FinishNormalRangeAnimationFunction()
 	
 }
 
-void AMainCharacter::AngelHideSwordFunction()
+void AMainCharacter::AngelHideSwordFunction(bool answer)
 {
-	if (HideAngelWeapon)
-	{
-		HideAngelWeapon = false;
-	}
-
-	else
-	{
-		HideAngelWeapon = true;
-	}
+	HideAngelWeapon = answer;
 }
 
 void AMainCharacter::BlessedIdolFunction()
@@ -779,7 +771,7 @@ void AMainCharacter::AttackStateCounterFunction(float Deltatime)
 
 void AMainCharacter::PullingCoolDownFunction(float DeltaTime)
 {
-	if (isPulling == true)
+	/*if (isPulling == true)
 	{
 		pullCD += DeltaTime;
 		if (pullCD >= pullDelay)
@@ -787,7 +779,7 @@ void AMainCharacter::PullingCoolDownFunction(float DeltaTime)
 			isPulling = false;
 			pullCD = 0;
 		}
-	}
+	}*/
 }
 
 
