@@ -40,6 +40,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void stun(float Time);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* TakeDamageMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* TakeDamageMontage2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* DeadMontage;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool TakeDamage;
+
 	bool HitByWallOfLight;
 
 	void HitByBlessedIdol(float damage);
