@@ -33,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
+	void Range_set_health(float const new_health);
+
 	void HitByWallOfLightFunction(FVector Velocity, float CountDown, float MoveDuration, FVector PlayerForwardPosition);
 
 	void HitByGraspofDeathFunction(FVector location);
@@ -51,6 +53,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool TakeDamage;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool IsDeath = false;
 
 	bool HitByWallOfLight;
 

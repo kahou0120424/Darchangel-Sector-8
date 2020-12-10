@@ -46,7 +46,14 @@ void ABullet::Tick(float DeltaTime)
 		{
 			ANPC* npc = Cast<ANPC>(hitResult.GetActor());
 			float const new_health = npc->get_health() - Damage;
-			npc->set_health(new_health);	
+			if (IsMaxChargeArrow)
+			{
+				npc->set_health(new_health);
+			}
+			{
+				npc->Range_set_health(new_health);
+			}
+			
 
 		}
 
