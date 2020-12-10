@@ -33,12 +33,29 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "NPC Health")
 	void set_health(float const new_health);
 
+	void Range_set_health(float const new_health);
+
 	void HitByWallOfLightFunction(FVector Velocity, float CountDown, float MoveDuration, FVector PlayerForwardPosition);
 
 	void HitByGraspofDeathFunction(FVector location);
 
 	UFUNCTION(BlueprintCallable)
 	void stun(float Time);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* TakeDamageMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* TakeDamageMontage2;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+		class UAnimMontage* DeadMontage;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool TakeDamage;
+
+	UPROPERTY(BlueprintReadWrite)
+		bool IsDeath = false;
 
 	bool HitByWallOfLight;
 

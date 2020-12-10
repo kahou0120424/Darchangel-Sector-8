@@ -175,11 +175,11 @@ float ANPC::get_max_health() const
 void ANPC::set_health(float const new_health)
 {
 	health = new_health;
-	stun(0.5);
+	TakeDamage = true;
+
 	if (health <= 0)
 	{
 		GetWorld()->DestroyActor(this);
-		//GetMesh()->SetSimulatePhysics(true);
 	}
 }
 
