@@ -71,7 +71,10 @@ protected:
 private:	
 	class UWidgetComponent* widget_component;
 
-	float const max_health = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Health", meta = (AllowPrivateAccess = "true"))
+	float max_health = 1000.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "NPC Health", meta = (AllowPrivateAccess = "true"))
 	float health;
 	
 	float countDown;

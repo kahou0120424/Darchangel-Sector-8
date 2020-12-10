@@ -68,6 +68,7 @@ void ANPC::BeginPlay()
 		right_fist_collision_box->OnComponentBeginOverlap.AddDynamic(this, &ANPC::on_attack_overlap_begin);
 		right_fist_collision_box->OnComponentEndOverlap.AddDynamic(this, &ANPC::on_attack_overlap_end);
 	}
+
 }
 
 // Called every frame
@@ -77,7 +78,7 @@ void ANPC::Tick(float const DeltaTime)
 	auto const uw = Cast<UHealthBar>(widget_component->GetUserWidgetObject());
 	if (uw)
 	{
-		uw->set_bar_value_percent(health / max_health);
+		uw->set_bar_value_percent(health/max_health);
 	}
 
 	if (isStun)
