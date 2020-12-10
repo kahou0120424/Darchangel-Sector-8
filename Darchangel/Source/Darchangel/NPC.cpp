@@ -190,7 +190,6 @@ void ANPC::HitByWallOfLightFunction(FVector Velocity, float CountDown, float Mov
 	moveDuration = MoveDuration;
 	CharacterFowardPositionWallOfLight = PlayerForwardPosition;
 	IsLineTranceStart = true;
-	//HitByWallOfLight = true;
 	
 }
 
