@@ -175,22 +175,11 @@ float ANPC::get_max_health() const
 void ANPC::set_health(float const new_health)
 {
 	health = new_health;
-	stun(0.5);
 	TakeDamage = true;
-	int RandomNumber = FMath::RandRange(0,1);
-
-	if (RandomNumber == 0)
-		PlayAnimMontage(TakeDamageMontage, 1.0f);
-	
-	else
-		PlayAnimMontage(TakeDamageMontage2, 1.0f);
-	
 
 	if (health <= 0)
 	{
 		GetWorld()->DestroyActor(this);
-		//PlayAnimMontage(DeadMontage, 1.0f);
-		//isStun = true;
 	}
 }
 
