@@ -332,6 +332,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite)
 		bool WallOfLightInCD;
 
+
 	UFUNCTION(BlueprintCallable)
 	void SwapForm();
 
