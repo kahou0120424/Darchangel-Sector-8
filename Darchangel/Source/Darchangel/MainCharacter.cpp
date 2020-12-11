@@ -1118,6 +1118,7 @@ void AMainCharacter::PlayRangeAnimation()
 {
 	IsRangeHold = true;
 	IsRangeCharging = true;
+	CannotDash = true;
 	PlayAnimMontage(AngelNormalRangeAttackMontage, 1.0f);
 }
 
