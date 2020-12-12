@@ -180,7 +180,8 @@ void ANPC::set_health(float const new_health)
 
 	if (health <= 0)
 	{
-		GetWorld()->DestroyActor(this);
+		//GetWorld()->DestroyActor(this);
+		IsDeath = true;
 	}
 }
 
