@@ -45,10 +45,10 @@ void AWallOfLight::Tick(float DeltaTime)
 	{
 		timeUp = true;
 
-		if (lifeTimeCounter >= Life)
+		/*if (lifeTimeCounter >= Life)
 		{
 			Destroy();
-		}
+		}*/
 
 		lifeTimeCounter = lifeTimeCounter + DeltaTime;
 		return;
